@@ -1,0 +1,141 @@
+<main class="registration-layout" appReveal>
+  <section class="invitation" data-reveal aria-labelledby="invite-title">
+    <div class="event-label">
+      <span class="material-icons" aria-hidden="true">auto_awesome</span> AI EXPO 2026 · UNIVERSITY
+      OF JORDAN
+    </div>
+    <h1 id="invite-title">
+      Intelligence.<br /><span>In good<br />company.</span>
+    </h1>
+    <p class="intro">
+      Where curious minds meet what comes next. Discover AI, share ideas, and become part of the
+      conversation.
+    </p>
+    <app-neural-art />
+    <div class="invitation-note">
+      <span class="material-icons" aria-hidden="true">diversity_1</span>
+      <div>
+        <strong>Different disciplines. Shared curiosity.</strong
+        ><span>Your place in the future of AI.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-panel" data-reveal aria-labelledby="form-title">
+    @if (success(); as firstName) {
+      <div class="success-panel" role="status" aria-live="polite">
+        <span class="success-symbol material-icons" aria-hidden="true">check</span>
+        <p class="eyebrow">YOU’RE ON THE LIST</p>
+        <h2 id="form-title">
+          See you there,<br /><span>{{ firstName }}.</span>
+        </h2>
+        <p>Your registration is confirmed. We’ll see you at AI EXPO 2026, University of Jordan.</p>
+        @if (receipts.receipt(); as receipt) {
+          <div class="receipt-id">
+            CONFIRMATION / {{ receipt.id.slice(0, 8).toUpperCase() }}
+            @if (receipts.storageAvailable()) {
+              <br />Saved on this device. Your registration stays confirmed after a refresh.
+            }
+          </div>
+        }
+        @if (!receipts.storageAvailable()) {
+          <p role="status">
+            Your registration succeeded. This browser could not save the confirmation locally.
+          </p>
+        }
+        <a class="primary-button" routerLink="/dashboard"
+          >Visit the live room <span class="material-icons" aria-hidden="true">north_east</span></a
+        >
+        <button class="text-button" type="button" (click)="reset()">
+          Register another participant
+        </button>
+      </div>
+    } @else {
+      <div class="form-heading">
+        <span class="eyebrow">MAKE IT OFFICIAL</span
+        ><span class="time-note"
+          ><span class="material-icons" aria-hidden="true">schedule</span> About a minute</span
+        >
+      </div>
+      <h2 id="form-title">Your next connection<span>.</span></h2>
+      <p class="form-description">Register for AI EXPO 2026. Bring your curiosity.</p>
+      <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-busy]="pending()">
+        <fieldset>
+          <mat-form-field appearance="outline"
+            ><mat-label>Full name</mat-label
+            ><input
+              matInput
+              formControlName="name"
+              autocomplete="name"
+              placeholder="Your first and last name"
+              maxlength="100"
+            /><mat-error>{{ form.controls.name.getError('validation') }}</mat-error></mat-form-field
+          >
+          <mat-form-field appearance="outline"
+            ><mat-label>Email address</mat-label
+            ><input
+              matInput
+              formControlName="email"
+              autocomplete="email"
+              type="email"
+              placeholder="you@example.com"
+              maxlength="254"
+            /><mat-error>{{
+              form.controls.email.getError('validation')
+            }}</mat-error></mat-form-field
+          >
+          <mat-form-field appearance="outline"
+            ><mat-label>Phone number</mat-label
+            ><input
+              matInput
+              formControlName="phone"
+              autocomplete="tel"
+              type="tel"
+              placeholder="+962 79 123 4567"
+              maxlength="30"
+            /><mat-error>{{
+              form.controls.phone.getError('validation')
+            }}</mat-error></mat-form-field
+          >
+          <div class="field-pair">
+            <mat-form-field appearance="outline"
+              ><mat-label>Major</mat-label
+              ><mat-select panelClass="expo-select" formControlName="major">
+                @for (major of majors; track major) {
+                  <mat-option [value]="major">{{ major }}</mat-option>
+                }</mat-select
+              ><mat-error>{{
+                form.controls.major.getError('validation')
+              }}</mat-error></mat-form-field
+            >
+            <mat-form-field appearance="outline"
+              ><mat-label>Gender</mat-label
+              ><mat-select panelClass="expo-select" formControlName="gender">
+                @for (gender of genders; track gender) {
+                  <mat-option [value]="gender">{{ gender }}</mat-option>
+                }</mat-select
+              ><mat-error>{{
+                form.controls.gender.getError('validation')
+              }}</mat-error></mat-form-field
+            >
+          </div>
+          <p class="privacy-note">
+            Your full name will appear in greetings on the live event screen. Your email and phone
+            stay private.
+          </p>
+        </fieldset>
+        @if (error()) {
+          <div class="form-error" role="alert">{{ error() }}</div>
+        }
+        <button class="primary-button" type="submit" [disabled]="pending()">
+          {{ pending() ? 'Saving your spot…' : 'I’m in. Let’s do this.'
+          }}<span class="material-icons" aria-hidden="true">arrow_forward</span>
+        </button>
+        <p class="form-footnote">
+          <span class="material-icons" aria-hidden="true">lock_outline</span> One registration per
+          email. A welcome for everyone.
+        </p>
+      </form>
+    }
+  </section>
+</main>

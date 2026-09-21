@@ -1,0 +1,241 @@
+.dashboard {
+  max-width: 1440px;
+  margin: auto;
+  padding: 34px 24px 24px;
+}
+.dashboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+.live-status {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #b49cdd;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.live-status > span,
+.status-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #2cabe2;
+}
+.live-status.disconnected > span,
+.status-dot.offline {
+  background: #ffb798;
+}
+h1 {
+  font-size: clamp(30px, 3vw, 44px);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -1.8px;
+  margin: 14px 0 0;
+}
+h1 > span {
+  color: #a49ab7;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: #191521;
+  border: 1px solid #ffffff12;
+  color: #d9cfe7;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.3s;
+}
+button:hover {
+  background: #292135;
+}
+button:active {
+  transform: scale(0.98);
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #2cabe2;
+  outline-offset: 4px;
+}
+button .material-icons {
+  font-size: 17px;
+}
+.dashboard-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 20px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--event-line);
+}
+.toolbar-right {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.toolbar-right button {
+  font-size: 12px;
+  padding: 8px 10px;
+}
+.storage-label {
+  font-size: 10px;
+  color: #8e839d;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 16px;
+}
+.chart-panel {
+  min-width: 0;
+  background: linear-gradient(155deg, #1a1425, #14111d 65%);
+  border: 1px solid #b599e81c;
+  box-shadow: inset 0 1px 0 #ffffff04;
+  border-radius: 14px;
+  padding: 23px 23px 10px;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.panel-kicker {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: #8c7e9c;
+}
+.panel-heading h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin: 8px 0 0;
+}
+.chart-tag {
+  font-size: 10px;
+  color: #ae9dc2;
+  background: #211a2d;
+  padding: 6px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.timeline-panel {
+  grid-column: 1;
+  grid-row: 2;
+}
+.arrivals-panel {
+  grid-column: 2;
+  grid-row: 2;
+}
+.empty-chart {
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 13px;
+}
+.empty-chart > span {
+  font-size: 34px;
+  color: #966dd1;
+}
+.empty-chart p {
+  font-size: 12px;
+  margin: 0;
+  color: #b7aac8;
+}
+.empty-chart small {
+  font-size: 12px;
+  color: #83758f;
+}
+.live-tiny {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #70c6ea;
+}
+.dashboard-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 22px;
+  font-size: 10px;
+  color: #897a96;
+}
+.status-dot {
+  margin-right: 6px;
+  width: 4px;
+  height: 4px;
+}
+.bottom-separator {
+  margin: 0 12px;
+  color: #614b75;
+}
+.dashboard-error {
+  background: #9b384522;
+  border: 1px solid #dc727244;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #ffc2c2;
+  margin-bottom: 20px;
+}
+.dashboard-error button {
+  margin-left: 10px;
+}
+.loading {
+  padding: 100px;
+  text-align: center;
+  color: #ab91c7;
+}
+@media (max-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+  .storage-label {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  .dashboard {
+    padding: 28px 18px;
+  }
+  .dashboard-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-toolbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .chart-panel {
+    grid-column: 1;
+    grid-row: auto;
+    padding: 20px 18px 10px;
+  }
+  .dashboard-bottom {
+    font-size: 10px;
+    line-height: 1.8;
+    flex-direction: column;
+  }
+}

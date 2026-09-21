@@ -1,0 +1,93 @@
+.gender-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.donut {
+  position: relative;
+  min-width: 0;
+  flex: 1;
+}
+.donut app-event-chart {
+  height: 220px;
+}
+.donut > strong {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  pointer-events: none;
+}
+.donut > strong small {
+  font-size: 10px;
+  color: #9686a6;
+  letter-spacing: 1px;
+  margin-top: 7px;
+}
+.gender-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 18px;
+  flex: 1;
+}
+.gender-content li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #baaacb;
+}
+.gender-content li strong {
+  margin-left: auto;
+  color: #eee4f8;
+  font-size: 12px;
+  font-weight: 500;
+}
+.legend-color {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: 1px;
+}
+@media (min-width: 1101px) and (max-width: 1450px) {
+  .gender-content {
+    flex-direction: column;
+    gap: 0;
+  }
+  .donut {
+    width: 100%;
+  }
+  .donut app-event-chart {
+    height: 158px;
+  }
+  .gender-content ul {
+    width: 100%;
+    gap: 9px;
+    padding-bottom: 16px;
+  }
+  .donut > strong {
+    font-size: 25px;
+  }
+}
+@media (max-width: 450px) {
+  .gender-content {
+    gap: 8px;
+  }
+  .gender-content li {
+    font-size: 12px;
+  }
+}
+
+.legend-share {
+  display: block;
+  color: #9888ab;
+  font-size: 0.85em;
+  margin-top: 4px;
+}

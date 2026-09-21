@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "zod": "npm:zod@4.6.5",
+    "libphonenumber-js": "npm:libphonenumber-js@1.13.13",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.116.0"
+  },
+  "compilerOptions": { "strict": true }
+}

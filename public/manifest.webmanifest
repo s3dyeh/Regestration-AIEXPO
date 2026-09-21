@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "AI EXPO 2026",
+  "short_name": "AI EXPO 2026",
+  "description": "Register for AI EXPO 2026 and watch the community come together.",
+  "theme_color": "#0b0911",
+  "background_color": "#0b0911",
+  "display": "standalone",
+  "orientation": "any",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "en",
+  "dir": "auto",
+  "icons": [
+    {
+      "src": "assets/img/favicon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

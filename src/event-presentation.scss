@@ -1,0 +1,324 @@
+// One 16:9 stage contains the navigation, live dashboard and partner marks.
+// Container units keep the same composition on 720p, 1080p and larger displays.
+// Portrait and small screens retain the accessible, scrolling mobile layout.
+@media (min-width: 1000px) and (orientation: landscape) {
+  app-event-shell:has(.dashboard-mode) {
+    display: grid;
+    min-height: 100dvh;
+    align-items: center;
+    background: #08060e;
+  }
+  app-event-shell > .event-app.dashboard-mode {
+    container-type: inline-size;
+    width: min(100vw, 177.777778dvh);
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+    margin: auto;
+    padding: 0;
+    display: grid;
+    grid-template-rows: 10% minmax(0, 1fr) 10%;
+
+    .event-header {
+      width: calc(100% - 3cqw);
+      max-width: none;
+      margin: 0.6cqw 1.5cqw 0;
+      padding: 0 1.2cqw;
+      border-radius: 0.8cqw;
+      gap: 1cqw;
+    }
+    .event-logo {
+      width: 14cqw;
+      height: 4.5cqw;
+    }
+    .header-sponsor img {
+      width: 13cqw;
+      height: 3.4cqw;
+    }
+    .brand-year {
+      font-size: 0.85cqw;
+    }
+
+    .organizer,
+    .organizer strong {
+      font-size: 0.8cqw;
+    }
+    .demo-banner,
+    .event-footer,
+    router-outlet {
+      display: none;
+    }
+    app-event-dashboard {
+      display: block;
+      min-height: 0;
+    }
+    app-live-dashboard {
+      display: block;
+      height: 100%;
+      min-height: 0;
+    }
+    .dashboard {
+      max-width: none;
+      height: 100%;
+      min-height: 0;
+      margin: 0;
+      padding: 0.7cqw 1.5cqw 0.4cqw;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65cqw;
+    }
+    .dashboard-heading {
+      margin: 0;
+      gap: 1cqw;
+    }
+    .live-status {
+      font-size: 0.65cqw;
+      letter-spacing: 0.08cqw;
+    }
+    .dashboard h1 {
+      font-size: 2cqw;
+      line-height: 1.1;
+      letter-spacing: -0.06cqw;
+      margin: 0.35cqw 0 0;
+    }
+    .dashboard h1 br {
+      display: none;
+    }
+    .dashboard h1 span::before {
+      content: ' ';
+    }
+
+    .dashboard button {
+      font-size: 0.75cqw;
+      padding: 0.45cqw 0.7cqw;
+    }
+    .dashboard-toolbar {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+    .toolbar-right {
+      gap: 1cqw;
+    }
+    .storage-label {
+      display: inline;
+      font-size: 0.65cqw;
+    }
+    .metrics {
+      height: 7.6cqw;
+      margin: 0;
+      gap: 0.8cqw;
+    }
+    .metrics article {
+      padding: 0.75cqw 1.2cqw;
+      border-radius: 0.8cqw;
+    }
+    .metric-label {
+      font-size: 0.65cqw;
+      letter-spacing: 0.05cqw;
+    }
+    .metric-number {
+      font-size: 2.6cqw;
+      margin: 0.25cqw 0 0;
+      line-height: 1.2;
+    }
+    .total {
+      font-size: 3.8cqw;
+      margin: 0.15cqw 0 0;
+      letter-spacing: -0.12cqw;
+    }
+    .metrics p,
+    .primary-metric p {
+      display: block;
+      font-size: 0.7cqw;
+      line-height: 1.5;
+    }
+    .metrics .primary-metric {
+      gap: 2cqw;
+    }
+    .metric-art {
+      width: 4cqw;
+      height: 5cqw;
+      right: 2cqw;
+      opacity: 0.3;
+    }
+    .metric-art span {
+      width: 3cqw;
+      height: 4cqw;
+    }
+    .dashboard-grid {
+      flex: 1;
+      min-height: 0;
+      grid-template-columns: 1.35fr 1fr;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 0.8cqw;
+    }
+    .chart-panel {
+      min-height: 0;
+      padding: 0.8cqw 1cqw 0.3cqw;
+      border-radius: 0.8cqw;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-heading {
+      flex-shrink: 0;
+      gap: 0.5cqw;
+    }
+    .panel-kicker {
+      font-size: 0.6cqw;
+      letter-spacing: 0.06cqw;
+    }
+    .panel-heading h2 {
+      font-size: 1.15cqw;
+      margin: 0.3cqw 0 0;
+    }
+    .chart-tag {
+      font-size: 0.6cqw;
+      padding: 0.35cqw 0.45cqw;
+    }
+    .chart-panel > app-event-chart {
+      flex: 1;
+      min-height: 0;
+      height: auto;
+    }
+    .empty-chart {
+      flex: 1;
+      height: auto;
+      min-height: 0;
+      gap: 0.6cqw;
+    }
+    .empty-chart > span {
+      font-size: 2cqw;
+    }
+    .empty-chart p,
+    .empty-chart small {
+      font-size: 0.75cqw;
+    }
+    app-gender-chart {
+      flex: 1;
+      min-height: 0;
+    }
+    .gender-content {
+      height: 100%;
+      flex-direction: row;
+      gap: 0.6cqw;
+    }
+    .donut {
+      height: 100%;
+      width: auto;
+    }
+    .donut app-event-chart {
+      height: 100%;
+    }
+    .donut > strong {
+      font-size: 1.8cqw;
+    }
+    .donut > strong small {
+      font-size: 0.5cqw;
+      letter-spacing: 0;
+      margin-top: 0.3cqw;
+    }
+    .gender-content ul {
+      width: auto;
+      gap: 0.8cqw;
+      padding: 0;
+    }
+    .gender-content li,
+    .gender-content li strong {
+      font-size: 0.65cqw;
+    }
+    app-recent-arrivals {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+    .arrivals {
+      padding: 0.3cqw 0 0;
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      column-gap: 1cqw;
+    }
+    .arrivals li > span:nth-child(2) {
+      min-width: 0;
+    }
+    .arrivals strong {
+      overflow-wrap: anywhere;
+    }
+    .arrivals .no-arrivals {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+    }
+
+    .arrivals li {
+      padding: 0.3cqw 0;
+      gap: 0.5cqw;
+    }
+    .arrivals strong {
+      font-size: 0.85cqw;
+    }
+    .arrivals small,
+    .arrivals time {
+      font-size: 0.55cqw;
+    }
+    .avatar {
+      width: 1.5cqw;
+      height: 1.5cqw;
+      font-size: 0.7cqw;
+      border-radius: 0.4cqw;
+    }
+    .arrivals .no-arrivals {
+      min-height: 8cqw;
+      font-size: 0.75cqw;
+    }
+    .live-tiny {
+      font-size: 0.6cqw;
+    }
+    .dashboard-bottom {
+      margin: 0;
+      font-size: 0.6cqw;
+    }
+    .dashboard-error {
+      padding: 0.4cqw;
+      margin: 0;
+      font-size: 0.7cqw;
+    }
+    app-event-partners {
+      min-height: 0;
+    }
+    .partners {
+      max-width: none;
+      height: 100%;
+      margin: 0 1.5cqw;
+      padding: 0.6cqw 1cqw;
+      gap: 2cqw;
+    }
+    .partner {
+      flex-direction: row;
+      gap: 1.2cqw;
+    }
+    .role {
+      font-size: 0.75cqw;
+    }
+    .identity {
+      gap: 0.6cqw;
+    }
+    .partners img {
+      width: 10cqw;
+      height: 3cqw;
+      object-fit: contain;
+    }
+    .venue img {
+      width: 2.3cqw;
+      height: 3.2cqw;
+    }
+    .venue .identity > span {
+      font-size: 0.7cqw;
+    }
+    .organizer img {
+      width: 11cqw;
+      height: 3.5cqw;
+    }
+  }
+}

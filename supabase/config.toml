@@ -1,0 +1,6 @@
+project_id = "funtime-registration"
+
+[functions.register]
+verify_jwt = false
+entrypoint = "./functions/register/index.ts"
+import_map = "./functions/register/deno.json"

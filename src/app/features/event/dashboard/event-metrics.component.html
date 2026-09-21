@@ -1,0 +1,32 @@
+<section class="metrics" aria-label="Event at a glance" data-reveal>
+  <article class="primary-metric">
+    <div>
+      <span class="metric-label">REGISTERED ATTENDEES</span>
+      <div class="total" data-testid="registration-total">
+        <app-animated-count [value]="stats().total" />
+      </div>
+    </div>
+    <div class="metric-art" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <p>Curiosity brings us together.<br /><strong>The next connection starts here.</strong></p>
+  </article>
+  <article>
+    <span class="metric-label">DISCIPLINES REPRESENTED</span>
+    <div class="metric-number">
+      {{ stats().majors.length.toString().padStart(2, '0') }}<span aria-hidden="true">↗</span>
+    </div>
+    <p>{{ stats().majors.length }} fields shaping the conversation.</p>
+  </article>
+  <article>
+    <span class="metric-label">JOINED IN THE LAST HOUR</span>
+    <div class="metric-number">
+      {{ stats().recentCount.toString().padStart(2, '0')
+      }}<span class="activity-pulse" aria-hidden="true"></span>
+    </div>
+    <p>
+      {{ stats().total ? ((stats().recentCount / stats().total) * 100).toFixed(0) : 0 }}% of
+      attendees joined in the last hour.
+    </p>
+  </article>
+</section>

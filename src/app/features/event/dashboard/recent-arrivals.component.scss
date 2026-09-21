@@ -1,0 +1,63 @@
+.arrivals {
+  list-style: none;
+  padding: 8px 0 0;
+  margin: 0;
+}
+.arrivals li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #ffffff06;
+}
+.arrivals li:last-child {
+  border-bottom: 0;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: #7a3cff16;
+  border: 1px solid #a471ff20;
+  border-radius: 8px;
+  color: #c4a7f0;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.arrivals strong {
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+  color: #d4c8e2;
+}
+.arrivals small {
+  display: block;
+  font-size: 10px;
+  color: #8d7e9d;
+  margin-top: 3px;
+}
+.arrivals time {
+  margin-left: auto;
+  color: #8d7e9d;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.live-tiny {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #70c6ea;
+}
+.arrivals .no-arrivals {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #92829f;
+  font-size: 12px;
+  text-align: center;
+}
+.no-arrivals a {
+  color: #bc99f5;
+  font-size: 12px;
+}

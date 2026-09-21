@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+.partners {
+  max-width: 1392px;
+  margin: auto;
+  padding: 30px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  border-top: 1px solid var(--event-line);
+}
+.partner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-width: 0;
+}
+.role {
+  font-size: 12px;
+  color: #9b93ad;
+}
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+img {
+  display: block;
+  object-fit: contain;
+  width: 145px;
+  height: 39px;
+}
+
+.venue img {
+  width: 34px;
+  height: 44px;
+}
+.venue .identity > span {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #dad5e3;
+}
+.organizer img {
+  width: 151px;
+  height: 52px;
+}
+@media (max-width: 900px) {
+  .partner {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .partners {
+    gap: 20px;
+  }
+}
+@media (max-width: 540px) {
+  .partners {
+    padding: 24px 12px;
+    gap: 12px;
+  }
+  .role {
+    font-size: 10px;
+  }
+  .sponsor img {
+    width: 105px;
+    height: 34px;
+  }
+  .venue img {
+    width: 25px;
+    height: 34px;
+  }
+  .venue .identity {
+    gap: 5px;
+  }
+  .venue .identity > span {
+    font-size: 10px;
+  }
+  .organizer img {
+    width: 102px;
+    height: 37px;
+  }
+}

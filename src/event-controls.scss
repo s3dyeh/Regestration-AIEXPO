@@ -1,0 +1,88 @@
+.event-app .success-panel {
+  & {
+    padding: 30px 0;
+  }
+  .success-symbol {
+    display: grid;
+    place-items: center;
+    border: 1px solid #aa85ff44;
+    width: 64px;
+    height: 64px;
+    background: #7a3cff20;
+    color: #baa0ff;
+    border-radius: 18px;
+    margin-bottom: 30px;
+  }
+  & h2 {
+    font-size: 42px;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  & > p:not(.eyebrow) {
+    font-size: 12px;
+    line-height: 1.9;
+    color: #a59bb5;
+    margin-bottom: 24px;
+  }
+  .receipt-id {
+    font-family: monospace;
+    font-size: 12px;
+    color: #bca4e6;
+    padding: 14px;
+    border: 1px dashed #a185cf44;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    overflow-wrap: anywhere;
+  }
+  .text-button {
+    display: block;
+    border: 0;
+    background: transparent;
+    color: #b4a8c6;
+    font-size: 12px;
+    margin: 20px auto 0;
+    cursor: pointer;
+  }
+}
+.expo-select {
+  --mat-select-panel-background-color: #211b2c;
+  --mat-option-label-text-color: #e6dff0;
+  --mat-option-selected-state-label-text-color: #d0b6ff;
+  --mat-option-selected-state-layer-color: #7a3cff25;
+  --mat-option-hover-state-layer-color: #ffffff0a;
+}
+
+.event-app .mat-mdc-form-field {
+  --mat-form-field-container-text-font: 'Manrope', 'Noto Sans Arabic', sans-serif;
+  --mat-form-field-outlined-label-text-font: 'Manrope', 'Noto Sans Arabic', sans-serif;
+  --mat-select-trigger-text-font: 'Manrope', 'Noto Sans Arabic', sans-serif;
+}
+.event-app .mat-mdc-form-field-type-mat-select .mdc-floating-label {
+  // Let the combobox receive taps beneath its decorative floating label.
+  pointer-events: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-app *,
+  .event-app *::before,
+  .event-app *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.expo-actions-menu {
+  --mat-menu-container-color: #21192d;
+  --mat-menu-item-label-text-color: #eee5f8;
+  --mat-menu-item-hover-state-layer-color: #7a3cff25;
+  --mat-menu-item-focus-state-layer-color: #7a3cff25;
+  --mat-menu-item-label-text-font: 'Manrope', sans-serif;
+  border: 1px solid #a985df33;
+  .material-icons {
+    font-size: 20px;
+    margin-right: 12px;
+    vertical-align: middle;
+    color: #c4a4ff;
+  }
+}

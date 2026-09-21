@@ -1,0 +1,241 @@
+:host {
+  display: block;
+}
+.registration-layout {
+  max-width: 1300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 90px;
+  padding: 60px 42px 65px;
+}
+.invitation {
+  padding: 10px 0;
+}
+.event-label,
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: #aaa2bb;
+}
+.event-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.event-label .material-icons {
+  font-size: 17px;
+  color: #ba9cff;
+}
+h1 {
+  font-size: clamp(58px, 6.3vw, 88px);
+  font-weight: 700;
+  letter-spacing: -5px;
+  line-height: 0.99;
+  margin: 26px 0;
+}
+h1 span {
+  color: #ad87ff;
+}
+.intro {
+  font-size: 13px;
+  color: #aaa3b8;
+  max-width: 365px;
+  line-height: 1.9;
+}
+.invitation-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.invitation-note > .material-icons {
+  color: #b695ff;
+  font-size: 24px;
+}
+.invitation-note div {
+  display: grid;
+  gap: 5px;
+}
+.invitation-note strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+.invitation-note div span {
+  font-size: 12px;
+  color: #928a9f;
+}
+.form-panel {
+  align-self: start;
+  padding: 32px;
+  background: linear-gradient(#17141f, #13101b);
+  border: 1px solid #ffffff12;
+  border-radius: 20px;
+  box-shadow:
+    inset 0 1px 0 #ffffff08,
+    0 25px 70px #00000020;
+}
+.form-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow {
+  color: #a791c9;
+  font-size: 10px;
+}
+.time-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #8e859e;
+}
+.time-note .material-icons {
+  font-size: 13px;
+}
+h2 {
+  font-size: 32px;
+  letter-spacing: -1.2px;
+  margin: 22px 0 9px;
+  font-weight: 600;
+}
+h2 span {
+  color: #b594ff;
+}
+.form-description {
+  color: #9c93ab;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 0 0 26px;
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+mat-form-field {
+  width: 100%;
+  font-size: 12px;
+  --mat-form-field-container-height: 50px;
+  --mat-form-field-container-vertical-padding: 13px;
+  --mat-form-field-outlined-container-shape: 8px;
+}
+.field-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.privacy-note {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #958ba5;
+  margin: 4px 0 22px;
+}
+.primary-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #b599ff55;
+  border-radius: 9px;
+  padding: 14px 17px;
+  background: #7a3cff;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.3s;
+}
+.primary-button > .material-icons {
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #ffffff16;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+}
+.primary-button:hover {
+  background: #8b54ff;
+  transform: translateY(-2px);
+}
+.primary-button:active {
+  transform: scale(0.99);
+}
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.primary-button:focus-visible,
+.text-button:focus-visible {
+  outline: 2px solid #2cabe2;
+  outline-offset: 4px;
+}
+.form-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #8e859e;
+  margin: 17px 0 0;
+}
+.form-footnote .material-icons {
+  font-size: 12px;
+}
+.form-error {
+  border: 1px solid #e8898955;
+  background: #e8898910;
+  color: #ffc7c7;
+  padding: 12px;
+  font-size: 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+@media (max-width: 1100px) {
+  .registration-layout {
+    gap: 45px;
+    padding: 45px 30px;
+  }
+  .form-panel {
+    padding: 26px;
+  }
+}
+@media (max-width: 760px) {
+  .registration-layout {
+    max-width: 560px;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 32px 22px 40px;
+  }
+  h1 {
+    font-size: clamp(46px, 16vw, 64px);
+    letter-spacing: -3px;
+    margin: 22px 0;
+  }
+  .intro {
+    max-width: 340px;
+  }
+  .invitation-note {
+    display: none;
+  }
+  .form-panel {
+    padding: 24px;
+  }
+}
+@media (max-width: 380px) {
+  .field-pair {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .time-note {
+    display: none;
+  }
+}

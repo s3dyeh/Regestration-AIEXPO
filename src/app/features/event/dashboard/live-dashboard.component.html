@@ -1,0 +1,108 @@
+<main class="dashboard" appReveal>
+  <div class="dashboard-heading" data-reveal>
+    <div>
+      <div class="live-status" [class.disconnected]="store.connection() !== 'live'">
+        <span></span
+        >{{
+          gateway.demo
+            ? 'LOCAL EVENT PREVIEW'
+            : store.connection() === 'live'
+              ? 'LIVE FROM AI EXPO 2026'
+              : 'RECONNECTING'
+        }}
+      </div>
+      <!-- <h1>A thousand possibilities.<br /><span>One community.</span></h1> -->
+    </div>
+  </div>
+  <div class="dashboard-toolbar" data-reveal>
+    <div class="toolbar-right">
+      @if (gateway.demo && showDemoArrivals) {
+        <button type="button" (click)="addDemo()" [disabled]="adding()">
+          {{ adding() ? 'Adding arrivals…' : 'Add demo arrivals' }}
+          <span aria-hidden="true">+</span>
+        </button>
+      }
+      <span class="storage-label">{{ gateway.demo ? 'Saved on this device' : '' }}</span>
+    </div>
+  </div>
+  @if (store.error() || actionError()) {
+    <div class="dashboard-error" role="alert">
+      {{ actionError() || store.error()
+      }}<button type="button" (click)="store.refresh(); actionError.set('')">Retry</button>
+    </div>
+  }
+  @if (store.loading()) {
+    <div class="loading" role="status">Connecting the dots…</div>
+  } @else {
+    <app-event-metrics [stats]="store.stats()" />
+    <div class="dashboard-grid" data-reveal>
+      <section class="chart-panel majors-panel" aria-labelledby="majors-title">
+        <div class="panel-heading">
+          <div>
+            <span class="panel-kicker">THE PEOPLE BEHIND THE IDEAS</span>
+            <h2 id="majors-title">A mix of minds.</h2>
+          </div>
+          <span class="chart-tag">By discipline</span>
+        </div>
+        @if (store.stats().total) {
+          <app-event-chart [options]="majorOptions()" [label]="majorSummary()" />
+        } @else {
+          <div class="empty-chart">
+            <span aria-hidden="true">↗</span>
+            <p>Every discipline belongs here.</p>
+            <small>Your first registration starts the picture.</small>
+          </div>
+        }
+      </section>
+      <section class="chart-panel gender-panel" aria-labelledby="gender-title">
+        <div class="panel-heading">
+          <div>
+            <span class="panel-kicker">A PLACE FOR EVERYONE</span>
+            <h2 id="gender-title">The community.</h2>
+          </div>
+        </div>
+        @if (store.stats().total) {
+          <app-gender-chart [stats]="store.stats()" />
+        } @else {
+          <div class="empty-chart">
+            <span aria-hidden="true">◎</span>
+            <p>One community. Many perspectives.</p>
+            <small>Participant demographics will appear here.</small>
+          </div>
+        }
+      </section>
+      <section class="chart-panel timeline-panel" aria-labelledby="timeline-title">
+        <div class="panel-heading">
+          <div>
+            <span class="panel-kicker">THE MOMENTUM</span>
+            <h2 id="timeline-title">Connections over time.</h2>
+          </div>
+          <span class="chart-tag">Last 12 hours</span>
+        </div>
+        <app-event-chart [options]="timelineOptions()" [label]="timelineSummary()" />
+      </section>
+      <section class="chart-panel arrivals-panel" aria-labelledby="arrivals-title">
+        <div class="panel-heading">
+          <div>
+            <span class="panel-kicker">JUST JOINED</span>
+            <h2 id="arrivals-title">New connections.</h2>
+          </div>
+          <span class="live-tiny">LIVE</span>
+        </div>
+        <app-recent-arrivals [arrivals]="store.stats().recent" />
+      </section>
+    </div>
+  }
+  <div class="dashboard-bottom">
+    <span
+      ><span class="status-dot" [class.offline]="store.connection() !== 'live'"></span
+      >{{ store.connection() === 'live' ? 'Receiving arrivals' : 'Reconnecting' }}
+      @if (store.updatedAt(); as updated) {
+        · Updated {{ updated | date: 'HH:mm:ss' }}
+      }</span
+    ><span>UNIVERSITY OF JORDAN <span class="bottom-separator">/</span> AI EXPO 2026</span>
+  </div>
+</main>
+@if (store.greeting(); as greeting) {
+  <app-welcome-overlay [greeting]="greeting" (finished)="store.finishGreeting()" />
+}

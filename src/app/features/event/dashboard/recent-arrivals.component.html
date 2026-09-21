@@ -1,0 +1,17 @@
+<ol class="arrivals">
+  @for (arrival of latestArrivals(); track arrival.id) {
+    <li>
+      <span class="avatar" aria-hidden="true">{{ arrival.displayName?.slice(0, 1) ?? '•' }}</span
+      ><span
+        ><strong>{{ arrival.displayName || 'A new participant' }}</strong
+        ><small>{{
+          arrival.displayName ? 'Welcome to AI EXPO 2026' : 'Joined the community'
+        }}</small></span
+      ><time [attr.datetime]="arrival.createdAt">{{ arrival.createdAt | date: 'HH:mm' }}</time>
+    </li>
+  } @empty {
+    <li class="no-arrivals">
+      The next great connection could be yours.<a routerLink="/register">Join the community ↗</a>
+    </li>
+  }
+</ol>
