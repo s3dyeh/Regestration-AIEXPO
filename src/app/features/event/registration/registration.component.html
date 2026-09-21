@@ -25,30 +25,10 @@
     @if (success(); as firstName) {
       <div class="success-panel" role="status" aria-live="polite">
         <span class="success-symbol material-icons" aria-hidden="true">check</span>
-        <p class="eyebrow">YOU’RE ON THE LIST</p>
         <h2 id="form-title">
-          See you there,<br /><span>{{ firstName }}.</span>
+          Thank you,<br /><span>{{ firstName }}.</span>
         </h2>
-        <p>Your registration is confirmed. We’ll see you at AI EXPO 2026, University of Jordan.</p>
-        @if (receipts.receipt(); as receipt) {
-          <div class="receipt-id">
-            CONFIRMATION / {{ receipt.id.slice(0, 8).toUpperCase() }}
-            @if (receipts.storageAvailable()) {
-              <br />Saved on this device. Your registration stays confirmed after a refresh.
-            }
-          </div>
-        }
-        @if (!receipts.storageAvailable()) {
-          <p role="status">
-            Your registration succeeded. This browser could not save the confirmation locally.
-          </p>
-        }
-        <a class="primary-button" routerLink="/dashboard"
-          >Visit the live room <span class="material-icons" aria-hidden="true">north_east</span></a
-        >
-        <button class="text-button" type="button" (click)="reset()">
-          Register another participant
-        </button>
+        <p>Thanks for joining us at AI EXPO 2026. Enjoy the event!</p>
       </div>
     } @else {
       <div class="form-heading">

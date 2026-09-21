@@ -24,13 +24,18 @@ test('registration reaches another tab, animates once, blocks duplicates and sur
   await page.goto('/register');
   await fillRegistration(page, 'LINA@example.com');
   await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByRole('heading', { name: /See you there/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { name: /See you there/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
   await expect(dashboard.locator('app-welcome-overlay')).toContainText('Lina Omar.');
   await expect(dashboard.getByTestId('registration-total')).toHaveText('1');
   await expect(dashboard.locator('app-welcome-overlay')).toHaveCount(0, { timeout: 7000 });
-  await page.getByRole('button', { name: 'Register another participant' }).click();
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('ai-expo:receipt:')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
   await fillRegistration(page, 'lina@example.com');
   await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
   await expect(page.getByRole('alert')).toContainText('already registered');
@@ -57,9 +62,14 @@ test('validates fields, greets by full name, and fits mobile', async ({ page, co
   await expect(dashboard.getByTestId('registration-total')).toHaveText('0');
   await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
   await expect(dashboard.locator('app-welcome-overlay')).toContainText('أحمد سعدية.');
-  await expect(page.getByRole('heading', { name: /See you there/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.getByRole('button', { name: 'Register another participant' }).click();
+  await page.evaluate(() => {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('ai-expo:receipt:')) localStorage.removeItem(key);
+    }
+  });
+  await page.reload();
   await page.screenshot({ path: 'test-results/funtime-mobile.png', fullPage: true });
   await page.setViewportSize({ width: 320, height: 800 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

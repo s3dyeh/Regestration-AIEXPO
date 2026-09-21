@@ -13,7 +13,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { EVENT_GATEWAY } from '../data/event-gateway';
 import { EVENT_CONFIG } from '../event-config';
@@ -38,14 +37,13 @@ function fieldValidator(field: keyof Registration): ValidatorFn {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    RouterLink,
     RevealDirective,
   ],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
 })
 export class RegistrationComponent {
-  protected readonly receipts = inject(RegistrationReceiptService);
+  private readonly receipts = inject(RegistrationReceiptService);
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
   private readonly gateway = inject(EVENT_GATEWAY);
   private readonly destroyRef = inject(DestroyRef);
@@ -109,13 +107,5 @@ export class RegistrationComponent {
             error instanceof Error ? error.message : 'Something went wrong. Please try again.',
           ),
       });
-  }
-
-  protected reset(): void {
-    this.receipts.forget();
-    this.success.set(null);
-    this.error.set('');
-    this.requestId = crypto.randomUUID();
-    this.lastPayload = '';
   }
 }
