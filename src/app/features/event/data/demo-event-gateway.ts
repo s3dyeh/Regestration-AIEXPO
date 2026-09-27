@@ -68,7 +68,13 @@ export class DemoEventGateway implements EventGateway {
         sheet.getColumn('phone').numFmt = '@';
         sheet.getColumn('registeredAt').numFmt = 'yyyy-mm-dd hh:mm:ss';
         for (const row of records)
-          sheet.addRow(exportValues({ ...row, ...row.registration, phone: databaseRegistration(row.registration).phone }));
+          sheet.addRow(
+            exportValues({
+              ...row,
+              ...row.registration,
+              phone: databaseRegistration(row.registration).phone,
+            }),
+          );
         sheet.autoFilter = { from: 'A1', to: `M${records.length + 1}` };
         sheet.getRow(1).font = { bold: true };
         const summary = workbook.addWorksheet('Summary');

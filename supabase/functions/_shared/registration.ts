@@ -25,7 +25,12 @@ function nameSchema(label: string) {
 export const registrationSchema = z.object({
   firstName: nameSchema('first name'),
   lastName: nameSchema('last name'),
-  email: z.string({ error: 'Enter your email address.' }).trim().toLowerCase().email('Enter a valid email address.').max(254),
+  email: z
+    .string({ error: 'Enter your email address.' })
+    .trim()
+    .toLowerCase()
+    .email('Enter a valid email address.')
+    .max(254),
   phone: z
     .string({ error: 'Enter your Jordanian phone number.' })
     .trim()
@@ -43,21 +48,30 @@ export const registrationSchema = z.object({
 export function normalizeRegistrationPayload(value: unknown): unknown {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
   const fields = value as Record<string, unknown>;
-  const legacyName = typeof fields['name'] === 'string' ? fields['name'].trim().replace(/\s+/gu, ' ') : '';
+  const legacyName =
+    typeof fields['name'] === 'string' ? fields['name'].trim().replace(/\s+/gu, ' ') : '';
   const separator = legacyName.indexOf(' ');
   const phone = typeof fields['phone'] === 'string' ? fields['phone'].trim() : fields['phone'];
   const international = typeof phone === 'string' ? phone.replace(/[\s().-]/g, '') : '';
   return {
     ...fields,
-    firstName: fields['firstName'] ?? fields['FNAME'] ?? (legacyName ? (separator < 0 ? legacyName : legacyName.slice(0, separator)) : undefined),
-    lastName: fields['lastName'] ?? fields['LNAME'] ?? (separator < 0 ? undefined : legacyName.slice(separator + 1)),
+    firstName:
+      fields['firstName'] ??
+      fields['FNAME'] ??
+      (legacyName ? (separator < 0 ? legacyName : legacyName.slice(0, separator)) : undefined),
+    lastName:
+      fields['lastName'] ??
+      fields['LNAME'] ??
+      (separator < 0 ? undefined : legacyName.slice(separator + 1)),
     phone: /^\+9627[0-9]{8}$/.test(international) ? `0${international.slice(4)}` : phone,
   };
 }
 
 export const submissionSchema = z.object({
   eventId: z.uuid({ error: 'The event ID is missing or invalid. Refresh the page and try again.' }),
-  requestId: z.uuid({ error: 'The registration request ID is missing or invalid. Refresh the page and try again.' }),
+  requestId: z.uuid({
+    error: 'The registration request ID is missing or invalid. Refresh the page and try again.',
+  }),
   registration: z.preprocess(normalizeRegistrationPayload, registrationSchema),
 });
 

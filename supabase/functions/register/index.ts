@@ -64,7 +64,10 @@ Deno.serve({ port: Number(Deno.env.get('PORT') ?? 8000) }, async (request: Reque
     if (!result.success)
       return reply(400, {
         message: result.error.issues[0]?.message ?? 'Check your registration details.',
-        fields: result.error.issues.map((issue) => ({ field: issue.path.join('.'), message: issue.message })),
+        fields: result.error.issues.map((issue) => ({
+          field: issue.path.join('.'),
+          message: issue.message,
+        })),
       });
 
     // Trust this header only behind the Supabase gateway. The salt prevents stored IP recovery.
@@ -97,7 +100,10 @@ Deno.serve({ port: Number(Deno.env.get('PORT') ?? 8000) }, async (request: Reque
     });
     if (error) {
       if (error.code === '22023')
-        return reply(400, { message: 'Enter both your first and last names and a 10-digit Jordanian phone number starting with 07.' });
+        return reply(400, {
+          message:
+            'Enter both your first and last names and a 10-digit Jordanian phone number starting with 07.',
+        });
       if (error.code === '23505')
         return reply(409, { message: 'This email is already registered. See you at the event!' });
       if (error.message === 'event_closed')
