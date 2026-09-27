@@ -38,20 +38,34 @@
         >
       </div>
       <h2 id="form-title">Your next connection<span>.</span></h2>
-      <p class="form-description">Register for AI EXPO 2026. Bring your curiosity.</p>
+      <p class="form-description">Register for AI EXPO 2026. All fields are required.</p>
       <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-busy]="pending()">
         <fieldset>
-          <mat-form-field appearance="outline"
-            ><mat-label>Full name</mat-label
-            ><input
-              matInput
-              formControlName="name"
-              autocomplete="name"
-              placeholder="Your first and last name"
-              maxlength="100"
-            /><mat-error>{{ form.controls.name.getError('validation') }}</mat-error></mat-form-field
-          >
-          <mat-form-field appearance="outline"
+          <div class="field-pair">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>First name</mat-label>
+              <input
+                matInput
+                formControlName="firstName"
+                autocomplete="given-name"
+                maxlength="49"
+                required
+              />
+              <mat-error>{{ form.controls.firstName.getError('validation') }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Last name</mat-label>
+              <input
+                matInput
+                formControlName="lastName"
+                autocomplete="family-name"
+                maxlength="49"
+                required
+              />
+              <mat-error>{{ form.controls.lastName.getError('validation') }}</mat-error>
+            </mat-form-field>
+          </div>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic"
             ><mat-label>Email address</mat-label
             ><input
               matInput
@@ -60,27 +74,31 @@
               type="email"
               placeholder="you@example.com"
               maxlength="254"
+              required
             /><mat-error>{{
               form.controls.email.getError('validation')
             }}</mat-error></mat-form-field
           >
-          <mat-form-field appearance="outline"
-            ><mat-label>Phone number</mat-label
+          <mat-form-field appearance="outline" subscriptSizing="dynamic"
+            ><mat-label>Phone number (Jordan)</mat-label
             ><input
               matInput
               formControlName="phone"
               autocomplete="tel"
               type="tel"
-              placeholder="+962 79 123 4567"
-              maxlength="30"
-            /><mat-error>{{
-              form.controls.phone.getError('validation')
-            }}</mat-error></mat-form-field
+              placeholder="0790000000"
+              inputmode="numeric"
+              pattern="07[0-9]{8}"
+              maxlength="10"
+              dir="ltr"
+              required
+            /><mat-hint>10 digits starting with 07, e.g. 0790000000.</mat-hint
+            ><mat-error>{{ form.controls.phone.getError('validation') }}</mat-error></mat-form-field
           >
           <div class="field-pair">
-            <mat-form-field appearance="outline"
+            <mat-form-field appearance="outline" subscriptSizing="dynamic"
               ><mat-label>Major</mat-label
-              ><mat-select panelClass="expo-select" formControlName="major">
+              ><mat-select panelClass="expo-select" formControlName="major" required>
                 @for (major of majors; track major) {
                   <mat-option [value]="major">{{ major }}</mat-option>
                 }</mat-select
@@ -88,9 +106,9 @@
                 form.controls.major.getError('validation')
               }}</mat-error></mat-form-field
             >
-            <mat-form-field appearance="outline"
+            <mat-form-field appearance="outline" subscriptSizing="dynamic"
               ><mat-label>Gender</mat-label
-              ><mat-select panelClass="expo-select" formControlName="gender">
+              ><mat-select panelClass="expo-select" formControlName="gender" required>
                 @for (gender of genders; track gender) {
                   <mat-option [value]="gender">{{ gender }}</mat-option>
                 }</mat-select

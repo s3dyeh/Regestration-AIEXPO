@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 export const MAJORS = [
   'Computer Science',
@@ -12,34 +11,25 @@ export const MAJORS = [
 ] as const;
 export const GENDERS = ['Female', 'Male'] as const;
 
-export const registrationSchema = z.object({
-  name: z
+function nameSchema(label: string) {
+  return z
     .string()
     .trim()
-    .min(2, 'Enter your full name.')
-    .max(100, 'Use 100 characters or fewer.')
+    .min(1, `Enter your ${label}.`)
+    .max(49, 'Use 49 characters or fewer.')
     .regex(/^[\p{L}\p{M}\s.'’\-]+$/u, 'Use letters, spaces, or name punctuation.')
-    .refine(
-      (value) => (value.match(/\p{L}/gu) ?? []).length >= 2,
-      'Enter at least two letters in your name.',
-    )
-    .transform((value) => value.normalize('NFC').replace(/\s+/gu, ' ')),
+    .refine((value) => /\p{L}/u.test(value), 'Enter at least one letter in your name.')
+    .transform((value) => value.normalize('NFC').replace(/\s+/gu, ' '));
+}
+
+export const registrationSchema = z.object({
+  firstName: nameSchema('first name'),
+  lastName: nameSchema('last name'),
   email: z.string().trim().toLowerCase().email('Enter a valid email address.').max(254),
   phone: z
     .string()
     .trim()
-    .max(30, 'Use 30 characters or fewer.')
-    .transform((value, context) => {
-      const phone = parsePhoneNumberFromString(value);
-      if (!/^\+[\d\s().-]+$/.test(value) || !phone?.isValid() || phone.ext) {
-        context.addIssue({
-          code: 'custom',
-          message: 'Enter a valid phone number with country code, e.g. +962 79 123 4567.',
-        });
-        return z.NEVER;
-      }
-      return phone.number;
-    }),
+    .regex(/^07[0-9]{8}$/, 'Enter 10 digits starting with 07, e.g. 0790000000.'),
   major: z.enum(MAJORS, { error: 'Choose your major.' }),
   gender: z.enum(GENDERS, { error: 'Choose an option.' }),
   // Retained for compatibility with existing database payloads; no longer user-selectable.
@@ -82,5 +72,11 @@ export const emptyStats = (): EventStats => ({
 });
 
 export function displayName(registration: Registration): string | null {
-  return registration.name;
+  return `${registration.firstName} ${registration.lastName}`;
+}
+
+// Keep the database's existing full-name and international phone contract.
+export function databaseRegistration(registration: Registration) {
+  const { firstName, lastName, phone, ...details } = registration;
+  return { ...details, name: `${firstName} ${lastName}`, phone: `+962${phone.slice(1)}` };
 }

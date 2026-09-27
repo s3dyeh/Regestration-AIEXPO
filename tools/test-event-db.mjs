@@ -43,6 +43,9 @@ try {
     'supabase/migrations/202609210004_full_name_greetings.sql',
     'supabase/migrations/202609210004_full_name_greetings.sql',
     'supabase/tests/registration.sql',
+    'supabase/migrations/202609270001_read_only_admin.sql',
+    'supabase/migrations/202609270001_read_only_admin.sql',
+    'supabase/tests/admin.sql',
   ].entries()) {
     const target = `/tmp/check-${index}.sql`;
     docker('cp', resolve(root, file), `${container}:${target}`);

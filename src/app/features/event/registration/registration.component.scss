@@ -14,7 +14,7 @@
 }
 .event-label,
 .eyebrow {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 2px;
   font-weight: 600;
   color: #aaa2bb;
@@ -39,7 +39,7 @@ h1 span {
   color: #ad87ff;
 }
 .intro {
-  font-size: 13px;
+  font-size: 16px;
   color: #aaa3b8;
   max-width: 365px;
   line-height: 1.9;
@@ -59,11 +59,11 @@ h1 span {
   gap: 5px;
 }
 .invitation-note strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 .invitation-note div span {
-  font-size: 12px;
+  font-size: 14px;
   color: #928a9f;
 }
 .form-panel {
@@ -84,17 +84,17 @@ h1 span {
 }
 .eyebrow {
   color: #a791c9;
-  font-size: 10px;
+  font-size: 12px;
 }
 .time-note {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
-  color: #8e859e;
+  font-size: 14px;
+  color: #bdb3cb;
 }
 .time-note .material-icons {
-  font-size: 13px;
+  font-size: 16px;
 }
 h2 {
   font-size: 32px;
@@ -106,8 +106,8 @@ h2 span {
   color: #b594ff;
 }
 .form-description {
-  color: #9c93ab;
-  font-size: 12px;
+  color: #c3b9d0;
+  font-size: 14px;
   line-height: 1.8;
   margin: 0 0 26px;
 }
@@ -116,23 +116,32 @@ fieldset {
   margin: 0;
   padding: 0;
   min-width: 0;
+  display: grid;
+  gap: 22px;
 }
 mat-form-field {
   width: 100%;
-  font-size: 12px;
-  --mat-form-field-container-height: 50px;
+  min-width: 0;
+  font-size: 16px;
+  --mat-form-field-container-text-size: 16px;
+  --mat-form-field-subscript-text-size: 13px;
+  --mat-form-field-subscript-text-line-height: 20px;
+  --mat-form-field-outlined-label-text-size: 16px;
+  --mat-form-field-outlined-label-text-color: #c3b9d0;
+  --mat-select-trigger-text-size: 16px;
+  --mat-form-field-container-height: 56px;
   --mat-form-field-container-vertical-padding: 13px;
   --mat-form-field-outlined-container-shape: 8px;
 }
 .field-pair {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
 }
 .privacy-note {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
-  color: #958ba5;
+  color: #bdb3cb;
   margin: 4px 0 22px;
 }
 .primary-button {
@@ -146,7 +155,7 @@ mat-form-field {
   background: #7a3cff;
   color: #fff;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition:
@@ -183,19 +192,20 @@ mat-form-field {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  font-size: 10px;
-  color: #8e859e;
+  font-size: 12px;
+  color: #bdb3cb;
   margin: 17px 0 0;
+  line-height: 1.6;
 }
 .form-footnote .material-icons {
-  font-size: 12px;
+  font-size: 14px;
 }
 .form-error {
   border: 1px solid #e8898955;
   background: #e8898910;
   color: #ffc7c7;
   padding: 12px;
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 8px;
   margin-bottom: 14px;
 }
@@ -230,10 +240,10 @@ mat-form-field {
     padding: 24px;
   }
 }
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .field-pair {
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 22px;
   }
   .time-note {
     display: none;

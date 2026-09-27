@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { fromFetch } from 'rxjs/fetch';
 import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { Observable, defer, from, map, switchMap, throwError, catchError } from 'rxjs';
@@ -7,10 +8,66 @@ import { statsSchema, welcomeSchema } from '../domain';
 import type { EventStats, Submission, WelcomeEvent } from '../domain';
 import { RegistrationError } from './event-gateway';
 import type { EventGateway, LiveMessage } from './event-gateway';
+import { attendeePageSchema } from './attendees';
+import type { AttendeePage } from './attendees';
 
 @Injectable()
 export class SupabaseEventGateway implements EventGateway {
   readonly demo = false;
+  attendees(page: number, pageSize: number): Observable<AttendeePage> {
+    return defer(() =>
+      from(
+        this.client().rpc('admin_registrations', {
+          target_event: EVENT_CONFIG.eventId,
+          page_number: page,
+          page_size: pageSize,
+        }),
+      ),
+    ).pipe(
+      map(({ data, error }) => {
+        if (error)
+          throw new Error(
+            error.code === '42501'
+              ? 'Your session has expired or this account does not have access. Sign in again.'
+              : 'Could not load registrations. Please try again.',
+          );
+        return attendeePageSchema.parse(data);
+      }),
+    );
+  }
+
+  exportRegistrations(): Observable<Blob> {
+    // Unsubscribing (including sign-out/navigation) cancels the buffered download.
+    return defer(() => from(this.client().auth.getSession())).pipe(
+      switchMap(({ data: { session }, error }) => {
+        if (error || !session) throw new Error('Please sign in again to export registrations.');
+        return fromFetch(`${EVENT_CONFIG.supabaseUrl}/functions/v1/export-registrations`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            apikey: EVENT_CONFIG.supabasePublishableKey,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ eventId: EVENT_CONFIG.eventId }),
+          selector: (response) => {
+            if (!response.ok)
+              throw new Error(
+                response.status === 401 || response.status === 403
+                  ? 'Your session has expired or you do not have export access. Sign in again.'
+                  : 'The export could not be completed. Please try again.',
+              );
+            return response.blob();
+          },
+        });
+      }),
+      map((blob) => {
+        if (!blob.size || !blob.type.includes('spreadsheetml'))
+          throw new Error('The export returned an invalid file. Please try again.');
+        return blob;
+      }),
+    );
+  }
+
   private instance?: SupabaseClient;
   private client(): SupabaseClient {
     if (!EVENT_CONFIG.supabaseUrl || !EVENT_CONFIG.supabasePublishableKey)

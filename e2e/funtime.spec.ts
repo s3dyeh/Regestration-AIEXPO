@@ -2,9 +2,11 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 async function fillRegistration(page: Page, email: string, name = 'Lina Omar') {
-  await page.getByLabel('Full name').fill(name);
+  const [firstName, ...lastName] = name.split(' ');
+  await page.getByLabel('First name').fill(firstName);
+  await page.getByLabel('Last name').fill(lastName.join(' '));
   await page.getByLabel('Email address').fill(email);
-  await page.getByLabel('Phone number').fill('+962791234567');
+  await page.getByLabel('Phone number').fill('0791234567');
   await page.getByRole('combobox', { name: 'Major', exact: true }).click();
   await page.getByRole('option', { name: 'Computer Science', exact: true }).click();
   await page.getByRole('combobox', { name: 'Gender', exact: true }).click();
@@ -54,7 +56,7 @@ test('validates fields, greets by full name, and fits mobile', async ({ page, co
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/register');
   await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByText('Enter your full name.')).toBeVisible();
+  await expect(page.getByText('Enter your first name.')).toBeVisible();
   await fillRegistration(page, 'private@example.com', 'أحمد سعدية');
   await expect(page.getByRole('checkbox')).toHaveCount(0);
   const dashboard = await context.newPage();
@@ -154,4 +156,21 @@ test('dashboard and partner logos fit a 16:9 stage', async ({ page }) => {
     }
     await page.screenshot({ path: `test-results/expo-stage-${width}.png` });
   }
+});
+
+test('requires both names and a ten-digit Jordanian mobile number', async ({ page }) => {
+  await page.goto('/register');
+  await fillRegistration(page, 'validation@example.com');
+  await page.getByLabel('Last name').fill('');
+  await page.getByLabel('Phone number').fill('0690000000');
+  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
+  await expect(page.getByText('Enter your last name.')).toBeVisible();
+  await expect(page.getByText('Enter 10 digits starting with 07, e.g. 0790000000.')).toBeVisible();
+  await page.getByLabel('Last name').fill('Omar');
+  await page.getByLabel('Phone number').fill('079000000');
+  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
+  await expect(page.getByText('Enter 10 digits starting with 07, e.g. 0790000000.')).toBeVisible();
+  await page.getByLabel('Phone number').fill('0790000000');
+  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
+  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
 });

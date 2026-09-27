@@ -126,9 +126,10 @@ try {
     eventId,
     requestId: randomUUID(),
     registration: {
-      name: 'Load Participant',
+      firstName: 'Load',
+      lastName: 'Participant',
       email: `load-${index}@example.com`,
-      phone: '+962791234567',
+      phone: '0791234567',
       major: 'Computer Science',
       gender: 'Female',
       showName: index % 2 === 0,
@@ -184,7 +185,7 @@ try {
   assert.equal(
     (
       await submit(
-        { ...payload('bad'), registration: { ...payload('bad').registration, name: '--' } },
+        { ...payload('bad'), registration: { ...payload('bad').registration, firstName: '--' } },
         '198.19.0.3',
       )
     ).status,

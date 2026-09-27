@@ -11,11 +11,14 @@ import {
 } from '@angular/core';
 import { gsap } from 'gsap';
 import type { Greeting } from '../dashboard/welcome-queue';
+import { GreetingFireworksComponent } from './greeting-fireworks.component';
 
 @Component({
   selector: 'app-welcome-overlay',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [GreetingFireworksComponent],
   template: `<div class="welcome-overlay" role="status" aria-live="polite">
+    <app-greeting-fireworks />
     <div class="welcome-card">
       <img class="celebration" [src]="brand.logo" [alt]="brand.name" width="248" height="80" />
       <p>A NEW CONNECTION. A NEW POSSIBILITY.</p>
@@ -40,10 +43,13 @@ import type { Greeting } from '../dashboard/welcome-queue';
       pointer-events: none;
     }
     .welcome-overlay {
+      position: relative;
       height: 100%;
       display: grid;
       place-items: center;
       background: #0b0911f2;
+      color: #eee5f8;
+      font-family: 'Manrope', 'Noto Sans Arabic', sans-serif;
       backdrop-filter: blur(10px);
       padding: 24px;
     }

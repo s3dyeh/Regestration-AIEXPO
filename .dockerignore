@@ -8,3 +8,7 @@ playwright-report
 .git
 
 .db-pass
+
+.db.config
+.supabase-setup.local.txt
+*.log

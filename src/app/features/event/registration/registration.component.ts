@@ -56,7 +56,8 @@ export class RegistrationComponent {
   private requestId = crypto.randomUUID();
   private lastPayload = '';
   protected readonly form = this.builder.group({
-    name: ['', fieldValidator('name')],
+    firstName: ['', fieldValidator('firstName')],
+    lastName: ['', fieldValidator('lastName')],
     email: ['', fieldValidator('email')],
     phone: ['', fieldValidator('phone')],
     major: ['', fieldValidator('major')],
@@ -97,7 +98,7 @@ export class RegistrationComponent {
       )
       .subscribe({
         next: (event) => {
-          const firstName = result.data.name.split(/\s+/)[0];
+          const firstName = result.data.firstName;
           this.receipts.save(event, firstName);
           this.success.set(firstName);
           this.form.reset();

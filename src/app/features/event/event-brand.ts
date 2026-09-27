@@ -4,8 +4,7 @@ export const EVENT_BRAND = {
   logo: '/assets/img/event-logo.webp',
   organizer: 'IEEE Computational Intelligence Society',
   venue: 'University of Jordan',
-  sponsor: 'Realsoft',
-  colors: { primary: '#7a3cff', secondary: '#2cabe2', ink: '#111111', surface: '#ffffff' },
+  colors: { primary: '#7a3cff', secondary: '#2cabe2' },
   partners: [
     {
       role: 'Sponsored by',

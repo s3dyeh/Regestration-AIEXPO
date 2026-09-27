@@ -122,9 +122,10 @@ export class LiveDashboardComponent {
             eventId: EVENT_CONFIG.eventId,
             requestId: crypto.randomUUID(),
             registration: {
-              name,
+              firstName: name.split(' ')[0],
+              lastName: name.split(' ').slice(1).join(' '),
               email: `demo-${batch}-${index}@example.com`,
-              phone: '+962791234567',
+              phone: '0791234567',
               major: MAJORS[index % MAJORS.length],
               gender: GENDERS[index % GENDERS.length],
               showName: true,

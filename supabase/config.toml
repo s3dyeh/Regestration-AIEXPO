@@ -4,3 +4,9 @@ project_id = "funtime-registration"
 verify_jwt = false
 entrypoint = "./functions/register/index.ts"
 import_map = "./functions/register/deno.json"
+
+[functions.export-registrations]
+# The handler validates the user JWT, then every RPC checks event membership.
+verify_jwt = false
+entrypoint = "./functions/export-registrations/index.ts"
+import_map = "./functions/export-registrations/deno.json"

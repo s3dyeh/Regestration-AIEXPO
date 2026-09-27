@@ -16,6 +16,12 @@ export const eventRoutes: Routes = [
     loadComponent: () =>
       import('./ui/event-shell.component').then((module) => module.EventShellComponent),
     children: [
+      {
+        path: 'admin',
+        title: 'AI EXPO 2026 | Registrations',
+        loadComponent: () =>
+          import('./admin/admin.component').then((module) => module.AdminComponent),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'register' },
       {
         path: 'register',

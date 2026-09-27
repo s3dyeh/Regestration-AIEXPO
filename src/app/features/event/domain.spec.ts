@@ -1,29 +1,53 @@
-import { displayName, registrationSchema, welcomeSchema } from './domain';
+import { databaseRegistration, displayName, registrationSchema, welcomeSchema } from './domain';
 
 describe('Registration contract', () => {
   const valid = {
-    name: 'أحمد سعدية',
+    firstName: 'أحمد',
+    lastName: 'سعدية',
     email: '  AHMAD@example.com ',
-    phone: '+962 79 123 4567',
+    phone: '0790000000',
     major: 'Computer Science',
     gender: 'Male',
     showName: true,
   };
-  it('normalizes email and international phone while accepting Arabic names', () => {
+  it('normalizes email while accepting local Jordanian phones and Arabic names', () => {
     const result = registrationSchema.parse(valid);
     expect(result.email).toBe('ahmad@example.com');
-    expect(result.phone).toBe('+962791234567');
+    expect(result.phone).toBe('0790000000');
+    expect(databaseRegistration(result)).toEqual({
+      name: 'أحمد سعدية',
+      email: 'ahmad@example.com',
+      phone: '+962790000000',
+      major: 'Computer Science',
+      gender: 'Male',
+      showName: true,
+    });
+    expect(registrationSchema.parse(result)).toEqual(result);
     expect(displayName(result)).toBe('أحمد سعدية');
   });
-  it('rejects ambiguous local phone numbers and values outside the major list', () => {
-    expect(registrationSchema.safeParse({ ...valid, phone: '0791234567' }).success).toBeFalse();
+  it('rejects incorrect phone formats and values outside the major list', () => {
+    for (const phone of [
+      '',
+      '07',
+      '079000000',
+      '07900000000',
+      '0690000000',
+      '1790000000',
+      '079000000a',
+      '+962790000000',
+      '079 000 0000',
+    ]) {
+      expect(registrationSchema.safeParse({ ...valid, phone }).success)
+        .withContext(phone)
+        .toBeFalse();
+    }
     expect(registrationSchema.safeParse({ ...valid, major: 'Unknown' }).success).toBeFalse();
     expect(
-      registrationSchema.safeParse({ ...valid, name: '<script>alert(1)</script>' }).success,
+      registrationSchema.safeParse({ ...valid, firstName: '<script>alert(1)</script>' }).success,
     ).toBeFalse();
   });
   it('always greets by full name and strips contact fields from events', () => {
-    expect(displayName(registrationSchema.parse({ ...valid, showName: false }))).toBe(valid.name);
+    expect(displayName(registrationSchema.parse({ ...valid, showName: false }))).toBe('أحمد سعدية');
     expect(registrationSchema.parse({ ...valid, showName: undefined }).showName).toBeTrue();
     const event = welcomeSchema.parse({
       id: crypto.randomUUID(),
@@ -34,13 +58,16 @@ describe('Registration contract', () => {
     expect(Object.keys(event)).toEqual(['id', 'displayName', 'createdAt']);
   });
   it('rejects punctuation-only names, phone extensions, and invalid gender values', () => {
-    for (const name of ['--', '...', ' A ']) {
-      expect(registrationSchema.safeParse({ ...valid, name }).success).toBeFalse();
+    for (const name of ['', '   ', '--', '...', 'A'.repeat(50)]) {
+      expect(registrationSchema.safeParse({ ...valid, firstName: name }).success).toBeFalse();
+      expect(registrationSchema.safeParse({ ...valid, lastName: name }).success).toBeFalse();
     }
     expect(
       registrationSchema.safeParse({ ...valid, phone: '+962791234567 ext 123' }).success,
     ).toBeFalse();
     expect(registrationSchema.safeParse({ ...valid, gender: 'invalid' }).success).toBeFalse();
-    expect(registrationSchema.parse({ ...valid, name: '  Lina   Omar  ' }).name).toBe('Lina Omar');
+    expect(registrationSchema.parse({ ...valid, firstName: '  Lina   Noor  ' }).firstName).toBe(
+      'Lina Noor',
+    );
   });
 });

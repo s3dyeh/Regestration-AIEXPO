@@ -1,6 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import type { Observable } from 'rxjs';
 import type { EventStats, Submission, WelcomeEvent } from '../domain';
+import type { AttendeePage } from './attendees';
 
 export type ConnectionState = 'connecting' | 'live' | 'offline';
 export type LiveMessage =
@@ -23,5 +24,7 @@ export interface EventGateway {
   authorized(): Observable<boolean>;
   signIn(email: string, password: string): Observable<void>;
   signOut(): Observable<void>;
+  attendees(page: number, pageSize: number): Observable<AttendeePage>;
+  exportRegistrations(): Observable<Blob>;
 }
 export const EVENT_GATEWAY = new InjectionToken<EventGateway>('EventGateway');

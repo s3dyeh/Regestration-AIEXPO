@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { submissionSchema, welcomeSchema } from '../_shared/registration.ts';
+import { databaseRegistration, submissionSchema, welcomeSchema } from '../_shared/registration.ts';
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -92,7 +92,7 @@ Deno.serve({ port: Number(Deno.env.get('PORT') ?? 8000) }, async (request: Reque
     const { data, error } = await supabase.rpc('submit_registration', {
       target_event: eventId,
       request_id: requestId,
-      details: registration,
+      details: databaseRegistration(registration),
     });
     if (error) {
       if (error.code === '23505')
