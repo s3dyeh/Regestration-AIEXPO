@@ -26,13 +26,13 @@ Before using this feature on the hosted app:
 
 ```sh
 supabase db push
-supabase functions deploy export-registrations
+supabase functions deploy register export-registrations
 npm run build:prod
 ```
 
-Deploy the rebuilt frontend using the existing hosting process. Migration `202609270001_read_only_admin.sql` adds only read-only functions and an export index. The export endpoint reuses `ALLOWED_ORIGINS` and the hosted `SUPABASE_URL` / `SUPABASE_ANON_KEY`. Although gateway JWT verification is disabled in its configuration, the handler explicitly validates the user JWT with Auth, and all database reads execute with that user's JWT, never the service role.
+Deploy the rebuilt frontend using the existing hosting process. Migration `202609270001_read_only_admin.sql` adds read-only functions and an export index. Apply the split-name migration immediately after it, before deploying the updated functions. The export endpoint reuses `ALLOWED_ORIGINS` and the hosted `SUPABASE_URL` / `SUPABASE_ANON_KEY`. Although gateway JWT verification is disabled in its configuration, the handler explicitly validates the user JWT with Auth, and all database reads execute with that user's JWT, never the service role.
 
-**Export all to Excel** downloads every registration across all pages. The workbook includes full name, email, local and international phone, major, gender, registration time (UTC), registration/event/request IDs, and the stored legacy name-display flag. A Summary sheet contains the exported total, cutoff time, and counts by major and gender. Existing full names are exported exactly as stored; they are not guessed into first/last names. Phone cells are text, preserving `07` and `+962`.
+**Export all to Excel** downloads every registration across all pages. The workbook includes first name, last name, derived full name, email, local and international phone, major, gender, and registration time (UTC). A Summary sheet contains the exported total, cutoff time, and counts by major and gender. The database stores names separately in quoted columns `"FNAME"` and `"LNAME"`. Migration `202609270002_split_registration_names.sql` replaces the old `name` column and updates submission, greetings, admin pagination, and export functions. Existing full names are backfilled using the first word as FNAME and all remaining words as LNAME; historical single-word names retain an empty LNAME. New registrations require both fields. Phone cells are text, preserving `07` and `+962`.
 
 The endpoint reads 500-row keyset batches up to a fixed database timestamp and commits rows into an ExcelJS streaming workbook writer. A buffered `PassThrough` stream sends XLSX bytes without writing a temporary file. The browser buffers the completed response into a Blob before triggering the download; failed streams do not download partial workbooks. Navigating away or signing out cancels the browser request. The offline demo uses a browser-only workbook buffer and includes local demo records only.
 
@@ -86,3 +86,10 @@ npm run test:event-load
 ```
 
 The check script runs lint, formatting, unit tests, and the production build. Browser tests start the demo app on port 4292 and cover registration, duplicate submissions, receipts, greetings, presentation sizing, and mobile overflow. Database and load tests require Docker and use disposable infrastructure. Test hosted CORS, permissions, and Realtime against your deployment as well.
+
+
+### Registration payload compatibility
+
+The form sends `firstName` and `lastName`; the registration function maps them to database `FNAME` and `LNAME` without combining them. During rollout, the endpoint also accepts uppercase `FNAME` / `LNAME` or the older `name` field, and converts valid Jordanian `+9627…` phone numbers to the form's `07…` representation before validation. Missing fields return a readable message and a `fields` array identifying the missing input. Update the registration Edge Function together with the frontend; a stale function expecting `name` rejects a split-name payload before it reaches the database.
+
+The linked AI-EXPO project had the split-name schema but no migration-history table. Its existing schema was inspected and migration history was reconciled through `202609270002`; both `register` and `export-registrations` were redeployed. Do not rerun old SQL migrations individually against the split-name schema: apply new migrations in order using the migration history.
