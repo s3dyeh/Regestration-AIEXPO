@@ -72,7 +72,8 @@ describe('Read-only admin access', () => {
           {
             id: crypto.randomUUID(),
             createdAt: new Date().toISOString(),
-            name: 'Lina Omar',
+            firstName: 'Lina',
+            lastName: 'Omar',
             email: 'private@example.com',
             phone: '+962790000000',
             major: 'Engineering',

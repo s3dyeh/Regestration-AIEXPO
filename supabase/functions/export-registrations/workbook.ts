@@ -53,7 +53,7 @@ export function registrationWorkbook(
       const last = page.rows[page.rows.length - 1];
       page = await loadPage(first.cutoff, last);
     }
-    rows.autoFilter = { from: 'A1', to: `K${Math.max(1, count + 1)}` };
+    rows.autoFilter = { from: 'A1', to: `M${Math.max(1, count + 1)}` };
     rows.commit();
     const summary = workbook.addWorksheet('Summary');
     summary.columns = [
@@ -65,7 +65,7 @@ export function registrationWorkbook(
     summary.addRow(['Total registrations exported', count]).commit();
     summary.addRow(['Export cutoff (UTC)', first.cutoff]).commit();
     summary.addRow(['Scope', 'All registrations; not limited to the visible page']).commit();
-    summary.addRow(['Names', 'Full names as stored; legacy names are not split']).commit();
+    summary.addRow(['Names', 'Separate first and last names; full name is derived']).commit();
     for (const [name, total] of [...majors].sort())
       summary.addRow([`Major: ${name}`, total]).commit();
     for (const [name, total] of [...genders].sort())

@@ -27,8 +27,8 @@ test('read-only admin paginates and exports every registration, preserving phone
   await workbook.xlsx.load(Uint8Array.from(data).buffer);
   const sheet = workbook.getWorksheet('Registrations')!;
   expect(sheet.rowCount).toBe(37);
-  expect(sheet.getCell('C2').value).toBe('0791234567');
-  expect(sheet.getCell('C2').numFmt).toBe('@');
+  expect(sheet.getCell('E2').value).toBe('0791234567');
+  expect(sheet.getCell('E2').numFmt).toBe('@');
   expect(workbook.getWorksheet('Summary')!.getCell('B1').value).toBe(36);
   await page.screenshot({ path: 'test-results/admin-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });

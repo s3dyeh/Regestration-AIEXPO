@@ -2,8 +2,8 @@
 begin;
 insert into auth.users values ('11111111-1111-4111-a111-111111111111');
 insert into public.event_operators values ('a1c08e5d-0817-4684-a03e-1b37c24e1aa1','11111111-1111-4111-a111-111111111111');
-insert into public.event_registrations(event_id, request_id, name, email, phone, major, gender, show_name, created_at)
-select 'a1c08e5d-0817-4684-a03e-1b37c24e1aa1', gen_random_uuid(), 'Person ' || i, 'person' || i || '@example.com', '+962790000000', 'Engineering', 'Male', true, now() - interval '1 day'
+insert into public.event_registrations(event_id, request_id, "FNAME", "LNAME", email, phone, major, gender, show_name, created_at)
+select 'a1c08e5d-0817-4684-a03e-1b37c24e1aa1', gen_random_uuid(), 'Person', i::text, 'person' || i || '@example.com', '+962790000000', 'Engineering', 'Male', true, now() - interval '1 day'
 from generate_series(1, 501) i;
 set local role authenticated;
 do $$

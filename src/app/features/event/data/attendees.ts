@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const attendeeSchema = z.object({
   id: z.uuid(),
   createdAt: z.string(),
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string(),
   phone: z.string(),
   major: z.string(),

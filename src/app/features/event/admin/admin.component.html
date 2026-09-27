@@ -92,7 +92,8 @@
           </caption>
           <thead>
             <tr>
-              <th scope="col">Full name</th>
+              <th scope="col">First name</th>
+              <th scope="col">Last name</th>
               <th scope="col">Email</th>
               <th scope="col">Phone</th>
               <th scope="col">Major</th>
@@ -103,7 +104,8 @@
           <tbody>
             @for (row of rows(); track row.id) {
               <tr>
-                <td class="name">{{ row.name }}</td>
+                <td class="name">{{ row.firstName }}</td>
+                <td class="name">{{ row.lastName }}</td>
                 <td>{{ row.email }}</td>
                 <td class="phone">{{ phone(row.phone) }}</td>
                 <td>{{ row.major }}</td>
@@ -112,7 +114,7 @@
               </tr>
             } @empty {
               <tr>
-                <td class="empty" colspan="6" role="status">
+                <td class="empty" colspan="7" role="status">
                   {{
                     loading()
                       ? 'Loading registrations…'

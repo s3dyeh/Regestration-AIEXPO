@@ -44,7 +44,8 @@ export class DemoEventGateway implements EventGateway {
       map((records) => ({
         total: records.length,
         rows: records.slice(page * pageSize, (page + 1) * pageSize).map((row) => ({
-          ...databaseRegistration(row.registration),
+          ...row.registration,
+          phone: databaseRegistration(row.registration).phone,
           id: row.id,
           createdAt: row.createdAt,
         })),
@@ -67,8 +68,8 @@ export class DemoEventGateway implements EventGateway {
         sheet.getColumn('phone').numFmt = '@';
         sheet.getColumn('registeredAt').numFmt = 'yyyy-mm-dd hh:mm:ss';
         for (const row of records)
-          sheet.addRow(exportValues({ ...row, ...databaseRegistration(row.registration) }));
-        sheet.autoFilter = { from: 'A1', to: `K${records.length + 1}` };
+          sheet.addRow(exportValues({ ...row, ...row.registration, phone: databaseRegistration(row.registration).phone }));
+        sheet.autoFilter = { from: 'A1', to: `M${records.length + 1}` };
         sheet.getRow(1).font = { bold: true };
         const summary = workbook.addWorksheet('Summary');
         summary.addRow(['Total registrations exported', records.length]);

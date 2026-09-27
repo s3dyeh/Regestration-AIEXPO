@@ -15,7 +15,8 @@ describe('Registration contract', () => {
     expect(result.email).toBe('ahmad@example.com');
     expect(result.phone).toBe('0790000000');
     expect(databaseRegistration(result)).toEqual({
-      name: 'أحمد سعدية',
+      FNAME: 'أحمد',
+      LNAME: 'سعدية',
       email: 'ahmad@example.com',
       phone: '+962790000000',
       major: 'Computer Science',

@@ -10,7 +10,8 @@ function record(index: number): ExportRegistration {
     eventId: 'event',
     requestId: `request-${index}`,
     createdAt: cutoff,
-    name: index === 0 ? 'أحمد سعدية' : `Person ${index}`,
+    firstName: index === 0 ? 'أحمد' : 'Person',
+    lastName: index === 0 ? 'سعدية' : `${index}`,
     email: index === 1 ? '=1+1' : `p${index}@example.com`,
     phone: '+962790000000',
     major: 'Engineering',
@@ -38,12 +39,12 @@ Deno.test(
     const sheet = workbook.getWorksheet('Registrations')!;
     assert.equal(calls, 1);
     assert.equal(sheet.rowCount, 502);
-    assert.equal(sheet.getCell('A2').value, 'أحمد سعدية');
-    assert.equal(sheet.getCell('B3').value, '=1+1');
-    assert.equal(sheet.getCell('B3').type, ExcelJS.ValueType.String);
-    assert.equal(sheet.getCell('C2').value, '0790000000');
-    assert.equal(sheet.getCell('C2').numFmt, '@');
-    assert.equal(sheet.getCell('H502').value, 'id-500');
+    assert.equal(sheet.getCell('C2').value, 'أحمد سعدية');
+    assert.equal(sheet.getCell('D3').value, '=1+1');
+    assert.equal(sheet.getCell('D3').type, ExcelJS.ValueType.String);
+    assert.equal(sheet.getCell('E2').value, '0790000000');
+    assert.equal(sheet.getCell('E2').numFmt, '@');
+    assert.equal(sheet.getCell('J502').value, 'id-500');
     assert.equal(workbook.getWorksheet('Summary')!.getCell('B2').value, 501);
   },
 );

@@ -45,6 +45,8 @@ try {
     'supabase/tests/registration.sql',
     'supabase/migrations/202609270001_read_only_admin.sql',
     'supabase/migrations/202609270001_read_only_admin.sql',
+    'supabase/migrations/202609270002_split_registration_names.sql',
+    'supabase/migrations/202609270002_split_registration_names.sql',
     'supabase/tests/admin.sql',
   ].entries()) {
     const target = `/tmp/check-${index}.sql`;

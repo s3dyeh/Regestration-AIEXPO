@@ -13,7 +13,7 @@ export const GENDERS = ['Female', 'Male'] as const;
 
 function nameSchema(label: string) {
   return z
-    .string()
+    .string({ error: `Enter your ${label}.` })
     .trim()
     .min(1, `Enter your ${label}.`)
     .max(49, 'Use 49 characters or fewer.')
@@ -25,9 +25,9 @@ function nameSchema(label: string) {
 export const registrationSchema = z.object({
   firstName: nameSchema('first name'),
   lastName: nameSchema('last name'),
-  email: z.string().trim().toLowerCase().email('Enter a valid email address.').max(254),
+  email: z.string({ error: 'Enter your email address.' }).trim().toLowerCase().email('Enter a valid email address.').max(254),
   phone: z
-    .string()
+    .string({ error: 'Enter your Jordanian phone number.' })
     .trim()
     .regex(/^07[0-9]{8}$/, 'Enter 10 digits starting with 07, e.g. 0790000000.'),
   major: z.enum(MAJORS, { error: 'Choose your major.' }),
@@ -39,10 +39,26 @@ export const registrationSchema = z.object({
     .transform(() => true),
 });
 
+// Accept earlier clients during deployment; the form still uses the strict schema above.
+export function normalizeRegistrationPayload(value: unknown): unknown {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+  const fields = value as Record<string, unknown>;
+  const legacyName = typeof fields['name'] === 'string' ? fields['name'].trim().replace(/\s+/gu, ' ') : '';
+  const separator = legacyName.indexOf(' ');
+  const phone = typeof fields['phone'] === 'string' ? fields['phone'].trim() : fields['phone'];
+  const international = typeof phone === 'string' ? phone.replace(/[\s().-]/g, '') : '';
+  return {
+    ...fields,
+    firstName: fields['firstName'] ?? fields['FNAME'] ?? (legacyName ? (separator < 0 ? legacyName : legacyName.slice(0, separator)) : undefined),
+    lastName: fields['lastName'] ?? fields['LNAME'] ?? (separator < 0 ? undefined : legacyName.slice(separator + 1)),
+    phone: /^\+9627[0-9]{8}$/.test(international) ? `0${international.slice(4)}` : phone,
+  };
+}
+
 export const submissionSchema = z.object({
-  eventId: z.uuid(),
-  requestId: z.uuid(),
-  registration: registrationSchema,
+  eventId: z.uuid({ error: 'The event ID is missing or invalid. Refresh the page and try again.' }),
+  requestId: z.uuid({ error: 'The registration request ID is missing or invalid. Refresh the page and try again.' }),
+  registration: z.preprocess(normalizeRegistrationPayload, registrationSchema),
 });
 
 export type Registration = z.infer<typeof registrationSchema>;
@@ -75,8 +91,8 @@ export function displayName(registration: Registration): string | null {
   return `${registration.firstName} ${registration.lastName}`;
 }
 
-// Keep the database's existing full-name and international phone contract.
+// Store each name independently; only phone representation changes at this boundary.
 export function databaseRegistration(registration: Registration) {
   const { firstName, lastName, phone, ...details } = registration;
-  return { ...details, name: `${firstName} ${lastName}`, phone: `+962${phone.slice(1)}` };
+  return { ...details, FNAME: firstName, LNAME: lastName, phone: `+962${phone.slice(1)}` };
 }
