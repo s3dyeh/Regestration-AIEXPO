@@ -53,7 +53,7 @@ export function registrationWorkbook(
       const last = page.rows[page.rows.length - 1];
       page = await loadPage(first.cutoff, last);
     }
-    rows.autoFilter = { from: 'A1', to: `M${Math.max(1, count + 1)}` };
+    rows.autoFilter = { from: 'A1', to: `I${Math.max(1, count + 1)}` };
     rows.commit();
     const summary = workbook.addWorksheet('Summary');
     summary.columns = [

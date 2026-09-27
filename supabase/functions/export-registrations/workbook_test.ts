@@ -44,7 +44,7 @@ Deno.test(
     assert.equal(sheet.getCell('D3').type, ExcelJS.ValueType.String);
     assert.equal(sheet.getCell('E2').value, '0790000000');
     assert.equal(sheet.getCell('E2').numFmt, '@');
-    assert.equal(sheet.getCell('J502').value, 'id-500');
+    assert.equal(sheet.getCell('C502').value, 'Person 500');
     assert.equal(workbook.getWorksheet('Summary')!.getCell('B2').value, 501);
   },
 );

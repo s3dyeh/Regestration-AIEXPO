@@ -75,7 +75,7 @@ export class DemoEventGateway implements EventGateway {
               phone: databaseRegistration(row.registration).phone,
             }),
           );
-        sheet.autoFilter = { from: 'A1', to: `M${records.length + 1}` };
+        sheet.autoFilter = { from: 'A1', to: `I${records.length + 1}` };
         sheet.getRow(1).font = { bold: true };
         const summary = workbook.addWorksheet('Summary');
         summary.addRow(['Total registrations exported', records.length]);
