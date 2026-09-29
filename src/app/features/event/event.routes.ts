@@ -22,13 +22,14 @@ export const eventRoutes: Routes = [
         loadComponent: () =>
           import('./admin/admin.component').then((module) => module.AdminComponent),
       },
-      { path: '', pathMatch: 'full', redirectTo: 'register' },
+      { path: '', pathMatch: 'full', redirectTo: 'attendance' },
+      { path: 'register', pathMatch: 'full', redirectTo: 'attendance' },
       {
-        path: 'register',
-        title: 'Join AI EXPO 2026 | University of Jordan',
+        path: 'attendance',
+        title: 'Attendance | AI EXPO 2026 | University of Jordan',
         loadComponent: () =>
-          import('./registration/registration.component').then(
-            (module) => module.RegistrationComponent,
+          import('./registration/attendance.component').then(
+            (module) => module.AttendanceComponent,
           ),
       },
       {

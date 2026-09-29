@@ -1,0 +1,229 @@
+ID,FullName,EmailAddress,Phone Number,isIeeeMember,Role,UniversityName,Major
+001,Abdallah Hajaj,abdallah.hajaj07@gmail.com,962797289551,Yes,Undergraduate,Applied Science Private University,Software Engineering
+002,Abdelsamad Jaradat,abdelsamadjaradat@gmail.com,962772618614,Yes,Graduate,Jadara University,Cybersecurity
+003,Abdullah Mohammed Eid Banihani,abdullah.banihani22@gmail.com,962790623128,Yes,Undergraduate,Jordan University of Science and Technology,Computer Science
+004,Abdullah Samer Meryan,abdullah.meryan@gmail.com,962776769988,No,Undergraduate,The Hashemite University,Business Information Technology
+005,Abdullah Wael Hamed Smadi,abdullahsmadi01@gmail.com,962785268883,No,Graduate,Al-Balqa Applied University,Management Information Systems
+006,Abed Alwahab Mohammd Al-Hariri,wahebholoku@gmail.com,962796403352,No,Undergraduate,Philadelphia University,Data Science and Artificial Intelligence
+007,Ahmad Ababneh,ahmadababnh2005@gmail.com,962798894696,Yes,Undergraduate,Irbid National University,Computer Science
+008,Ahmad Abdelsalam Mohammad Alshunnaq,molealshunnaq@gmail.com,962795606232,Yes,Undergraduate,Yarmouk University,Medical Engineering
+009,Ahmad Abujudeh,ahmadabujudeh205@gmail.com,962775509906,Yes,Undergraduate,Jadara University,Computer Science
+010,Ahmad AbuSheikha,ahmad.abusheikha@icloud.com,962799822332,Yes,Undergraduate,Amman Arab University,Computer Science
+011,Ahmad ALGhazzawi,alghazzawiahmad3@gmail.com,962798103117,Yes,Undergraduate,The University of Jordan,Computer Engineering
+012,Ahmad Alomiri,ahmadalomiri513@gmail.com,962796902348,No,Undergraduate,The University of Jordan,Business Information Technology
+013,Ahmad Kamal Mohammad Baba,ahmadbaba2223@gmail.com,962782774494,Yes,Undergraduate,World Islamic Sciences and Education University,Computer Science
+014,Ahmad Mahmmoud Ahmad Alkhlaileh,ahmadmahmmoud342@gmail.com,962787321036,No,Undergraduate,Al-Balqa Applied University,Artificial Intelligence
+015,Ahmad Omar Abu Aldahab,ahmaddahb36@gmail.com,962782145889,No,Graduate,Al al-Bayt University,Cybersecurity
+016,Ahmad Yazan Alabdallat,ahmadabdallat449@gmail.com,962791746660,No,Undergraduate,University of Petra,Information Security
+017,Ahmed Abdallah Ismail Abuhashish,ahmmadabuashesh51@gmail.com,962780348139,Yes,Undergraduate,Al-Balqa Applied University,Computer Science
+018,Aisha Al-Dalaeen,aishadalaeen@gmail.com,962797470118,No,Graduate,Zarqa University,Artificial Intelligence
+019,Aisha Ramzi Kamel Jebril,aisharamzi05@gmail.com,962794760191,No,Undergraduate,The University of Jordan,Artificial Intelligence
+020,Aissar Yousef Suleiman Alshraiedheh,shredhaesr0@gmail.com,962776640792,Yes,Undergraduate,Al-Hussein Bin Talal University,Data Science and Artificial Intelligence
+021,Aktham Naeem Muhammad Al-Momani,hmamrhmndhr27@gmail.com,962795163618,Yes,Undergraduate,Al al-Bayt University,Industrial Engineering
+022,Alia Ahmad Aladwan,7aliaaladwan7@gmail.com,962782866213,No,Undergraduate,The University of Jordan,Cybersecurity
+023,Alswsnah Ibrahim Albawared,alswsnah.ib@gmail.com,962772624314,No,Undergraduate,The University of Jordan,Computer Engineering
+024,Amin Shahin,ami20240147@std.psut.edu.jo,962782275780,Yes,Undergraduate,Princess Sumaya University for Technology,Computer Science
+025,Amro Mohammed Nabeel Abu Halimeh,amroabuhalema9@gmail.com,962788031851,Yes,Undergraduate,Zarqa University,Artificial Intelligence
+026,Anaam Hussien Raja Hamdan,anaamhamdan1978@gmail.com,962782140244,Yes,Undergraduate,World Islamic Sciences and Education University,Network and Information Security
+027,Anas Islam Rafiq Adas,anastrue27@gmail.com,962775396600,No,Undergraduate,Al-Balqa Applied University,Computer Science
+028,Aram Haroun Nouh Ma’abdeh,aramharounouh@gmail.com,962799327774,Yes,Undergraduate,The University of Jordan,Business Information Technology
+029,Aryam Ahmad Makahleh,aryammakahleh@gmail.com,962798243465,Yes,Undergraduate,Yarmouk University,Biomedical Engineering
+030,Assal Akram Mahmoud Al Nabulsi,assalalnabulsi@gmail.com,962796785702,Yes,Undergraduate,Al-Hussein Bin Talal University,Computer Engineering
+031,Aya Ali Nofal Nofal,ayanofal20055@gmail.com,962797586225,No,Undergraduate,Mutah University,Computer Information Systems
+032,Aya Allaria,ayaallaria@gmail.com,962797290176,Yes,Undergraduate,Al al-Bayt University,Computer Information Systems
+033,Aya Haitham Shaker Masoud,aya.masoud.webaya@gmail.com,962793050509,No,Company / Startup Manager,,
+034,Ayham Bader Tannous,ayhamtannous0@gmail.com,962792440202,No,Undergraduate,The University of Jordan,Cybersecurity
+035,Bahaa Saed Naddaf,bahaasaed2007@gmail.com,962702409305,No,Undergraduate,Tafila Technical University,Computer Engineering
+036,Banan Mohammed Ali Fayyad,bmfayyad@gmail.com,962772743897,Yes,Undergraduate,Jadara University,Cybersecurity
+037,Baraa Al Ajoory,aajoorybuz@gmail.com,962789915100,No,Undergraduate,Philadelphia University,Artificial Intelligence
+038,Baraa Shalabi,baraashalabi282@gmail.com,962770408302,Yes,Undergraduate,Yarmouk University,Data Science and Artificial Intelligence
+039,Bashar Izzat Thaher Shaqour,busharshaqoor1@gmail.com,962782679544,Yes,Graduate,Al al-Bayt University,Computer Science
+040,Bashar Rami Mukbel,brmukbel24@cit.just.edu.jo,962791117699,Yes,Undergraduate,Jordan University of Science and Technology,Computer Science
+041,Basheer Almomani,basheeralmomani06@gmail.com,962777950244,Yes,Undergraduate,The University of Jordan,Computer Engineering
+042,Basil Ahmad Ismail Alessawi,bshihab33@gmail.com,962781816714,No,Undergraduate,The University of Jordan,Cybersecurity
+043,Batool Alsmade,batoolalsmade@gmail.com,962770152554,No,Undergraduate,Applied Science Private University,Data Science and Artificial Intelligence
+044,Besan Awad,besanawad412@gmail.com,962771391222,Yes,Undergraduate,Al al-Bayt University,Computer Science
+045,Bilsan Amjad Anwar Alshboul,bilsan09216@gmail.com,962788221617,Yes,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+046,Dalia Alkhatib,daliamalkhatib@gmail.com,962792206602,No,Undergraduate,Princess Sumaya University for Technology,Computer Science
+047,Dana Alsadi,alsadid03@gmail.com,962786078097,No,Undergraduate,The Hashemite University,Computer Engineering
+048,Dana Alsaket,danasakit5@gmail.com,962799266630,No,Undergraduate,The University of Jordan,Cybersecurity
+049,Dana Jaafreh,danajaafreh4@gmail.com,962791002321,Yes,Undergraduate,The University of Jordan,Computer Information Systems
+050,Dana Khalid Farhan,danakhalidfarhan1@gmail.com,962795623944,Yes,Undergraduate,Al-Balqa Applied University,Computer Science
+051,Dania Emam Suleiman,daniaemam8@gmail.com,962791998541,Yes,Undergraduate,Al-Hussein Bin Talal University,Network and Information Security Engineering
+052,Dania Ghunaim,daniaghunaim138@gmail.com,962799723535,No,Undergraduate,American University of Madaba,Computer Science
+053,Dania Kamal Abbaas,dania.abass.77i@gmail.com,962782546442,Yes,Undergraduate,The University of Jordan,Business Information Technology
+054,Dareen Read Albadi,dareenraed2004@gmail.com,962796887560,No,Undergraduate,Al-Balqa Applied University,Computer Engineering
+055,Darien Mahmoud Awad Dawood,dariendawood412@gmail.com,962790800826,No,Graduate,Zarqa University,Artificial Intelligence
+056,Deyaauldeen Mohammad Abdelrahman,deyaamalkawi1979@gmail.com,962777861784,No,Undergraduate,Al-Ahliyya Amman University,Software Engineering
+057,Dima Yaseen,dimalababneh@gmail.com,962770442014,Yes,Undergraduate,Jordan University of Science and Technology,Artificial Intelligence
+058,Diya’ Dheif Allah Mohammad Khashman,dalkhashman@gmail.com,962798886563,No,Undergraduate,The University of Jordan,Computer Engineering
+059,Dyaa Omari,dyaaomari10@gmail.com,962782160226,Yes,Academic / Researcher,,
+060,Emad Abedel Kareem Alhazaimeh,emadalhazaimeh2006@gmail.com,962776540865,No,Undergraduate,Jadara University,Computer Networks and Cybersecurity
+061,Eman Jamal Thaher,emanthaher91@gmail.com,962791548664,No,Undergraduate,The University of Jordan,Computer Information Systems
+062,Eman Subaih Salem Balawnah,emanbalawneh2005@gmail.com,962795563931,Yes,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+063,Esam Mohammed Hekmat Al-Kalaldeh,ekalaldeh@gmail.com,962792745070,Yes,Undergraduate,Middle East University,Computer Science
+064,Esra’a Basem Taher Alkhatib,israaalkhateeb123@gmail.com,962796632437,Yes,Undergraduate,University of Petra,Computer Science (Virtual and Augmented Reality)
+065,Fadwa Khaled Ezz,fadwaezz732@gmail.com,962793888903,Yes,Undergraduate,Zarqa University,Data Science and Artificial Intelligence
+066,Faisal Hatamleh,hatamlehfaisal202@gmail.com,962779003600,No,Undergraduate,Jordan University of Science and Technology,Artificial Intelligence
+067,Farah Abu Assab,farahehabessam06@gmail.com,962781420220,Yes,Undergraduate,Al-Balqa Applied University,Computer Science
+068,Farah Baha Alsaid,farahbaha2200@gmail.com,962777692522,Yes,Undergraduate,Jadara University,Artificial Intelligence
+069,Farah Jehad Alfares,farahalfares05@gmail.com,962779458145,Yes,Undergraduate,Al-Hussein Bin Talal University,Computer Engineering
+070,Farahnasseralkhrabsheh,farahalkhrabsheh9@gmail.com,962797966133,No,Graduate,Al-Balqa Applied University,Artificial Intelligence and Robotics Engineering
+071,Fares Jebril,faresjebril@ieee.org,962797553932,Yes,Undergraduate,Amman Arab University,Cybersecurity
+072,Fares Muhyar,far20240876@std.psut.edu.jo,962796049622,No,Undergraduate,Princess Sumaya University for Technology,Data Science and Artificial Intelligence
+073,Fatima Hussein Al Ali,me2785132@gmail.com,962795963722,Yes,Undergraduate,Zarqa University,Artificial Intelligence and Robotics Engineering
+074,Forat Husam Alsaheim,foratbanysakher02@gmail.com,962797038130,Yes,Undergraduate,Mutah University,Computer Engineering
+075,Ghadeer Jamal Aldehayyat,ghadeermama1@gmail.com,962779408871,Yes,Undergraduate,Jordan University of Science and Technology,Artificial Intelligence
+076,Ghadeer Magableh,ghadeerqoblan@gmail.com,962782495220,No,Undergraduate,The University of Jordan,Cybersecurity
+077,Ghena Khaled Alrababah,ghena07rababah@hotmail.com,962775739165,Yes,Undergraduate,Philadelphia University,Software Engineering
+078,Hadeel Saad,hadeelissamsaad5@gmail.com,962795507843,Yes,Undergraduate,Applied Science Private University,Computer Science
+079,Hajes Salah Al-Omoush,salahhajes2002@gmail.com,962792002195,No,Undergraduate,The University of Jordan,Artificial Intelligence
+080,Hala Alnajjar,robothuman97@gmail.com,962795633603,No,Undergraduate,Middle East University,Cybersecurity
+081,Hala Radaideh,halaradaideh00@gmail.com,962797855608,Yes,Undergraduate,Al-Balqa Applied University,Computer Engineering
+082,Hala Sarmad Hasan Abulaila,hala.sarmad.2005@gmail.com,962796986353,No,Undergraduate,Applied Science Private University,Computer Science
+083,Hamzah Almasri,hamzah20.masri@gmail.com,962790348708,No,Graduate,The University of Jordan,Computer Information Systems
+084,Hamzah Rababah,rababahhamzah64@gmail.com,962781825235,Yes,Undergraduate,Jadara University,Computer Science
+085,Hashim Al-Hawatmah,hashem.hoatma@gmail.com,962781216262,No,Undergraduate,The University of Jordan,Artificial Intelligence
+086,Hassan Khaled Masallam Aldajah,hsn0222600@ju.edu.jo,962778721521,No,Graduate,The University of Jordan,Cybersecurity
+087,Haya Braish,hayabraish5@gmail.com,962790599326,Yes,Undergraduate,The University of Jordan,Computer Information Systems
+088,Heba Mohanad Fuad Abu Al-Haija,heba40261@gmail.com,962791552824,Yes,Graduate,Zarqa University,Artificial Intelligence
+089,Hiba Talal Al-Jahamneh,talalhiba11@gmail.com,962797959755,Yes,Undergraduate,The Hashemite University,Computer Engineering
+090,Hind Barakat,sweethind2006@gmail.com,962791777629,No,Undergraduate,The University of Jordan,Pharmacy
+091,Husam Aldeen Saleh,husamsaleh.eng@gmail.com,962797420080,No,Company / Startup Manager,,
+092,Iman Hindi,eng.eman.hindi@gmail.com,962797374869,Yes,Academic / Researcher,,
+093,Islam Ali Abu Afifeh,islamabuafifh@gmail.com,962785078820,No,Graduate,Other,Network and Information Security
+094,Jamal Ahmad Kifaya,jamalkifaya66@gmail.com,962786262620,Yes,Undergraduate,World Islamic Sciences and Education University,Software Engineering
+095,Jana Baha Eddin Abukhait,abukhaitjana@gmail.com,962797182166,Yes,Undergraduate,Al-Balqa Applied University,Software Engineering
+096,Jana Hannoush,janahannoush@gmail.com,962795023291,Yes,Undergraduate,Amman Arab University,Data Science and Artificial Intelligence
+097,Jana Shannak,janashannak2004@gmail.com,962793311414,Yes,Undergraduate,The University of Jordan,Computer Engineering
+098,Janna Maged Mutleq Alwekhyan,jannaalwekhean2@gmail.com,962797998370,No,Graduate,The University of Jordan,Data Science
+099,Jasmine Nasser Ibrahim Bawaneh,bigger-hiker6r@icloud.com,962772509566,Yes,Undergraduate,Zarqa University,Artificial Intelligence
+100,Jasmine Kazziha,jasmineqazziha@gmail.com,962798541043,Yes,Undergraduate,Yarmouk University,Computer Engineering (Internet of Things)
+101,Jehad Aljafari,aljafarijehad@gmail.com,962796978922,No,Undergraduate,The University of Jordan,Computer Science
+102,Jehan Khalil,jehanahmas@ieee.org,962778230110,Yes,Undergraduate,The University of Jordan,Computer Engineering
+103,Jenan Fuad Sarhan,jenansarhan15@gmail.com,962791739386,Yes,Undergraduate,Jadara University,Artificial Intelligence
+104,Jenan Jehad Alqawasmi,jenan.jqawasmi@gmail.com,962796832120,Yes,Undergraduate,Zarqa University,Computer Science
+105,Jodi Yasser Abu-Lubbad,jodiabulubbad04@gmail.com,962780286226,Yes,Undergraduate,Philadelphia University,Data Science and Artificial Intelligence
+106,Joud Mahmoud Alsaket,joudalsaket996@gmail.com,962771055530,Yes,Undergraduate,Al-Balqa Applied University,Computer Science
+107,Jouly Sagr Al-Bawab,bawabjouly@gmail.com,962786100816,Yes,Undergraduate,Irbid National University,Computer Science
+108,Jude Loui Barakat Aldroubi,judealdroubi9@gmail.com,962778295645,Yes,Undergraduate,The Hashemite University,Electrical Engineering
+109,Karam Khasawneh,karam200566@gmail.com,962776851290,Yes,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+110,Khaled Al-Awaysheh,khaled.mnawer.jo@gmail.com,962792610260,Yes,Undergraduate,The University of Jordan,Cybersecurity
+111,Khalid Alotaiby,khaled.alotaiby@outlook.com,962775733669,No,Undergraduate,Yarmouk University,Business Information Technology
+112,Khalid Emaddin Awni Sawafta,khalidemad262@gmail.com,962775038260,No,Undergraduate,The University of Jordan,Business Information Technology
+113,Laila Smadi,lailasmadi342@gmail.com,962791670021,No,Undergraduate,The University of Jordan,Computer Science
+114,Laith Bassam Mahmoud Jaber,laith.basam669@gmail.com,962778826785,Yes,Undergraduate,Al al-Bayt University,Data Science and Artificial Intelligence
+115,Laith Saed Zuraiki,laithzuraiki@gmail.con,962796764233,No,Undergraduate,Princess Sumaya University for Technology,Computer Science
+116,Lamar Waddah Al Awajeen,waddahlamar@gmail.com,962791313661,No,Undergraduate,The University of Jordan,Cybersecurity
+117,Lana Akram Ahmad Abueideh,lanaabueideh00@gmail.com,962795781650,No,Undergraduate,The University of Jordan,Artificial Intelligence
+118,Leath Asad Abu Rumman,leathrumman@gmail.com,962772541046,Yes,Undergraduate,The University of Jordan,Cybersecurity
+119,Leen Ibrahim Alzuriqat,leenzuriqattt@gmail.com,962775888077,No,Undergraduate,The University of Jordan,Cybersecurity
+120,Loay Abd-Alqader Al-Qaoud,loayqaoud2@gmail.com,962776202959,Yes,Graduate,Yarmouk University,Biomedical Engineering
+121,Lujain Ismail Mohammad Alyahya,lujainmalkawi917@gmail.com,962790084313,No,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+122,Ma’in Alzyoud,maenzyood@yahoo.com,962771099996,No,Undergraduate,The University of Jordan,Computer Science
+123,Mahmoud Abusahyoun,abusahyoun.26@gmail.com,962782329729,No,Undergraduate,Al Hussein Technical University,Data Science and Artificial Intelligence
+124,Mahmoud Arabi Al-Saadi,yousef.arabi004@gmail.com,962770724213,Yes,Undergraduate,Jadara University,Computer Networks and Cybersecurity
+125,Majd Akram Mousa Saleh,softeng195@gmail.com,962798118572,Yes,Undergraduate,Jadara University,Software Engineering
+126,Majd Owaida,majdw099@gmail.com,962785847500,Yes,Undergraduate,Philadelphia University,Computer Science
+127,Malak Al-Mashakbah,malakradwan11@gmail.com,962772650260,Yes,Company / Startup Manager,,
+128,Malak AlShogran,malakhaitham_05@icloud.com,962795738070,Yes,Undergraduate,Jadara University,Artificial Intelligence
+129,Manar Ahmad Ibrahim Derbashi,manar102006@yahoo.com,962796449368,Yes,Undergraduate,World Islamic Sciences and Education University,Software Engineering
+130,Manar Ma'n Mo'ien Abu Irsheid,manarabuirsheid@gmail.com,962781302125,No,Academic / Researcher,,
+131,Mayar Mohammed Abohayya,mayarabohayya62@gmail.com,962798509932,Yes,Undergraduate,Al-Hussein Bin Talal University,Computer Science
+132,Moath Nabil Alsayori,moathemadred@gmail.com,962798115979,Yes,Undergraduate,Al al-Bayt University,Cybersecurity
+133,Mohammad Abu Ghoush,kilroy.mo16@gmail.com,962797543385,No,Undergraduate,The University of Jordan,Industrial Engineering
+134,Mohammad Ahid Nayef Alqatarneh,mhmdalqtarnh14@gmail.com,962780349462,No,Undergraduate,German Jordanian University,Computer Science
+135,Mohammad Ali Lobani,mohammedalilobani@gmail.com,962782645523,Yes,Graduate,Irbid National University,Software Engineering
+136,Mohammad Belal Zaqaibeh,zaqaibehmhd@gmail.com,962776553217,Yes,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+137,Mohammad Eyad Tbakhi,mohamadtb.2005@gmqil.com,962776572019,Yes,Undergraduate,Yarmouk University,Biomedical Engineering
+138,Mohammad Ghassan Issa Abbadi,mohammadabbadi508@gmail.com,962770501537,Yes,Undergraduate,Al-Balqa Applied University,Member
+139,Mohammad Hasan Mohammad Harb,mhmad32harp@gmail.com,962778269181,No,Graduate,Yarmouk University,Data Science and Artificial Intelligence
+140,Mohammad Muthana Mohammad Saleh,m7md.w.89@gmail.com,962791192089,Yes,Undergraduate,Al al-Bayt University,Data Science and Artificial Intelligence
+141,Mohammad Odeh,omao5844@gmail.com,962797114742,Yes,Undergraduate,Al al-Bayt University,Cybersecurity
+142,Mohammad Qutaibah Anwar Althebyan,mohammedalthebyan07@gmail.com,962791759602,Yes,Undergraduate,Jordan University of Science and Technology,Computer Science
+143,Mohammad Rahhal,rhalmhmd444@gmail.com,962795409238,Yes,Undergraduate,Al-Hussein Bin Talal University,Computer Engineering
+144,Mohammad Salah Abu Hantash,mohammadabuhantash8@gmail.com,962799467920,No,Undergraduate,The University of Jordan,Mechanical Engineering
+145,Mohammad Sufian Hashem,modi.sufian2000@gmail.com,962789914998,No,Graduate,The University of Jordan,Dentistry
+146,Mohammed Fahed Issa Saleh,mocreedmocreed@gmail.com,962776428700,Yes,Undergraduate,Al-Balqa Applied University,Computer Science
+147,Mona Ahmad Mohammad Kreashan,kreashanmona@gmail.com,962796473076,No,Undergraduate,The University of Jordan,Artificial Intelligence
+148,Morad Ahmad Essa Khalil,khalilmorad92@gmail.com,962799674666,No,Undergraduate,Applied Science Private University,Computer Science
+149,Mousa Saideen,mosamohd99@gmail.com,962780879259,Yes,Investor,,
+150,Mozon Osamah Al-Kharabsheh,mozonkharabsheh555@gmail.com,962796712322,Yes,Undergraduate,Al Hussein Technical University,Network and Information Security Engineering
+151,Mustafa Abughareebeh,moustafaayoub2005@gmail.com,962788689285,No,Undergraduate,Al al-Bayt University,Data Science and Artificial Intelligence
+152,Myrna Zakarneh,mernazakarneh123@gmail.com,962785474011,Yes,Undergraduate,The University of Jordan,Computer Science
+153,Nabil Alnatsheh,nabel.alnatsheh.2003@gmail.com,962799785456,No,Graduate,The University of Jordan,Computer Information Systems
+154,Nagham Barari,naghambarari@gmail.com,962797076908,Yes,Undergraduate,The University of Jordan,Artificial Intelligence
+155,Nancy Ahmad Waheed Al Aswad,nancyalaswad90@gmail.com,962779809112,No,Academic / Researcher,,
+156,Nawal Al-Ramadneh,nawalalramadneh@gmail.com,962772652393,Yes,Undergraduate,World Islamic Sciences and Education University,Network and Information Security
+157,Nour Abu Fares,nourabufares22@gmail.com,962799386561,No,Undergraduate,American University of Madaba,Computer Science
+158,Nour Alfarraj,farrajnourai@gmail.com,962775973631,Yes,Undergraduate,Zarqa University,Artificial Intelligence
+159,Nour Ibrahim,22110241@htu.edu.jo,962797084349,Yes,Graduate,Al Hussein Technical University,Data Science and Artificial Intelligence
+160,Nour Samer Khraim,khraimnour@gmail.com,962798766636,No,Undergraduate,The University of Jordan,Marketing
+161,Obaida Karam Mousa Migdady,obaidamigdady3@gmail.com,962786742233,Yes,Undergraduate,Jordan University of Science and Technology,Cybersecurity
+162,Obay Nour Aldeen,obn.mas1@gmail.com,962781796633,Yes,Undergraduate,Philadelphia University,Software Engineering
+163,Omar Fareed Asasfeh,omarmohammadm6@gmail.com,962780158191,No,Undergraduate,The University of Jordan,Business Information Technology
+164,Omar Moath Nafi Alkhaldi,oalkhaldi420@gmail.com,962781079862,Yes,Academic / Researcher,,
+165,Omar Mohammad Alswafin,omar2mohammad25@gmail.com,962780814644,Yes,Graduate,Amman Arab University,Data Science and Artificial Intelligence
+166,Omar Shraideh,o.shraideh@hotmail.com,962790906424,No,Company / Startup Manager,,
+167,Osama Hijjawi,asamtalhjawyqymr9@gmail.com,962775778099,Yes,Academic / Researcher,,
+168,Owen Moha’d Abdullah Abdel Gani,owenabdelgani@gmail.com,962791597809,Yes,Undergraduate,Zarqa University,Artificial Intelligence
+169,Rahaf Alhijjawi,rahaf.hijjawy999@gmail.com,962795096109,No,Company / Startup Manager,,
+170,Rahaf Mohammad Yousef Deeb,rahaf.deeb07@gmail.com,962780590103,Yes,Undergraduate,World Islamic Sciences and Education University,Computer Science
+171,Raheeq Abughoush,raheeq.abughoush@gmail.com,962799623139,No,Graduate,The Hashemite University,Data Science and Artificial Intelligence
+172,Rama Ahmad Maqableh,ramamgableh11@gmail.com,962781054636,Yes,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+173,Rama Mohammed Alhayek,ramaalhayek20@gmail.com,962778073421,No,Undergraduate,The University of Jordan,SLP
+174,Rana Mohammad Ali Alshalout,ranashalout115@gmail.com,962776802503,No,Undergraduate,The University of Jordan,Cybersecurity
+175,Raneem Omar Abdulraheem Yousef,raneemy146@gmail.com,962798790724,Yes,Undergraduate,Al-Zaytoonah University of Jordan,Software Engineering
+176,Raneem Waleed Salama Alhorany,raneemalhorany174@gmail.com,962799399021,No,Company / Startup Manager,,
+177,Raneem Yousef Abdallah,nazzalraneem2@gmail.com,962782141083,Yes,Undergraduate,Al-Balqa Applied University,Computer Engineering
+178,Rashed Zeyad Ali Alzoubi,alzoubi.lieth@gmail.com,962782107912,Yes,Undergraduate,Jordan University of Science and Technology,Cybersecurity
+179,Rayan Nedal Alhawamda,rayannedal02@gmail.com,962793853332,Yes,Undergraduate,Jadara University,Robotics and Artificial Intelligence
+180,Ro’aa Mohammed Qwaider,qwaider2roaa7@gmail.com,962795016436,Yes,Undergraduate,Jordan University of Science and Technology,Cybersecurity
+181,Roaa Ibrahim Almanasrah,roaaibrahim43@gmail.com,962788074003,Yes,Undergraduate,Zarqa University,Artificial Intelligence
+182,Sadeen Omar Khraisat,sadeenomarkhr@gmail.com,962771091567,No,Graduate,Al-Balqa Applied University,Artificial Intelligence and Robotics Engineering
+183,Saif Mohammad Jaradat,saifjaradat2003@gmail.com,962780002140,No,Undergraduate,Al al-Bayt University,Cybersecurity
+184,Saja Wael Zaidan,zsaja2412@gmail.com,962775951432,Yes,Undergraduate,Al-Balqa Applied University,Electrical Engineering (Network and Systems Security)
+185,Saleh Shajrawi,s.shajrawi1@gmail.com,962790153393,No,Undergraduate,German Jordanian University,Computer Science (Data Science Track)
+186,Salma Ihsan,20salmaihsan7@gmail.com,962776408309,Yes,Undergraduate,Amman Arab University,Data Science and Artificial Intelligence
+187,Salsaabiel Mohammad Derbas,salsabeelderbas2005@gmail.com,962781539278,Yes,Undergraduate,Irbid National University,Software Engineering
+188,Sama Al-Rafati,samaalrafati7@gmail.com,962792020663,Yes,Undergraduate,Jordan University of Science and Technology,Cybersecurity
+189,Sana Daien,sanadaien4@gmail.com,962775573842,Yes,Undergraduate,Philadelphia University,Software Engineering
+190,Sarah Thaer Qaddoumi,sarah.thaer.qaddoumi@gmail.com,962780792498,Yes,Undergraduate,Zarqa University,Artificial Intelligence and Robotics Engineering
+191,Serena Azzam,serenaalazzam1@gmail.com,962797033798,Yes,Undergraduate,Jadara University,Computer Science
+192,Shaden Omar Ammar,shaden3mmar@gmail.com,962789180260,Yes,Undergraduate,German Jordanian University,Computer Engineering
+193,Shahad Nasser Abumalluh,s.abumallouh2026@gmail.com,962798247511,No,Undergraduate,The University of Jordan,Chemistry
+194,Shahed Hilal,shahed.loay567@gmail.com,962787539913,No,Undergraduate,The Hashemite University,Cybersecurity
+195,Shahid Ahmad Bdour,shahidbdour1@gmail.com,962770576145,Yes,Undergraduate,Irbid National University,Cybersecurity
+196,Shaima Suhail Hassan AlShami,shaimashami2007@gmail.com,962789429909,No,Undergraduate,The University of Jordan,Cybersecurity
+197,Siwar Nayef Ali Aljoulan,sewaraljoulan07@gmail.com,962798028360,Yes,Undergraduate,German Jordanian University,Computer Engineering
+198,Suhaib Mohammed Telfah,suhaibtelfah1@gmail.com,962772572109,Yes,Undergraduate,Jadara University,Computer Networks and Cybersecurity
+199,Sura Almudallal,sura7mdallal@gmail.com,962792709636,Yes,Undergraduate,The University of Jordan,Artificial Intelligence
+200,Sura Sameer Dumiati,suraaldumiaty11@gmail.com,962790241309,Yes,Undergraduate,Yarmouk University,Biomedical Informatics Engineering
+201,Tala Kilani,tala.kilani.05@gmail.com,962791052826,Yes,Undergraduate,American University of Madaba,Data Science and Artificial Intelligence
+202,Tala Meshael,talamshal@icloud.com,962797380333,Yes,Undergraduate,Philadelphia University,Software Engineering
+203,Tamara Abdel Rahim Moh'd Sulieman,tamaranofal76@gmail.com,962798570452,No,Undergraduate,University of Petra,Business Intelligence and Data Analytics
+204,Taqwa Basim Mahmoud Daoud,taqwabasem747@gmail.com,962781397515,Yes,Undergraduate,Philadelphia University,Data Science and Artificial Intelligence
+205,Tasneem Qadri Fareed Tayeh,tasneemtayeh16@gmail.com,962792005487,Yes,Undergraduate,World Islamic Sciences and Education University,Computer Science
+206,Tasnem Khaled Abu Jaddou,tasnemjaddoo9@gmail.com,962776984238,Yes,Undergraduate,World Islamic Sciences and Education University,Computer Science
+207,Tayf Mohammed Alhelo,alhelotayf@gmail.com,962799643276,Yes,Undergraduate,Amman Arab University,Cybersecurity
+208,Tayseer Yaseen,trg4mer99@gmail.com,962798512979,Yes,Undergraduate,Isra University,Computer Science
+209,Tema Lafi,temasamarah7@gmail.com,962795095317,Yes,Undergraduate,Philadelphia University,Software Engineering
+210,Tolay Khamis,tolaykh@outlook.com,962798390943,No,Undergraduate,The University of Jordan,Computer Information Systems
+211,Wissam Atef Dyab Abd Alrahman,mhe694139@gmail.com,962780411187,No,Undergraduate,Philadelphia University,Artificial Intelligence
+212,Yamen Salman Alkofahi,yamenkofahy.dr.1@gmail.com,962795090752,Yes,Undergraduate,Yarmouk University,Smart and Sustainable Cities Engineering
+213,Yanal Ehsan Fawzi Shardo,itsyanal889@gmail.com,962775467707,Yes,Undergraduate,The University of Jordan,Artificial Intelligence
+214,Yara Assaf,yaraassaf656@yahoo.com,962791860241,No,Undergraduate,The University of Jordan,Artificial Intelligence
+215,Yara Mahmmoud Qasim Alsyouf,yarasyouf61@gmail.com,962776799997,No,Undergraduate,The University of Jordan,Cybersecurity
+216,Yara Omar Abozanonah,yaraabozanonah@gmail.com,962780284610,Yes,Undergraduate,World Islamic Sciences and Education University,Software Engineering
+217,YazanKewan,yazankewan2005@gmail.com,962782145737,No,Other,,
+218,Yazeed Ali Al-Idamat,fffox2024@outlook.com,962770325083,Yes,Undergraduate,The University of Jordan,Artificial Intelligence
+219,Yousef Motasem Al-Syouf,plplosordz@gmail.com,962797514251,No,Undergraduate,The University of Jordan,Business Information Technology
+220,Yousef Yasin,yousefyasin694@gmail.com,962796047615,Yes,Undergraduate,Amman Arab University,Data Science and Artificial Intelligence
+221,Zaid Alhader,alhaderzaed65@gmail.com,962780431532,Yes,Undergraduate,Isra University,Computer Science
+222,Zaid Mresh,zaidmresh1@gmail.com,962792015176,Yes,Undergraduate,The University of Jordan,Computer Information Systems
+223,Zaid Oasama Mohamad Alsoror,zaidmsaeed12.1@gmail.com,962782026332,No,Academic / Researcher,,
+224,Zaid Qassas,zoiqassas@gmail.com,962796602540,Yes,Undergraduate,German Jordanian University,Computer Engineering
+225,Zaina Munther Momani,zainamomani26@gmail.com,962790764142,Yes,Undergraduate,The University of Jordan,Computer Science
+226,Amal Mohammad Hilal Al-Atin,amal.m.alkhaldi@gmail.com,962788731592,No,Company / Startup Manager,,
+227,Sami Raed Shaaban Al-Khalili,samialkalili2006@gamil.com,962781221981,Yes,Undergraduate,Zarqa University,Artificial Intelligence
+228,Mohammad Bilal Qaddoura,asamtalhjawyqymr9@gmail.com,962775778099,No,Investor,,

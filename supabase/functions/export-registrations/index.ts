@@ -80,7 +80,7 @@ export async function handleExport(request: Request): Promise<Response> {
       headers: {
         ...headers,
         'Content-Type': XLSX_TYPE,
-        'Content-Disposition': `attachment; filename="ai-expo-registrations-${new Date().toISOString().slice(0, 10)}.xlsx"`,
+        'Content-Disposition': `attachment; filename="ai-expo-attendance-${new Date().toISOString().slice(0, 10)}.xlsx"`,
         'X-Content-Type-Options': 'nosniff',
       },
     });

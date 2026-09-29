@@ -23,10 +23,9 @@ export function registrationWorkbook(
   });
   workbook.creator = 'AI EXPO';
   workbook.created = new Date(first.cutoff);
-  const rows = workbook.addWorksheet('Registrations', { views: [{ state: 'frozen', ySplit: 1 }] });
+  const rows = workbook.addWorksheet('Attendance', { views: [{ state: 'frozen', ySplit: 1 }] });
   rows.columns = exportColumns;
-  rows.getColumn('localPhone').numFmt = '@';
-  rows.getColumn('phone').numFmt = '@';
+  rows.getColumn('attendedAt').numFmt = 'yyyy-mm-dd hh:mm:ss';
   rows.getColumn('registeredAt').numFmt = 'yyyy-mm-dd hh:mm:ss';
   const header = rows.getRow(1);
   header.font = { bold: true, color: { argb: 'FFFFFFFF' } };
@@ -38,7 +37,6 @@ export function registrationWorkbook(
     let count = 0;
     let page = first;
     const majors = new Map<string, number>();
-    const genders = new Map<string, number>();
     while (page.rows.length) {
       if (output.destroyed) throw new Error('Download cancelled');
       for (const row of page.rows) {
@@ -47,13 +45,12 @@ export function registrationWorkbook(
         count++;
         if (count >= 1_048_575) throw new Error('Excel worksheet row limit reached');
         majors.set(row.major, (majors.get(row.major) ?? 0) + 1);
-        genders.set(row.gender, (genders.get(row.gender) ?? 0) + 1);
       }
       if (page.rows.length < 500) break;
       const last = page.rows[page.rows.length - 1];
       page = await loadPage(first.cutoff, last);
     }
-    rows.autoFilter = { from: 'A1', to: `I${Math.max(1, count + 1)}` };
+    rows.autoFilter = { from: 'A1', to: `P${Math.max(1, count + 1)}` };
     rows.commit();
     const summary = workbook.addWorksheet('Summary');
     summary.columns = [
@@ -62,14 +59,12 @@ export function registrationWorkbook(
     ];
     summary.getRow(1).font = { bold: true };
     summary.getRow(1).commit();
-    summary.addRow(['Total registrations exported', count]).commit();
+    summary.addRow(['Total attendees exported', count]).commit();
     summary.addRow(['Export cutoff (UTC)', first.cutoff]).commit();
-    summary.addRow(['Scope', 'All registrations; not limited to the visible page']).commit();
-    summary.addRow(['Names', 'Separate first and last names; full name is derived']).commit();
+    summary.addRow(['Scope', 'Checked-in participants only; across all pages']).commit();
+    summary.addRow(['Names', 'Full name']).commit();
     for (const [name, total] of [...majors].sort())
       summary.addRow([`Major: ${name}`, total]).commit();
-    for (const [name, total] of [...genders].sort())
-      summary.addRow([`Gender: ${name}`, total]).commit();
     summary.commit();
     await workbook.commit();
   })().catch((error: unknown) =>

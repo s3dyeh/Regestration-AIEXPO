@@ -1,9 +1,11 @@
-# AI EXPO 2026 registration
+# AI EXPO 2026 attendance
 
-Angular registration form and live dashboard backed by Supabase.
+Angular attendance check-in and live dashboard backed by Supabase.
 
-- `/register`: public registration form.
-- `/dashboard`: authorized operator dashboard with live greetings and statistics.
+- `/attendance`: operator sign-in, USB QR reader, or manual participant ID check-in.
+- `/register`: redirects to attendance for existing links.
+- `/admin`: operator sign-in, individual participant registration, recorded attendance and attendance-only Excel export.
+- `/dashboard`: authorized live welcomes and attendance statistics.
 
 Use Node.js 24.15+ within version 24, or Node.js 26.
 
@@ -12,6 +14,5 @@ npm ci
 npm start
 ```
 
-Open http://localhost:4200/register. Development and production connect to Supabase. Use `npm run start:demo` for the explicitly labeled local demo.
-
-See [README-FUNTIME.md](README-FUNTIME.md) for configuration, deployment, and verification.
+Development and production connect to Supabase. `npm run start:demo` runs the local browser-only demo.
+See [README-FUNTIME.md](README-FUNTIME.md) for migration, SQL seed and deployment instructions.

@@ -1,120 +1,76 @@
 import { expect, test } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import { fillParticipant, registerParticipant } from './participant-form';
 
-async function fillRegistration(page: Page, email: string, name = 'Lina Omar') {
-  const [firstName, ...lastName] = name.split(' ');
-  await page.getByLabel('First name').fill(firstName);
-  await page.getByLabel('Last name').fill(lastName.join(' '));
-  await page.getByLabel('Email address').fill(email);
-  await page.getByLabel('Phone number').fill('0791234567');
-  await page.getByRole('combobox', { name: 'Major', exact: true }).click();
-  await page.getByRole('option', { name: 'Computer Science', exact: true }).click();
-  await page.getByRole('combobox', { name: 'Gender', exact: true }).click();
-  await page.getByRole('option', { name: 'Female', exact: true }).click();
-}
-
-test('registration reaches another tab, animates once, blocks duplicates and survives reload', async ({
+test('register, check-in, repeat welcome, unknown ID, and preserved attendance', async ({
   page,
   context,
 }) => {
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto('/admin');
+  await registerParticipant(page);
+  await expect(page.getByText('No attendance recorded yet.')).toBeVisible();
+  await expect(page.locator('app-event-registration')).toHaveCount(0);
   const dashboard = await context.newPage();
-  dashboard.on('pageerror', (error) => errors.push(error.message));
   await dashboard.goto('/dashboard');
   await expect(dashboard.getByTestId('registration-total')).toHaveText('0');
   await page.goto('/register');
-  await fillRegistration(page, 'LINA@example.com');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
-  await page.reload();
-  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
-  await expect(dashboard.locator('app-welcome-overlay')).toContainText('Lina Omar.');
+  await expect(page).toHaveURL(/attendance/);
+  await expect(page.getByRole('button', { name: 'Open QR camera' })).toHaveCount(0);
+  await expect(page.locator('video')).toHaveCount(0);
+  await page.getByLabel('Participant ID', { exact: true }).fill('001');
+  await page.getByLabel('Participant ID', { exact: true }).press('Enter');
+  await expect(page.getByRole('status')).toContainText('attendance is confirmed');
   await expect(dashboard.getByTestId('registration-total')).toHaveText('1');
-  await expect(dashboard.locator('app-welcome-overlay')).toHaveCount(0, { timeout: 7000 });
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('ai-expo:receipt:')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await fillRegistration(page, 'lina@example.com');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByRole('alert')).toContainText('already registered');
+  await expect(dashboard.locator('app-welcome-overlay')).toContainText('أحمد سعدية');
+  await page.locator('body').dispatchEvent('keydown', { key: 'r', ctrlKey: true });
+  await expect(page.getByRole('status')).toContainText('attendance is confirmed');
+  await page.keyboard.press('r');
+  await expect(page.getByLabel('Participant ID', { exact: true })).toBeFocused();
+  await expect(page.getByLabel('Participant ID', { exact: true })).toHaveValue('');
+  await page.keyboard.type('r');
+  await expect(page.getByLabel('Participant ID', { exact: true })).toHaveValue('r');
+  await page.getByLabel('Participant ID', { exact: true }).fill('001');
+  await page.getByRole('button', { name: 'Confirm attendance' }).click();
+  await expect(page.getByRole('status')).toContainText('already been marked as attended');
+  await expect(page.getByRole('status')).toContainText('Welcome back');
   await expect(dashboard.getByTestId('registration-total')).toHaveText('1');
-  await dashboard.reload();
-  await expect(dashboard.getByTestId('registration-total')).toHaveText('1');
-  await expect(dashboard.locator('app-welcome-overlay')).toHaveCount(0);
-  await expect(dashboard.getByRole('button', { name: /Registration desk/ })).toHaveCount(0);
-  await expect(dashboard.locator('table')).toHaveCount(0);
-  await expect(dashboard.getByText('lina@example.com')).toHaveCount(0);
-  expect(errors).toEqual([]);
-  await dashboard.screenshot({ path: 'test-results/funtime-dashboard.png', fullPage: true });
-});
-
-test('validates fields, greets by full name, and fits mobile', async ({ page, context }) => {
+  await page.keyboard.press('Shift+R');
+  await expect(page.getByLabel('Participant ID', { exact: true })).toBeFocused();
+  await page.getByLabel('Participant ID', { exact: true }).fill('missing');
+  await page.getByRole('button', { name: 'Confirm attendance' }).click();
+  await expect(page.getByRole('alert')).toContainText('ID not found');
+  await page.goto('/admin');
+  await fillParticipant(page, { name: 'Overwrite Attempt' });
+  await page.getByRole('button', { name: 'Register participant', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('ID already exists');
+  await expect(page.locator('tbody')).toContainText('أحمد سعدية');
+  await expect(page.locator('tbody')).not.toContainText('Not attended');
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/register');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByText('Enter your first name.')).toBeVisible();
-  await fillRegistration(page, 'private@example.com', 'أحمد سعدية');
-  await expect(page.getByRole('checkbox')).toHaveCount(0);
-  const dashboard = await context.newPage();
-  await dashboard.goto('/dashboard');
-  await expect(dashboard.getByTestId('registration-total')).toHaveText('0');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(dashboard.locator('app-welcome-overlay')).toContainText('أحمد سعدية.');
-  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.evaluate(() => {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('ai-expo:receipt:')) localStorage.removeItem(key);
-    }
-  });
-  await page.reload();
-  await page.screenshot({ path: 'test-results/funtime-mobile.png', fullPage: true });
-  await page.setViewportSize({ width: 320, height: 800 });
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-
-  await dashboard.setViewportSize({ width: 390, height: 844 });
-  await expect(dashboard.locator('app-welcome-overlay')).toHaveCount(0, { timeout: 7000 });
-  expect(await dashboard.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
-    true,
-  );
+  await page.screenshot({ path: 'test-results/attendance-admin-mobile.png', fullPage: true });
+  await page.goto('/attendance');
+  await page.screenshot({ path: 'test-results/attendance-mobile.png', fullPage: true });
 });
-
-test('simultaneous email submissions create one record and a burst is batched', async ({
-  page,
-  context,
-}) => {
+test('simultaneous check-ins count a participant once', async ({ page, context }) => {
+  await page.goto('/admin');
+  await registerParticipant(page);
   const second = await context.newPage();
-  const dashboard = await context.newPage();
-  await dashboard.goto('/dashboard');
-  await expect(dashboard.getByTestId('registration-total')).toHaveText('0');
-  await Promise.all([page.goto('/register'), second.goto('/register')]);
+  await Promise.all([page.goto('/attendance'), second.goto('/attendance')]);
+  for (const tab of [page, second])
+    await tab.getByLabel('Participant ID', { exact: true }).fill('001');
   await Promise.all([
-    fillRegistration(page, 'same@example.com'),
-    fillRegistration(second, 'SAME@example.com'),
+    page.getByRole('button', { name: 'Confirm attendance' }).click(),
+    second.getByRole('button', { name: 'Confirm attendance' }).click(),
   ]);
-  await Promise.all([
-    page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click(),
-    second.getByRole('button', { name: 'I’m in. Let’s do this.' }).click(),
-  ]);
-  await expect(dashboard.getByTestId('registration-total')).toHaveText('1');
-  await expect
-    .poll(
-      async () =>
-        (await page.getByRole('alert').count()) + (await second.getByRole('alert').count()),
-    )
-    .toBe(1);
-  await expect(dashboard.locator('app-welcome-overlay')).toHaveCount(0, { timeout: 7000 });
-  await dashboard.getByRole('button', { name: 'Add demo arrivals' }).click();
-  await expect(dashboard.getByTestId('registration-total')).toHaveText('13');
-  await expect(dashboard.locator('app-welcome-overlay')).toContainText('12 new faces.', {
-    timeout: 10_000,
-  });
+  await expect(page.getByRole('status')).toBeVisible();
+  await expect(second.getByRole('status')).toBeVisible();
+  const results = [
+    await page.getByRole('status').textContent(),
+    await second.getByRole('status').textContent(),
+  ];
+  expect(results.filter((text) => text?.includes('already been marked'))).toHaveLength(1);
+  await page.goto('/dashboard');
+  await expect(page.getByTestId('registration-total')).toHaveText('1');
 });
-
 test('dashboard and partner logos fit a 16:9 stage', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1920, height: 1080 });
@@ -156,21 +112,4 @@ test('dashboard and partner logos fit a 16:9 stage', async ({ page }) => {
     }
     await page.screenshot({ path: `test-results/expo-stage-${width}.png` });
   }
-});
-
-test('requires both names and a ten-digit Jordanian mobile number', async ({ page }) => {
-  await page.goto('/register');
-  await fillRegistration(page, 'validation@example.com');
-  await page.getByLabel('Last name').fill('');
-  await page.getByLabel('Phone number').fill('0690000000');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByText('Enter your last name.')).toBeVisible();
-  await expect(page.getByText('Enter 10 digits starting with 07, e.g. 0790000000.')).toBeVisible();
-  await page.getByLabel('Last name').fill('Omar');
-  await page.getByLabel('Phone number').fill('079000000');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByText('Enter 10 digits starting with 07, e.g. 0790000000.')).toBeVisible();
-  await page.getByLabel('Phone number').fill('0790000000');
-  await page.getByRole('button', { name: 'I’m in. Let’s do this.' }).click();
-  await expect(page.getByRole('heading', { name: /Thank you/ })).toBeVisible();
 });

@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import type { WelcomeEvent } from '../domain';
 @Component({
   selector: 'app-recent-arrivals',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe],
   templateUrl: './recent-arrivals.component.html',
   styleUrl: './recent-arrivals.component.scss',
 })

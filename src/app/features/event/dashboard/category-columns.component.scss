@@ -1,0 +1,101 @@
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.columns {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  margin: 8px 0;
+  padding: 0;
+}
+li {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+.plot {
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px solid #ffffff20;
+  background: repeating-linear-gradient(to top, transparent 0 24%, #ffffff06 24% 25%);
+}
+.bar {
+  width: 62%;
+  max-width: 75px;
+  background: var(--color);
+  border-radius: 5px 5px 0 0;
+  flex-shrink: 0;
+}
+strong {
+  color: var(--color);
+  font-size: 15px;
+}
+.column-label {
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+small {
+  display: block;
+  margin-top: 4px;
+  color: #b5a6c6;
+  font-size: 11px;
+}
+details {
+  font-size: 11px;
+  margin-top: 8px;
+  color: #c5b5d5;
+}
+summary {
+  cursor: pointer;
+  padding: 5px 0;
+}
+summary:focus-visible {
+  outline: 2px solid #55c8f4;
+}
+details p {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+@media (min-width: 1000px) and (orientation: landscape) {
+  .columns {
+    gap: 0.6cqw;
+    margin: 0.3cqw 0;
+  }
+  .plot {
+    height: 4cqw;
+    gap: 0.25cqw;
+  }
+  strong {
+    font-size: 0.9cqw;
+  }
+  .column-label,
+  small,
+  details {
+    font-size: 0.7cqw;
+  }
+  .column-label {
+    margin-top: 0.4cqw;
+  }
+  small {
+    margin-top: 0.15cqw;
+  }
+  .bar {
+    max-width: 4cqw;
+  }
+  details {
+    margin-top: 0.2cqw;
+  }
+  summary {
+    padding: 0;
+  }
+}

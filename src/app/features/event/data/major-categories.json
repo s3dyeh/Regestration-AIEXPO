@@ -1,0 +1,59 @@
+{
+  "Computer Science and Information Technology": [
+    "Computer Science",
+    "CS",
+    "Software Engineering",
+    "Computer Information Systems",
+    "CIS",
+    "Computer Science (Virtual and Augmented Reality)",
+    "Computer Science (Data Science Track)"
+  ],
+  "Artificial Intelligence, Data Science and Robotics": [
+    "Artificial Intelligence",
+    "AI",
+    "Data Science and Artificial Intelligence",
+    "Data Science",
+    "Robotics and Artificial Intelligence",
+    "Artificial Intelligence and Robotics Engineering"
+  ],
+  "Cybersecurity and Network Security": [
+    "Cybersecurity",
+    "Cyber Security",
+    "Information Security",
+    "Network and Information Security",
+    "Network and Information Security Engineering",
+    "Computer Networks and Cybersecurity"
+  ],
+  "Engineering": [
+    "Computer Engineering",
+    "Computer Engineering (Internet of Things)",
+    "Biomedical Engineering",
+    "Medical Engineering",
+    "Industrial Engineering",
+    "Electrical Engineering",
+    "Electrical Engineering (Network and Systems Security)",
+    "Mechanical Engineering",
+    "Biomedical Informatics Engineering",
+    "Smart and Sustainable Cities Engineering",
+    "Engineering"
+  ],
+  "Business and Management": [
+    "Business Information Technology",
+    "Management Information Systems",
+    "Business Intelligence and Data Analytics",
+    "Marketing",
+    "Business",
+    "Business Administration",
+    "Management",
+    "Accounting"
+  ],
+  "Health Sciences": [
+    "Pharmacy",
+    "Dentistry",
+    "Medicine",
+    "Nursing",
+    "Speech and Language Pathology"
+  ],
+  "Natural Sciences": ["Chemistry", "Science", "Physics", "Biology", "Mathematics"],
+  "Arts and Humanities": ["Arts & Humanities", "Arts and Humanities", "English", "Arabic"]
+}

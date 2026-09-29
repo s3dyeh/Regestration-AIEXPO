@@ -1,0 +1,130 @@
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+}
+.university-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+}
+svg {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  justify-self: center;
+}
+.donut-count {
+  fill: var(--event-ink);
+  font-size: 38px;
+  font-weight: 650;
+}
+.donut-caption {
+  fill: var(--event-muted);
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+li {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+.marker {
+  width: 7px;
+  height: 26px;
+  border-radius: 3px;
+}
+.university-label {
+  min-width: 0;
+}
+.rank {
+  display: block;
+  font-size: 9px;
+  color: var(--event-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+.name {
+  display: block;
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.university-value {
+  line-height: 1;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.university-value span {
+  display: block;
+  line-height: 1.2;
+  color: var(--event-muted);
+  font-size: 11px;
+}
+.other .name {
+  color: var(--event-muted);
+}
+@media (max-width: 600px) {
+  .university-overview {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  svg {
+    max-width: 175px;
+  }
+  li {
+    gap: 10px;
+  }
+}
+@media (min-width: 1000px) and (orientation: landscape) {
+  .university-overview {
+    gap: 1.2cqw;
+  }
+  svg {
+    width: 9.8cqw;
+    max-height: 10cqw;
+  }
+  ol {
+    gap: 0.35cqw;
+  }
+  li {
+    grid-template-columns: 0.35cqw minmax(0, 1fr) auto;
+    gap: 0.65cqw;
+  }
+  .marker {
+    width: 0.3cqw;
+    height: 1.7cqw;
+  }
+  .rank {
+    font-size: 0.5cqw;
+    margin-bottom: 0.1cqw;
+  }
+  .name {
+    font-size: 0.82cqw;
+    line-height: 1.15;
+  }
+  strong {
+    font-size: 1.3cqw;
+  }
+  .university-value span {
+    display: block;
+    line-height: 1.2;
+    font-size: 0.65cqw;
+  }
+}

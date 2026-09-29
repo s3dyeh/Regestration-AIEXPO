@@ -62,29 +62,6 @@ export function majorChart(stats: EventStats): EChartsCoreOption {
     ],
   };
 }
-export function genderChart(stats: EventStats): EChartsCoreOption {
-  return {
-    tooltip: {
-      trigger: 'item',
-      backgroundColor: '#21192d',
-      borderColor: '#77549c',
-      textStyle: { color: '#f3edff' },
-      confine: true,
-    },
-    color: CHART_COLORS,
-    series: [
-      {
-        type: 'pie',
-        radius: ['66%', '88%'],
-        center: ['50%', '50%'],
-        label: { show: false },
-        emphasis: { scale: false },
-        data: stats.genders.map((row) => ({ name: row.name, value: row.count })),
-        itemStyle: { borderColor: '#171220', borderWidth: 4, borderRadius: 6 },
-      },
-    ],
-  };
-}
 export function timelineChart(stats: EventStats): EChartsCoreOption {
   const end = new Date();
   end.setMinutes(0, 0, 0);

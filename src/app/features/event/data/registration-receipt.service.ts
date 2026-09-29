@@ -5,7 +5,7 @@ import type { WelcomeEvent } from '../domain';
 
 const receiptSchema = z.object({
   id: z.uuid(),
-  firstName: z.string().max(100),
+  fullName: z.string().max(100),
   createdAt: z.iso.datetime({ offset: true }),
 });
 export type RegistrationReceipt = z.infer<typeof receiptSchema>;
@@ -16,8 +16,8 @@ const key = `ai-expo:receipt:${EVENT_CONFIG.eventId}`;
 export class RegistrationReceiptService {
   readonly receipt = signal<RegistrationReceipt | null>(this.read());
   readonly storageAvailable = signal(true);
-  save(event: WelcomeEvent, firstName: string): void {
-    const receipt = { id: event.id, firstName, createdAt: event.createdAt };
+  save(event: WelcomeEvent, fullName: string): void {
+    const receipt = { id: event.id, fullName, createdAt: event.createdAt };
     this.receipt.set(receipt);
     try {
       localStorage.setItem(key, JSON.stringify(receipt));

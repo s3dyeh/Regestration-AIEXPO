@@ -1,112 +1,108 @@
-import { NeuralArtComponent } from '../ui/neural-art.component';
+import { participantId } from '../data/participant-id';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ElementRef,
   inject,
+  output,
   signal,
+  viewChild,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import type { ValidatorFn } from '@angular/forms';
+import type { ElementRef } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
-import { EVENT_GATEWAY } from '../data/event-gateway';
+import { EVENT_GATEWAY, RegistrationError } from '../data/event-gateway';
 import { EVENT_CONFIG } from '../event-config';
-import { GENDERS, MAJORS, registrationSchema } from '../domain';
-import type { Registration } from '../domain';
-import { RegistrationReceiptService } from '../data/registration-receipt.service';
-import { RevealDirective } from '../ui/reveal.directive';
-
-function fieldValidator(field: keyof Registration): ValidatorFn {
-  return (control) => {
-    const result = registrationSchema.shape[field].safeParse(control.value);
-    return result.success ? null : { validation: result.error.issues[0]?.message };
-  };
-}
+import type { WelcomeEvent } from '../domain';
 
 @Component({
   selector: 'app-event-registration',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NeuralArtComponent,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    RevealDirective,
-  ],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
+  host: { '(document:keydown)': 'onShortcut($event)' },
 })
 export class RegistrationComponent {
-  private readonly receipts = inject(RegistrationReceiptService);
-  private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
+  readonly accessDenied = output<void>();
+  readonly checkedIn = output<void>();
   private readonly gateway = inject(EVENT_GATEWAY);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly builder = inject(FormBuilder).nonNullable;
-  protected readonly majors = MAJORS;
-  protected readonly genders = GENDERS;
+  private readonly idInput = viewChild<ElementRef<HTMLInputElement>>('idInput');
+  private requestId = crypto.randomUUID();
+  private lastId = '';
   protected readonly pending = signal(false);
   protected readonly error = signal('');
-  protected readonly success = signal<string | null>(this.receipts.receipt()?.firstName ?? null);
-  private requestId = crypto.randomUUID();
-  private lastPayload = '';
-  protected readonly form = this.builder.group({
-    firstName: ['', fieldValidator('firstName')],
-    lastName: ['', fieldValidator('lastName')],
-    email: ['', fieldValidator('email')],
-    phone: ['', fieldValidator('phone')],
-    major: ['', fieldValidator('major')],
-    gender: ['', fieldValidator('gender')],
+  protected readonly success = signal<WelcomeEvent | null>(null);
+  protected readonly form = inject(FormBuilder).nonNullable.group({
+    participantId: ['', [Validators.required, Validators.maxLength(100)]],
   });
-
+  constructor() {
+    afterNextRender(() => this.idInput()?.nativeElement.focus());
+  }
+  protected onShortcut(event: KeyboardEvent): void {
+    if (
+      !this.success() ||
+      this.pending() ||
+      event.key.toLowerCase() !== 'r' ||
+      event.repeat ||
+      event.isComposing ||
+      event.defaultPrevented ||
+      event.ctrlKey ||
+      event.altKey ||
+      event.metaKey
+    )
+      return;
+    const target = event.target;
+    if (
+      target instanceof HTMLElement &&
+      (target.isContentEditable || target.closest('input, textarea, select, [role="textbox"]'))
+    )
+      return;
+    event.preventDefault();
+    this.next();
+  }
+  protected next(): void {
+    this.success.set(null);
+    this.error.set('');
+    this.form.reset();
+    this.lastId = '';
+    this.requestId = crypto.randomUUID();
+    setTimeout(() => this.idInput()?.nativeElement.focus());
+  }
   protected submit(): void {
     if (this.pending()) return;
-    this.form.markAllAsTouched();
-    const result = registrationSchema.safeParse(this.form.getRawValue());
-    if (!result.success) {
-      this.error.set('Please check the highlighted fields before continuing.');
-      this.host.nativeElement
-        .querySelector<HTMLElement>('input.ng-invalid, mat-select.ng-invalid')
-        ?.focus();
+    const id = participantId(this.form.controls.participantId.value);
+    if (!id || id.length > 100) {
+      this.error.set('Enter a participant ID (up to 100 characters).');
       return;
     }
-    const payload = JSON.stringify(result.data);
-    if (payload !== this.lastPayload) {
+    if (id !== this.lastId) {
       this.requestId = crypto.randomUUID();
-      this.lastPayload = payload;
+      this.lastId = id;
     }
     this.pending.set(true);
-    this.form.disable({ emitEvent: false });
     this.error.set('');
     this.gateway
-      .register({
-        eventId: EVENT_CONFIG.eventId,
-        requestId: this.requestId,
-        registration: result.data,
-      })
+      .register({ eventId: EVENT_CONFIG.eventId, requestId: this.requestId, participantId: id })
       .pipe(
-        finalize(() => {
-          this.pending.set(false);
-          this.form.enable({ emitEvent: false });
-        }),
+        finalize(() => this.pending.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (event) => {
-          const firstName = result.data.firstName;
-          this.receipts.save(event, firstName);
-          this.success.set(firstName);
-          this.form.reset();
+          this.success.set(event);
+          this.checkedIn.emit();
         },
-        error: (error: unknown) =>
-          this.error.set(
-            error instanceof Error ? error.message : 'Something went wrong. Please try again.',
-          ),
+        error: (error: unknown) => {
+          if (error instanceof RegistrationError && error.code === 'unauthorized')
+            this.accessDenied.emit();
+          this.error.set(error instanceof Error ? error.message : 'Check-in failed. Please retry.');
+        },
       });
   }
 }

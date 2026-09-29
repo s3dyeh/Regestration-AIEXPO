@@ -48,6 +48,10 @@ try {
     'supabase/migrations/202609270002_split_registration_names.sql',
     'supabase/migrations/202609270002_split_registration_names.sql',
     'supabase/tests/admin.sql',
+    'supabase/migrations/202609280001_attendance.sql',
+    'supabase/migrations/202609280002_authenticated_attendance.sql',
+    'supabase/migrations/202609280003_attendance_admin_list.sql',
+    'supabase/tests/attendance.sql',
   ].entries()) {
     const target = `/tmp/check-${index}.sql`;
     docker('cp', resolve(root, file), `${container}:${target}`);

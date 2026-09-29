@@ -5,7 +5,7 @@ import { AdminComponent } from './admin.component';
 import { EVENT_GATEWAY } from '../data/event-gateway';
 import type { EventGateway } from '../data/event-gateway';
 
-describe('Read-only admin access', () => {
+describe('Admin access', () => {
   let gateway: jasmine.SpyObj<EventGateway>;
   beforeEach(() => {
     gateway = jasmine.createSpyObj<EventGateway>('gateway', [
@@ -72,10 +72,13 @@ describe('Read-only admin access', () => {
           {
             id: crypto.randomUUID(),
             createdAt: new Date().toISOString(),
-            firstName: 'Lina',
-            lastName: 'Omar',
+            fullName: 'Lina Omar',
+            participantId: '001',
+            isIeeeMember: false,
+            role: 'Student',
+            universityName: 'UJ',
+            attendedAt: null,
             email: 'private@example.com',
-            phone: '+962790000000',
             major: 'Engineering',
             gender: 'Female',
           },
@@ -90,7 +93,7 @@ describe('Read-only admin access', () => {
     expect(host.textContent).toContain('private@example.com');
     const button = (label: string) =>
       [...host.querySelectorAll('button')].find((el) => el.textContent?.includes(label))!;
-    button('Export all').click();
+    button('Export attendance').click();
     fixture.detectChanges();
     expect(download.observed).toBeTrue();
     button('Sign out').click();

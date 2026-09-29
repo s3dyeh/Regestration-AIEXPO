@@ -3,15 +3,15 @@
 } @else if (!authorized()) {
   <main class="auth-panel">
     <p class="eyebrow">EVENT ADMINISTRATION</p>
-    <h1>Registrations</h1>
-    <p>Sign in with your event operator account to view and export registrations.</p>
+    <h1>Attendance administration</h1>
+    <p>Sign in with your event operator account to register participants and manage attendance.</p>
     <form [formGroup]="form" (ngSubmit)="signIn()" [attr.aria-busy]="pending()">
-      <mat-form-field appearance="outline">
+      <mat-form-field subscriptSizing="dynamic" appearance="outline">
         <mat-label>Operator email</mat-label>
         <input matInput type="email" formControlName="email" autocomplete="username" required />
         <mat-error>Enter your operator email.</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field subscriptSizing="dynamic" appearance="outline">
         <mat-label>Password</mat-label>
         <input
           matInput
@@ -29,42 +29,113 @@
         {{ pending() ? 'Signing in…' : 'Sign in' }}
       </button>
     </form>
-    <a routerLink="/register">Back to registration</a>
+    <a routerLink="/register">Back to attendance</a>
   </main>
 } @else {
   <main class="admin-layout">
     <header class="admin-heading">
       <div>
-        <p class="eyebrow">EVENT ADMINISTRATION · READ ONLY</p>
-        <h1>Registrations<span>.</span></h1>
-        <p>View attendee details and download the complete registration list.</p>
+        <p class="eyebrow">EVENT ADMINISTRATION</p>
+        <h1>Attendance administration<span>.</span></h1>
+        <p>Register participants individually and review recorded attendance.</p>
       </div>
       <div class="actions">
+        <a routerLink="/attendance">Check in participants</a>
         <a routerLink="/dashboard">Live room</a>
         @if (!gateway.demo) {
           <button type="button" (click)="signOut()">Sign out</button>
         }
       </div>
     </header>
+    <section class="data-panel registration-panel" aria-labelledby="registration-title">
+      <span class="section-label">PARTICIPANT DIRECTORY</span>
+      <h2 id="registration-title">Register a participant</h2>
+      <p>Add one person to the event list. Attendance is recorded separately at check-in.</p>
+      <form
+        [formGroup]="participantForm"
+        #participantFormDirective="ngForm"
+        (ngSubmit)="saveParticipant(participantFormDirective)"
+        [attr.aria-busy]="saving()"
+      >
+        <fieldset class="participant-fields" [disabled]="saving()">
+          <mat-form-field subscriptSizing="dynamic" appearance="outline"
+            ><mat-label>Participant ID</mat-label>
+            <input matInput formControlName="participantId" type="text" maxlength="100" required />
+            <mat-error>Enter a valid participant id (maximum 100 characters).</mat-error>
+          </mat-form-field>
+          <mat-form-field subscriptSizing="dynamic" appearance="outline"
+            ><mat-label>Full name</mat-label>
+            <input matInput formControlName="fullName" type="text" maxlength="100" required />
+            <mat-error>Enter a valid full name (maximum 100 characters).</mat-error>
+          </mat-form-field>
+          <mat-form-field subscriptSizing="dynamic" appearance="outline"
+            ><mat-label>Email address</mat-label>
+            <input matInput formControlName="email" type="email" maxlength="254" required />
+            <mat-error>Enter a valid email address (maximum 254 characters).</mat-error>
+          </mat-form-field>
+          <mat-form-field subscriptSizing="dynamic" appearance="outline"
+            ><mat-label>Role</mat-label>
+            <input matInput formControlName="role" type="text" maxlength="100" required />
+            <mat-error>Enter a valid role (maximum 100 characters).</mat-error>
+          </mat-form-field>
+          <mat-form-field subscriptSizing="dynamic" appearance="outline"
+            ><mat-label>University (optional)</mat-label>
+            <input matInput formControlName="universityName" type="text" maxlength="200" />
+            <mat-error>Enter a valid university (maximum 200 characters).</mat-error>
+          </mat-form-field>
+          <mat-form-field subscriptSizing="dynamic" appearance="outline"
+            ><mat-label>Major (optional)</mat-label>
+            <input matInput formControlName="major" type="text" maxlength="200" />
+            <mat-error>Enter a valid major (maximum 200 characters).</mat-error>
+          </mat-form-field>
+          <label class="member-checkbox"
+            ><input type="checkbox" formControlName="isIeeeMember" /> IEEE member</label
+          >
+        </fieldset>
+        @if (registrationError()) {
+          <p class="registration-error" role="alert">{{ registrationError() }}</p>
+        }
+        @if (registrationNotice()) {
+          <p class="registration-notice" role="status">{{ registrationNotice() }}</p>
+        }
+        <button class="primary" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Registering…' : 'Register participant' }}
+        </button>
+      </form>
+    </section>
     <section class="data-panel" aria-labelledby="list-title">
       <div class="toolbar">
         <div>
+          <span class="section-label">ATTENDANCE LOG</span>
           <h2 id="list-title">
-            All registrations <span class="count">{{ total() | number }}</span>
+            Recorded attendance <span class="count">{{ total() | number }}</span>
           </h2>
-          <p>Newest first. Dates are shown in Jordan time.</p>
+          <p>Only checked-in participants. Latest check-ins first, in Jordan time.</p>
         </div>
         <div class="actions">
-          <button type="button" (click)="load()" [disabled]="loading()">Refresh</button>
-          <button class="primary" type="button" (click)="export()" [disabled]="exporting()">
+          <button type="button" (click)="load()" [disabled]="loading() || resetting()">
+            Refresh
+          </button>
+          <button
+            class="danger"
+            type="button"
+            (click)="resetAttendance()"
+            [disabled]="resetting() || loading() || exporting()"
+          >
+            {{ resetting() ? 'Resetting…' : 'Reset attendance' }}
+          </button>
+          <button
+            class="primary"
+            type="button"
+            (click)="export()"
+            [disabled]="exporting() || resetting()"
+          >
             <span class="material-icons" aria-hidden="true">download</span
-            >{{ exporting() ? 'Preparing Excel…' : 'Export all to Excel' }}
+            >{{ exporting() ? 'Preparing Excel…' : 'Export attendance to Excel' }}
           </button>
         </div>
       </div>
-      <p class="export-note">
-        Excel includes every registration and summary counts, across all pages.
-      </p>
+      <p class="export-note">Excel includes checked-in participants only, across all pages.</p>
       @if (exporting()) {
         <p class="status" role="status">Preparing your complete export. Keep this page open.</p>
       }
@@ -83,44 +154,52 @@
         class="table-scroll"
         tabindex="0"
         role="region"
-        aria-label="Registered attendees"
+        aria-label="Checked-in participants"
         [attr.aria-busy]="loading()"
       >
         <table>
           <caption class="sr-only">
-            Registered attendees, newest first. Read only.
+            Checked-in participants, newest first.
           </caption>
           <thead>
             <tr>
-              <th scope="col">First name</th>
-              <th scope="col">Last name</th>
+              <th scope="col">ID</th>
+              <th scope="col">Full name</th>
+              <th scope="col">Checked in (Jordan)</th>
+              <th scope="col">IEEE member</th>
+              <th scope="col">Role</th>
+              <th scope="col">University</th>
               <th scope="col">Email</th>
-              <th scope="col">Phone</th>
               <th scope="col">Major</th>
-              <th scope="col">Gender</th>
-              <th scope="col">Registered (Jordan)</th>
             </tr>
           </thead>
           <tbody>
             @for (row of rows(); track row.id) {
               <tr>
-                <td class="name">{{ row.firstName }}</td>
-                <td class="name">{{ row.lastName }}</td>
-                <td>{{ row.email }}</td>
-                <td class="phone">{{ phone(row.phone) }}</td>
+                <td class="participant-id">{{ row.participantId }}</td>
+                <td class="name">{{ row.fullName }}</td>
+                <td class="date">{{ row.attendedAt | date: 'dd MMM yyyy, HH:mm' : '+0300' }}</td>
+                <td>
+                  <span class="member-badge" [class.is-member]="row.isIeeeMember">{{
+                    row.isIeeeMember ? 'Member' : 'Non-member'
+                  }}</span>
+                </td>
+                <td>
+                  <span class="role-label">{{ row.role }}</span>
+                </td>
+                <td>{{ row.universityName }}</td>
+                <td class="email">{{ row.email }}</td>
                 <td>{{ row.major }}</td>
-                <td>{{ row.gender }}</td>
-                <td class="date">{{ row.createdAt | date: 'dd MMM yyyy, HH:mm' : '+0300' }}</td>
               </tr>
             } @empty {
               <tr>
-                <td class="empty" colspan="7" role="status">
+                <td class="empty" colspan="8" role="status">
                   {{
                     loading()
-                      ? 'Loading registrations…'
+                      ? 'Loading attendance…'
                       : error()
-                        ? 'Registration data is unavailable.'
-                        : 'No registrations yet.'
+                        ? 'Attendance data is unavailable.'
+                        : 'No attendance recorded yet.'
                   }}
                 </td>
               </tr>
@@ -136,7 +215,7 @@
         [disabled]="loading()"
         showFirstLastButtons
         (page)="changePage($event)"
-        aria-label="Registration pages"
+        aria-label="Attendance pages"
       />
     </section>
   </main>

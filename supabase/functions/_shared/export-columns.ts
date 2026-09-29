@@ -3,37 +3,60 @@ export interface ExportRegistration {
   eventId: string;
   requestId: string;
   createdAt: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
+  participantId: string;
+  isIeeeMember: boolean;
+  role: string;
+  universityName: string;
+  attendedAt: string | null;
   email: string;
-  phone: string;
   major: string;
   gender: string;
   showName: boolean;
+  majorCategory?: string;
+  ieeeMembershipId?: string;
+  organizationName?: string;
+  position?: string;
+  referralSource?: string;
+  dataQualityNotes?: string;
 }
 
 export const exportColumns = [
-  { header: 'First name', key: 'firstName', width: 25 },
-  { header: 'Last name', key: 'lastName', width: 25 },
-  { header: 'Full name', key: 'name', width: 32 },
+  { header: 'ID', key: 'participantId', width: 25 },
+  { header: 'Full name', key: 'fullName', width: 32 },
+  { header: 'IEEE member', key: 'isIeeeMember', width: 16 },
+  { header: 'Role', key: 'role', width: 24 },
+  { header: 'University', key: 'universityName', width: 30 },
+  { header: 'Attendance', key: 'attendance', width: 20 },
+  { header: 'Attended at (UTC)', key: 'attendedAt', width: 26 },
   { header: 'Email address', key: 'email', width: 36 },
-  { header: 'Phone number', key: 'localPhone', width: 20 },
-  { header: 'Phone (international)', key: 'phone', width: 24 },
   { header: 'Major', key: 'major', width: 25 },
-  { header: 'Gender', key: 'gender', width: 20 },
-  { header: 'Registered at (UTC)', key: 'registeredAt', width: 24 },
+  { header: 'Added at (UTC)', key: 'registeredAt', width: 24 },
+  { header: 'Major category', key: 'majorCategory', width: 38 },
+  { header: 'IEEE membership ID', key: 'ieeeMembershipId', width: 24 },
+  { header: 'Organization', key: 'organizationName', width: 32 },
+  { header: 'Position', key: 'position', width: 28 },
+  { header: 'Referral source', key: 'referralSource', width: 32 },
+  { header: 'Data quality notes', key: 'dataQualityNotes', width: 60 },
 ];
 
 export function exportValues(row: ExportRegistration) {
   return {
-    firstName: row.firstName,
-    lastName: row.lastName,
+    majorCategory: row.majorCategory ?? 'Not Provided',
+    ieeeMembershipId: row.ieeeMembershipId ?? '',
+    organizationName: row.organizationName ?? 'Not Provided',
+    position: row.position ?? '',
+    referralSource: row.referralSource ?? 'Not Provided',
+    dataQualityNotes: row.dataQualityNotes ?? '',
+    participantId: row.participantId,
+    fullName: row.fullName,
+    isIeeeMember: row.isIeeeMember ? 'Yes' : 'No',
+    role: row.role,
+    universityName: row.universityName,
+    attendance: row.attendedAt ? 'Attended' : 'Not attended',
+    attendedAt: row.attendedAt ? new Date(row.attendedAt) : null,
     email: row.email,
-    phone: row.phone,
     major: row.major,
-    gender: row.gender,
-    name: `${row.firstName} ${row.lastName}`.trim(),
-    localPhone: /^\+9627[0-9]{8}$/.test(row.phone) ? `0${row.phone.slice(4)}` : row.phone,
     registeredAt: new Date(row.createdAt),
   };
 }

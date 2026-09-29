@@ -1,0 +1,43 @@
+{
+  "registrations": 228,
+  "columns": 15,
+  "distinct_source_majors_nonblank": 88,
+  "distinct_standardized_majors_excluding_unclear": 32,
+  "categories": {
+    "Computer Science and Information Technology": 67,
+    "Cybersecurity and Network Security": 37,
+    "Business and Management": 11,
+    "Artificial Intelligence, Data Science and Robotics": 60,
+    "Engineering": 31,
+    "Not Provided": 17,
+    "Health Sciences": 2,
+    "Unclassified": 2,
+    "Natural Sciences": 1
+  },
+  "rows_with_review_notes": 20,
+  "duplicate_groups": {
+    "Email Address": [
+      [
+        "167",
+        "228"
+      ]
+    ],
+    "Phone Number": [
+      [
+        "167",
+        "228"
+      ]
+    ],
+    "IEEE Membership ID": [
+      [
+        "69",
+        "150"
+      ]
+    ]
+  },
+  "changes": {
+    "Redundant domestic phone prefixes removed": 60,
+    "Arabic cells translated or transliterated": 8
+  },
+  "output": "C:\\Users\\Ahmad.Sadieh\\Documents\\Al-Khawarzmi\\Funtime\\registration\\outputs\\ai_expo_cleaning\\AI_EXPO_Jordan_2026_Ready_For_Import.csv"
+}

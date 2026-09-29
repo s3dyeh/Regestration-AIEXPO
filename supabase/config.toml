@@ -1,6 +1,7 @@
 project_id = "funtime-registration"
 
 [functions.register]
+# Handler validates the Auth JWT; the check-in RPC requires event membership.
 verify_jwt = false
 entrypoint = "./functions/register/index.ts"
 import_map = "./functions/register/deno.json"

@@ -51,23 +51,31 @@ try {
     .sort()) {
     await pool.query(await readFile(`supabase/migrations/${file}`, 'utf8'));
   }
+  await pool.query("insert into auth.users values ('11111111-1111-4111-a111-111111111111'); insert into public.event_operators values ('a1c08e5d-0817-4684-a03e-1b37c24e1aa1','11111111-1111-4111-a111-111111111111')");
   bridge = createServer(async (req, res) => {
     res.setHeader('content-type', 'application/json');
     try {
       let body = '';
       for await (const chunk of req) body += chunk;
+      if (req.url === '/auth/v1/user') {
+        res.end(JSON.stringify({id:'11111111-1111-4111-a111-111111111111'})); return;
+      }
       const p = JSON.parse(body);
       let result;
       if (req.url === '/rest/v1/rpc/consume_registration_limit') {
         result = await pool.query('select public.consume_registration_limit($1) as value', [
           p.client_hash,
         ]);
-      } else if (req.url === '/rest/v1/rpc/submit_registration') {
-        result = await pool.query('select public.submit_registration($1,$2,$3) as value', [
-          p.target_event,
-          p.request_id,
-          p.details,
-        ]);
+      } else if (req.url === '/rest/v1/rpc/check_in_attendance') {
+        const connection = await pool.connect();
+        try {
+          await connection.query('begin');
+          await connection.query('set local role authenticated');
+          await connection.query("select set_config('request.jwt.claim.sub','11111111-1111-4111-a111-111111111111',true)");
+          result = await connection.query('select public.check_in_attendance($1,$2,$3) as value', [p.target_event,p.request_id,p.participant_id]);
+          await connection.query('commit');
+        } catch (error) { await connection.query('rollback'); throw error; }
+        finally { connection.release(); }
       } else {
         res.writeHead(404).end();
         return;
@@ -100,6 +108,7 @@ try {
         PORT: String(edgePort),
         SUPABASE_URL: `http://127.0.0.1:${bridge.address().port}`,
         SUPABASE_SERVICE_ROLE_KEY: 'disposable-test-key',
+        SUPABASE_ANON_KEY: 'disposable-anon-key',
         ALLOWED_ORIGINS: origin,
         RATE_LIMIT_SALT: randomUUID(),
       },
@@ -122,24 +131,18 @@ try {
       await pause(500);
     }
   }
-  const payload = (index) => ({
-    eventId,
-    requestId: randomUUID(),
-    registration: {
-      firstName: 'Load',
-      lastName: 'Participant',
-      email: `load-${index}@example.com`,
-      phone: '0791234567',
-      major: 'Computer Science',
-      gender: 'Female',
-      showName: index % 2 === 0,
-    },
-  });
+  await pool.query(`insert into public.event_registrations(event_id,request_id,participant_id,full_name,email,phone,is_ieee_member,role,university_name,major,gender,show_name)
+    select $1,gen_random_uuid(),i::text,'Load Participant','load-' || i || '@example.com','0791234567',false,'Student','UJ','Computer Science','Female',true from generate_series(0,999) i`, [eventId]);
+  for (const id of ['duplicate','retry','rate']) {
+    await pool.query(`insert into public.event_registrations(event_id,request_id,participant_id,full_name,email,phone,major,gender,show_name)
+      values($1,gen_random_uuid(),$2,'Load Participant',$2 || '@example.com','0791234567','Computer Science','Female',true)`, [eventId,id]);
+  }
+  const payload = (index) => ({ eventId, requestId: randomUUID(), participantId: String(index) });
   const submit = async (body, ip, requestOrigin = origin) => {
     const start = performance.now();
     const response = await fetch(url, {
       method: 'POST',
-      headers: { origin: requestOrigin, 'content-type': 'application/json', 'x-forwarded-for': ip },
+      headers: { authorization: 'Bearer disposable-operator-token', origin: requestOrigin, 'content-type': 'application/json', 'x-forwarded-for': ip },
       body: JSON.stringify(body),
     });
     return {
@@ -169,13 +172,14 @@ try {
   }
   assert.equal(ids.size, 1000);
   assert.equal(
-    Number((await pool.query('select count(*) from public.event_registrations')).rows[0].count),
+    Number((await pool.query('select count(*) from public.event_registrations where attended_at is not null')).rows[0].count),
     1000,
   );
   const duplicate = await Promise.all(
     Array.from({ length: 2 }, () => submit(payload('duplicate'), '198.19.0.1')),
   );
-  assert.deepEqual(duplicate.map((r) => r.status).sort(), [200, 409]);
+  assert.deepEqual(duplicate.map((r) => r.status).sort(), [200, 200]);
+  assert.deepEqual(duplicate.map(r => r.body.alreadyAttended).sort(), [false, true]);
   const retryBody = payload('retry');
   const retries = await Promise.all(
     Array.from({ length: 2 }, () => submit(retryBody, '198.19.0.2')),
@@ -185,7 +189,7 @@ try {
   assert.equal(
     (
       await submit(
-        { ...payload('bad'), registration: { ...payload('bad').registration, firstName: '--' } },
+        { ...payload('bad'), participantId: '' },
         '198.19.0.3',
       )
     ).status,

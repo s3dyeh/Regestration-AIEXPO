@@ -65,8 +65,7 @@ export class DashboardComponent {
     password: ['', Validators.required],
   });
   constructor() {
-    this.gateway
-      .authorized()
+    (this.gateway.authorizationChanges?.() ?? this.gateway.authorized())
       .pipe(takeUntilDestroyed())
       .subscribe({
         next: (authorized) => {

@@ -21,7 +21,7 @@ describe('Device registration receipt', () => {
     new RegistrationReceiptService().save(event, 'Lina');
     const reloaded = new RegistrationReceiptService();
     expect(reloaded.receipt()?.id).toBe(event.id);
-    expect(Object.keys(JSON.parse(stored ?? '{}'))).toEqual(['id', 'firstName', 'createdAt']);
+    expect(Object.keys(JSON.parse(stored ?? '{}'))).toEqual(['id', 'fullName', 'createdAt']);
     reloaded.forget();
     expect(new RegistrationReceiptService().receipt()).toBeNull();
   });
@@ -35,7 +35,7 @@ describe('Device registration receipt', () => {
   it('ignores corrupt or invalid local data', () => {
     stored = '{invalid';
     expect(new RegistrationReceiptService().receipt()).toBeNull();
-    stored = '{"id":"fake","firstName":"Lina"}';
+    stored = '{"id":"fake","fullName":"Lina"}';
     expect(new RegistrationReceiptService().receipt()).toBeNull();
   });
 });

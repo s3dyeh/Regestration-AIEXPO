@@ -1,29 +1,16 @@
 <main class="dashboard" appReveal>
-  <div class="dashboard-heading" data-reveal>
+  <div class="dashboard-heading">
     <div>
       <div class="live-status" [class.disconnected]="store.connection() !== 'live'">
-        <span></span
-        >{{
-          gateway.demo
-            ? 'LOCAL EVENT PREVIEW'
-            : store.connection() === 'live'
-              ? 'LIVE FROM AI EXPO 2026'
-              : 'RECONNECTING'
-        }}
+        <span></span>{{ gateway.demo ? 'LIVE ATTENDANCE · LOCAL PREVIEW' : 'LIVE ATTENDANCE' }}
       </div>
-      <!-- <h1>A thousand possibilities.<br /><span>One community.</span></h1> -->
+      <p class="analytics-scope">Who’s here · Checked-in attendees only</p>
     </div>
-  </div>
-  <div class="dashboard-toolbar" data-reveal>
-    <div class="toolbar-right">
-      @if (gateway.demo && showDemoArrivals) {
-        <button type="button" (click)="addDemo()" [disabled]="adding()">
-          {{ adding() ? 'Adding arrivals…' : 'Add demo arrivals' }}
-          <span aria-hidden="true">+</span>
-        </button>
-      }
-      <span class="storage-label">{{ gateway.demo ? 'Saved on this device' : '' }}</span>
-    </div>
+    @if (gateway.demo && showDemoArrivals) {
+      <button type="button" (click)="addDemo()" [disabled]="adding()">
+        {{ adding() ? 'Adding arrivals…' : 'Add demo arrivals' }}
+      </button>
+    }
   </div>
   @if (store.error() || actionError()) {
     <div class="dashboard-error" role="alert">
@@ -32,75 +19,65 @@
     </div>
   }
   @if (store.loading()) {
-    <div class="loading" role="status">Connecting the dots…</div>
-  } @else {
+    <div class="loading" role="status">Connecting…</div>
+  } @else if (store.hasStats()) {
     <app-event-metrics [stats]="store.stats()" />
-    <div class="dashboard-grid" data-reveal>
-      <section class="chart-panel majors-panel" aria-labelledby="majors-title">
+    <div class="dashboard-grid attendance-grid">
+      <section class="chart-panel universities-panel" aria-labelledby="universities-title">
         <div class="panel-heading">
-          <div>
-            <span class="panel-kicker">THE PEOPLE BEHIND THE IDEAS</span>
-            <h2 id="majors-title">A mix of minds.</h2>
-          </div>
-          <span class="chart-tag">By discipline</span>
+          <h2 id="universities-title">Universities</h2>
+          <span class="chart-tag">Top 3 · share of check-ins</span>
         </div>
         @if (store.stats().total) {
-          <app-event-chart [options]="majorOptions()" [label]="majorSummary()" />
+          <app-universities-chart
+            [rows]="distribution('universities')"
+            [total]="store.stats().total"
+          />
         } @else {
-          <div class="empty-chart">
-            <span aria-hidden="true">↗</span>
-            <p>Every discipline belongs here.</p>
-            <small>Your first registration starts the picture.</small>
-          </div>
+          <div class="empty-chart"><p>Universities appear as attendees check in.</p></div>
         }
       </section>
-      <section class="chart-panel gender-panel" aria-labelledby="gender-title">
+      <section class="chart-panel roles-panel" aria-labelledby="roles-title">
         <div class="panel-heading">
-          <div>
-            <span class="panel-kicker">A PLACE FOR EVERYONE</span>
-            <h2 id="gender-title">The community.</h2>
-          </div>
+          <h2 id="roles-title">Roles</h2>
+          <span class="chart-tag">Attendees · share</span>
         </div>
         @if (store.stats().total) {
-          <app-gender-chart [stats]="store.stats()" />
+          <app-profile-visual
+            [rows]="distribution('roles')"
+            [total]="store.stats().total"
+            label="Checked-in attendees by role"
+          />
         } @else {
-          <div class="empty-chart">
-            <span aria-hidden="true">◎</span>
-            <p>One community. Many perspectives.</p>
-            <small>Participant demographics will appear here.</small>
-          </div>
+          <div class="empty-chart"><p>Roles appear as attendees check in.</p></div>
         }
       </section>
-      <section class="chart-panel timeline-panel" aria-labelledby="timeline-title">
+      <section class="chart-panel recent-panel" aria-labelledby="recent-title">
         <div class="panel-heading">
-          <div>
-            <span class="panel-kicker">THE MOMENTUM</span>
-            <h2 id="timeline-title">Connections over time.</h2>
-          </div>
-          <span class="chart-tag">Last 12 hours</span>
-        </div>
-        <app-event-chart [options]="timelineOptions()" [label]="timelineSummary()" />
-      </section>
-      <section class="chart-panel arrivals-panel" aria-labelledby="arrivals-title">
-        <div class="panel-heading">
-          <div>
-            <span class="panel-kicker">JUST JOINED</span>
-            <h2 id="arrivals-title">New connections.</h2>
-          </div>
-          <span class="live-tiny">LIVE</span>
+          <h2 id="recent-title">Latest 3 check-ins</h2>
+          <span class="chart-tag">Newest first · Jordan time</span>
         </div>
         <app-recent-arrivals [arrivals]="store.stats().recent" />
+      </section>
+      <section class="chart-panel majors-panel" aria-labelledby="majors-title">
+        <div class="panel-heading">
+          <h2 id="majors-title">Major categories</h2>
+          <span class="chart-tag">Attendees · share</span>
+        </div>
+        @if (store.stats().total) {
+          <app-category-columns
+            [rows]="distribution('majorCategories')"
+            [total]="store.stats().total"
+          />
+        } @else {
+          <div class="empty-chart"><p>Majors appear as attendees check in.</p></div>
+        }
       </section>
     </div>
   }
   <div class="dashboard-bottom">
-    <span
-      ><span class="status-dot" [class.offline]="store.connection() !== 'live'"></span
-      >{{ store.connection() === 'live' ? 'Receiving arrivals' : 'Reconnecting' }}
-      @if (store.updatedAt(); as updated) {
-        · Updated {{ updated | date: 'HH:mm:ss' }}
-      }</span
-    ><span>UNIVERSITY OF JORDAN <span class="bottom-separator">/</span> AI EXPO 2026</span>
+    <span class="status-dot" [class.offline]="store.connection() !== 'live'"></span
+    >{{ store.connection() === 'live' ? 'Live · Updates with each check-in' : 'Reconnecting' }}
   </div>
 </main>
 @if (store.greeting(); as greeting) {

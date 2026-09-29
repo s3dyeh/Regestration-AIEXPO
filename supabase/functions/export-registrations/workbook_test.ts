@@ -10,18 +10,27 @@ function record(index: number): ExportRegistration {
     eventId: 'event',
     requestId: `request-${index}`,
     createdAt: cutoff,
-    firstName: index === 0 ? 'أحمد' : 'Person',
-    lastName: index === 0 ? 'سعدية' : `${index}`,
+    fullName: index === 0 ? 'أحمد سعدية' : `Person ${index}`,
+    participantId: `00${index}`,
+    isIeeeMember: false,
+    role: 'Student',
+    universityName: 'UJ',
+    attendedAt: index === 0 ? cutoff : null,
     email: index === 1 ? '=1+1' : `p${index}@example.com`,
-    phone: '+962790000000',
     major: 'Engineering',
     gender: 'Male',
     showName: true,
+    majorCategory: 'Engineering',
+    ieeeMembershipId: '00123456',
+    organizationName: 'Example Organization',
+    position: 'Engineer',
+    referralSource: 'University Announcements',
+    dataQualityNotes: 'Review supplied membership ID',
   };
 }
 
 Deno.test(
-  'streamed Excel includes every batch, summary, Arabic text, text phones and no formulas',
+  'streamed Excel includes every batch, summary, Arabic text, no phone columns and no formulas',
   async () => {
     let calls = 0;
     const stream = registrationWorkbook(
@@ -36,15 +45,23 @@ Deno.test(
     const buffer = await new Response(stream).arrayBuffer();
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(buffer);
-    const sheet = workbook.getWorksheet('Registrations')!;
+    const sheet = workbook.getWorksheet('Attendance')!;
     assert.equal(calls, 1);
+    assert.equal(JSON.stringify(sheet.getRow(1).values).includes('Phone'), false);
     assert.equal(sheet.rowCount, 502);
-    assert.equal(sheet.getCell('C2').value, 'أحمد سعدية');
-    assert.equal(sheet.getCell('D3').value, '=1+1');
-    assert.equal(sheet.getCell('D3').type, ExcelJS.ValueType.String);
-    assert.equal(sheet.getCell('E2').value, '0790000000');
-    assert.equal(sheet.getCell('E2').numFmt, '@');
-    assert.equal(sheet.getCell('C502').value, 'Person 500');
+    assert.equal(Object.values(sheet.getRow(1).values).includes('Gender'), false);
+    assert.equal(
+      JSON.stringify(workbook.getWorksheet('Summary')!.getSheetValues()).includes('Gender:'),
+      false,
+    );
+    assert.equal(sheet.getCell('B2').value, 'أحمد سعدية');
+    assert.equal(sheet.getCell('H3').value, '=1+1');
+    assert.equal(sheet.getCell('H3').type, ExcelJS.ValueType.String);
+    assert.equal(sheet.getCell('B502').value, 'Person 500');
+    assert.equal(sheet.getCell('K2').value, 'Engineering');
+    assert.equal(sheet.getCell('L2').value, '00123456');
+    assert.equal(sheet.getCell('O2').value, 'University Announcements');
+    assert.equal(sheet.getCell('P2').value, 'Review supplied membership ID');
     assert.equal(workbook.getWorksheet('Summary')!.getCell('B2').value, 501);
   },
 );
@@ -55,7 +72,7 @@ Deno.test('empty export produces a valid workbook with column headings', async (
   });
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await new Response(stream).arrayBuffer());
-  assert.equal(workbook.getWorksheet('Registrations')!.rowCount, 1);
+  assert.equal(workbook.getWorksheet('Attendance')!.rowCount, 1);
   assert.equal(workbook.getWorksheet('Summary')!.getCell('B2').value, 0);
 });
 

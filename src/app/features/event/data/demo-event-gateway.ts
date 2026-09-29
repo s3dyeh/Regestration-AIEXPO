@@ -1,234 +1,262 @@
 import { Injectable } from '@angular/core';
-import { Observable, defer, from, of, throwError, map, forkJoin, switchMap } from 'rxjs';
+import { audienceStatistics } from './audience-statistics';
+import { Observable, defer, from, map, of } from 'rxjs';
 import { EVENT_CONFIG } from '../event-config';
-import { displayName, submissionSchema, welcomeSchema } from '../domain';
-import type { EventStats, Submission, WelcomeEvent } from '../domain';
-import { RegistrationError } from './event-gateway';
+import { registrationSchema, submissionSchema, welcomeSchema } from '../domain';
+import type { EventStats, Registration, Submission, WelcomeEvent } from '../domain';
 import type { EventGateway, LiveMessage } from './event-gateway';
-import type { AttendeePage } from './attendees';
+import type { Attendee, AttendeePage } from './attendees';
 import {
   exportColumns,
   exportValues,
 } from '../../../../../supabase/functions/_shared/export-columns';
-import { databaseRegistration } from '../domain';
 
-interface DemoRecord extends Submission {
-  id: string;
-  createdAt: string;
-}
-
-/** IndexedDB transactions enforce duplicate prevention across tabs. Demo data stays on this device. */
 @Injectable()
 export class DemoEventGateway implements EventGateway {
   readonly demo = true;
   private database?: Promise<IDBDatabase>;
-
-  private allRegistrations(): Promise<DemoRecord[]> {
+  private open(): Promise<IDBDatabase> {
+    return (this.database ??= new Promise((resolve, reject) => {
+      const request = indexedDB.open('ai-expo-attendance-v1', 2);
+      request.onupgradeneeded = () => {
+        if (!request.result.objectStoreNames.contains('participants')) {
+          request.result.createObjectStore('participants', { keyPath: 'participantId' });
+          request.result.createObjectStore('scans', { keyPath: 'id' });
+        } else {
+          const cursor = request.transaction!.objectStore('participants').openCursor();
+          cursor.onsuccess = () => {
+            const record = cursor.result;
+            if (!record) return;
+            const value = record.value;
+            delete value.phone;
+            record.update(value);
+            record.continue();
+          };
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(new Error('Local storage unavailable.'));
+    }));
+  }
+  private all(): Promise<Attendee[]> {
     return this.open().then(
       (db) =>
-        new Promise<DemoRecord[]>((resolve, reject) => {
-          const request = db.transaction('registrations').objectStore('registrations').getAll();
-          request.onerror = () => reject(new Error('Could not read demo registrations.'));
-          request.onsuccess = () =>
-            resolve(
-              (request.result as DemoRecord[])
-                .filter((row) => row.eventId === EVENT_CONFIG.eventId)
-                .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id.localeCompare(a.id)),
-            );
+        new Promise((resolve, reject) => {
+          const request = db.transaction('participants').objectStore('participants').getAll();
+          request.onsuccess = () => resolve(request.result as Attendee[]);
+          request.onerror = () => reject(request.error);
         }),
     );
   }
-
-  attendees(page: number, pageSize: number): Observable<AttendeePage> {
-    return defer(() => from(this.allRegistrations())).pipe(
-      map((records) => ({
-        total: records.length,
-        rows: records.slice(page * pageSize, (page + 1) * pageSize).map((row) => ({
-          ...row.registration,
-          phone: databaseRegistration(row.registration).phone,
-          id: row.id,
-          createdAt: row.createdAt,
-        })),
-      })),
-    );
-  }
-
-  exportRegistrations(): Observable<Blob> {
-    // The offline demo uses the browser writer; production streams on the server.
+  importParticipants(rows: Registration[]): Observable<number> {
     return defer(() =>
-      forkJoin({ library: from(import('exceljs')), records: from(this.allRegistrations()) }),
-    ).pipe(
-      switchMap(({ library: { default: ExcelJS }, records }) => {
-        const workbook = new ExcelJS.Workbook();
-        const sheet = workbook.addWorksheet('Registrations', {
-          views: [{ state: 'frozen', ySplit: 1 }],
-        });
-        sheet.columns = exportColumns;
-        sheet.getColumn('localPhone').numFmt = '@';
-        sheet.getColumn('phone').numFmt = '@';
-        sheet.getColumn('registeredAt').numFmt = 'yyyy-mm-dd hh:mm:ss';
-        for (const row of records)
-          sheet.addRow(
-            exportValues({
-              ...row,
-              ...row.registration,
-              phone: databaseRegistration(row.registration).phone,
+      from(
+        this.open().then(
+          (db) =>
+            new Promise<number>((resolve, reject) => {
+              const parsed = rows.map((row) => registrationSchema.parse(row));
+              if (
+                !parsed.length ||
+                parsed.length > 10000 ||
+                new Set(parsed.map((row) => row.participantId)).size !== parsed.length
+              )
+                throw new Error('Invalid import or duplicate IDs.');
+              let inserted = 0;
+              const tx = db.transaction('participants', 'readwrite');
+              const store = tx.objectStore('participants');
+              for (const row of parsed) {
+                const request = store.get(row.participantId);
+                request.onsuccess = () => {
+                  const old = request.result as Attendee | undefined;
+                  if (old) return;
+                  inserted++;
+                  store.add({
+                    ...row,
+                    id: crypto.randomUUID(),
+                    createdAt: new Date().toISOString(),
+                    attendedAt: null,
+                  });
+                };
+              }
+              tx.oncomplete = () => {
+                if (inserted) {
+                  try {
+                    const channel = new BroadcastChannel('funtime-demo');
+                    channel.postMessage({ type: 'roster' });
+                    channel.close();
+                  } catch {
+                    /* Polling refreshes the roster. */
+                  }
+                }
+                resolve(inserted);
+              };
+              tx.onabort = () => reject(new Error('Import failed. No rows were changed.'));
             }),
-          );
-        sheet.autoFilter = { from: 'A1', to: `I${records.length + 1}` };
-        sheet.getRow(1).font = { bold: true };
-        const summary = workbook.addWorksheet('Summary');
-        summary.addRow(['Total registrations exported', records.length]);
-        summary.addRow(['Source', 'Local demo data only']);
-        return from(workbook.xlsx.writeBuffer());
-      }),
-      map(
-        (buffer) =>
-          new Blob([new Uint8Array(buffer)], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          }),
+        ),
       ),
     );
   }
-
-  private open(): Promise<IDBDatabase> {
-    return (this.database ??= new Promise((resolve, reject) => {
-      const request = indexedDB.open('funtime-demo-v1', 1);
-      request.onupgradeneeded = () => {
-        const store = request.result.createObjectStore('registrations', { keyPath: 'requestId' });
-        store.createIndex('email', ['eventId', 'registration.email'], { unique: true });
-      };
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () =>
-        reject(
-          new RegistrationError(
-            'unavailable',
-            'Local storage is unavailable. Try another browser.',
-          ),
-        );
-    }));
-  }
-
-  register(submission: Submission): Observable<WelcomeEvent> {
-    const validation = submissionSchema.safeParse(submission);
-    if (!validation.success)
-      return throwError(() => new RegistrationError('invalid', validation.error.issues[0].message));
-    submission = validation.data;
+  register(input: Submission): Observable<WelcomeEvent> {
     return defer(() =>
       from(
         this.open().then(
           (db) =>
             new Promise<WelcomeEvent>((resolve, reject) => {
-              const tx = db.transaction('registrations', 'readwrite');
-              const store = tx.objectStore('registrations');
-              const existing = store.get(submission.requestId);
-              let saved: DemoRecord;
-              let inserted = false;
-              existing.onsuccess = () => {
-                if (existing.result) {
-                  saved = existing.result as DemoRecord;
-                  if (
-                    saved.eventId !== submission.eventId ||
-                    JSON.stringify(saved.registration) !== JSON.stringify(submission.registration)
-                  ) {
+              const submission = submissionSchema.parse(input);
+              if (submission.eventId !== EVENT_CONFIG.eventId) throw new Error('Unknown event.');
+              const tx = db.transaction(['participants', 'scans'], 'readwrite');
+              const participants = tx.objectStore('participants');
+              const scans = tx.objectStore('scans');
+              let event: WelcomeEvent;
+              let fresh = false;
+              let failure = 'Check-in failed.';
+              const prior = scans.get(submission.requestId);
+              prior.onsuccess = () => {
+                if (prior.result) {
+                  if (prior.result.participantId !== submission.participantId) {
+                    failure = 'Request conflict.';
                     tx.abort();
+                    return;
                   }
-                } else {
-                  saved = {
-                    ...submission,
-                    id: crypto.randomUUID(),
-                    createdAt: new Date().toISOString(),
-                  };
-                  inserted = true;
-                  store.add(saved);
+                  event = welcomeSchema.parse(prior.result);
+                  return;
                 }
+                const request = participants.get(submission.participantId);
+                request.onsuccess = () => {
+                  const row = request.result as Attendee | undefined;
+                  if (!row) {
+                    failure =
+                      'ID not found. Please ask the event team to check the participant list.';
+                    tx.abort();
+                    return;
+                  }
+                  const now = new Date().toISOString();
+                  event = {
+                    id: submission.requestId,
+                    displayName: row.fullName,
+                    createdAt: now,
+                    alreadyAttended: !!row.attendedAt,
+                  };
+                  participants.put({ ...row, attendedAt: row.attendedAt ?? now });
+                  scans.add({ ...event, participantId: submission.participantId });
+                  fresh = true;
+                };
               };
               tx.oncomplete = () => {
-                const event = {
-                  id: saved.id,
-                  displayName: displayName(saved.registration),
-                  createdAt: saved.createdAt,
-                };
-                if (inserted) {
-                  // A notification failure must never turn a committed registration into a failed save.
+                if (fresh) {
                   try {
                     const channel = new BroadcastChannel('funtime-demo');
                     channel.postMessage(event);
                     channel.close();
                   } catch {
-                    /* Periodic statistics refresh recovers missed events. */
+                    /* Saved; polling recovers statistics. */
                   }
                 }
                 resolve(event);
               };
-              tx.onabort = () =>
-                reject(
-                  new RegistrationError(
-                    tx.error?.name === 'ConstraintError' ? 'duplicate' : 'invalid',
-                    tx.error?.name === 'ConstraintError'
-                      ? 'This email is already registered. See you at the event!'
-                      : 'The submission could not be saved. Please try again.',
-                  ),
-                );
+              tx.onabort = () => reject(new Error(failure));
             }),
         ),
       ),
     );
   }
-
+  attendees(page: number, pageSize: number): Observable<AttendeePage> {
+    return defer(() => from(this.all())).pipe(
+      map((records) => records.filter((row) => row.attendedAt !== null)),
+      map((records) => ({
+        total: records.length,
+        rows: records
+          .sort((a, b) => b.attendedAt!.localeCompare(a.attendedAt!) || b.id.localeCompare(a.id))
+          .slice(page * pageSize, (page + 1) * pageSize),
+      })),
+    );
+  }
   statistics(): Observable<EventStats> {
+    return defer(() => from(this.all())).pipe(map((all) => audienceStatistics(all)));
+  }
+  resetAttendance(): Observable<number> {
     return defer(() =>
       from(
         this.open().then(
           (db) =>
-            new Promise<EventStats>((resolve, reject) => {
-              const request = db.transaction('registrations').objectStore('registrations').getAll();
-              request.onerror = () => reject(request.error);
-              request.onsuccess = () => {
-                const rows = (request.result as DemoRecord[]).filter(
-                  (row) => row.eventId === EVENT_CONFIG.eventId,
-                );
-                const countBy = (key: 'major' | 'gender') =>
-                  [...new Set(rows.map((row) => row.registration[key]))].map((name) => ({
-                    name,
-                    count: rows.filter((row) => row.registration[key] === name).length,
-                  }));
-                const buckets = new Map<string, number>();
-                rows.forEach((row) => {
-                  const time = row.createdAt.slice(0, 13) + ':00:00Z';
-                  buckets.set(time, (buckets.get(time) ?? 0) + 1);
-                });
-                resolve({
-                  total: rows.length,
-                  majors: countBy('major'),
-                  genders: countBy('gender'),
-                  timeline: [...buckets]
-                    .sort(([a], [b]) => a.localeCompare(b))
-                    .map(([time, count]) => ({ time, count })),
-                  recentCount: rows.filter(
-                    (row) => Date.parse(row.createdAt) >= Date.now() - 3_600_000,
-                  ).length,
-                  recent: rows
-                    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-                    .slice(0, 6)
-                    .map((row) => ({
-                      id: row.id,
-                      createdAt: row.createdAt,
-                      displayName: displayName(row.registration),
-                    })),
-                });
+            new Promise<number>((resolve, reject) => {
+              const tx = db.transaction(['participants', 'scans'], 'readwrite');
+              let count = 0;
+              const cursor = tx.objectStore('participants').openCursor();
+              cursor.onsuccess = () => {
+                const row = cursor.result;
+                if (!row) return;
+                if (row.value.attendedAt) {
+                  count++;
+                  row.update({ ...row.value, attendedAt: null });
+                }
+                row.continue();
               };
+              tx.objectStore('scans').clear();
+              tx.oncomplete = () => {
+                try {
+                  const channel = new BroadcastChannel('funtime-demo');
+                  channel.postMessage({ type: 'attendance-reset' });
+                  channel.close();
+                } catch {
+                  /* Polling refreshes attendance. */
+                }
+                resolve(count);
+              };
+              tx.onabort = () =>
+                reject(new Error('Attendance reset failed. No records were changed.'));
             }),
         ),
       ),
     );
   }
-
+  exportRegistrations(): Observable<Blob> {
+    return defer(() =>
+      from(
+        Promise.all([import('exceljs'), this.all()])
+          .then(([{ default: ExcelJS }, records]) => {
+            const workbook = new ExcelJS.Workbook();
+            const sheet = workbook.addWorksheet('Attendance');
+            sheet.columns = exportColumns;
+            sheet.getColumn('attendedAt').numFmt = 'yyyy-mm-dd hh:mm:ss';
+            for (const row of records.filter((row) => row.attendedAt !== null))
+              sheet.addRow(
+                exportValues({
+                  ...row,
+                  eventId: EVENT_CONFIG.eventId,
+                  requestId: row.id,
+                  showName: true,
+                }),
+              );
+            return workbook.xlsx.writeBuffer();
+          })
+          .then(
+            (bytes) =>
+              new Blob([new Uint8Array(bytes)], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              }),
+          ),
+      ),
+    );
+  }
   watch(): Observable<LiveMessage> {
     return new Observable((subscriber) => {
       const channel = new BroadcastChannel('funtime-demo');
       subscriber.next({ type: 'connection', state: 'live' });
       channel.onmessage = ({ data }: MessageEvent<unknown>) => {
+        if (data && typeof data === 'object' && 'type' in data && data.type === 'roster') {
+          subscriber.next({ type: 'roster' });
+          return;
+        }
+        if (
+          data &&
+          typeof data === 'object' &&
+          'type' in data &&
+          data.type === 'attendance-reset'
+        ) {
+          subscriber.next({ type: 'attendance-reset' });
+          return;
+        }
         const result = welcomeSchema.safeParse(data);
         if (result.success) subscriber.next({ type: 'welcome', event: result.data });
       };
@@ -239,7 +267,7 @@ export class DemoEventGateway implements EventGateway {
     return of(true);
   }
   signIn(): Observable<void> {
-    return throwError(() => new Error('Demo mode does not require sign in.'));
+    return of(undefined);
   }
   signOut(): Observable<void> {
     return of(undefined);

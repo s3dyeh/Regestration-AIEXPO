@@ -1,251 +1,64 @@
 :host {
   display: block;
 }
-.registration-layout {
-  max-width: 1300px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 90px;
-  padding: 60px 42px 65px;
-}
-.invitation {
-  padding: 10px 0;
-}
-.event-label,
-.eyebrow {
-  font-size: 14px;
-  letter-spacing: 2px;
-  font-weight: 600;
-  color: #aaa2bb;
-}
-.event-label {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-.event-label .material-icons {
-  font-size: 17px;
-  color: #ba9cff;
+.attendance-panel {
+  max-width: 680px;
+  margin: 2rem auto;
+  padding: clamp(20px, 4vw, 48px);
+  border: 1px solid #d9d1e6;
+  border-radius: 24px;
+  background: #17131f;
+  color: #f5f0ff;
 }
 h1 {
-  font-size: clamp(58px, 6.3vw, 88px);
-  font-weight: 700;
-  letter-spacing: -5px;
-  line-height: 0.99;
-  margin: 26px 0;
-}
-h1 span {
-  color: #ad87ff;
-}
-.intro {
-  font-size: 16px;
-  color: #aaa3b8;
-  max-width: 365px;
-  line-height: 1.9;
-}
-.invitation-note {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 24px;
-}
-.invitation-note > .material-icons {
-  color: #b695ff;
-  font-size: 24px;
-}
-.invitation-note div {
-  display: grid;
-  gap: 5px;
-}
-.invitation-note strong {
-  font-size: 14px;
-  font-weight: 600;
-}
-.invitation-note div span {
-  font-size: 14px;
-  color: #928a9f;
-}
-.form-panel {
-  align-self: start;
-  padding: 32px;
-  background: linear-gradient(#17141f, #13101b);
-  border: 1px solid #ffffff12;
-  border-radius: 20px;
-  box-shadow:
-    inset 0 1px 0 #ffffff08,
-    0 25px 70px #00000020;
-}
-.form-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
 }
 .eyebrow {
-  color: #a791c9;
   font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #c6a8f3;
+  font-weight: 700;
 }
-.time-note {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-  color: #bdb3cb;
-}
-.time-note .material-icons {
-  font-size: 16px;
-}
-h2 {
-  font-size: 32px;
-  letter-spacing: -1.2px;
-  margin: 22px 0 9px;
-  font-weight: 600;
-}
-h2 span {
-  color: #b594ff;
-}
-.form-description {
-  color: #c3b9d0;
-  font-size: 14px;
-  line-height: 1.8;
-  margin: 0 0 26px;
-}
-fieldset {
-  border: 0;
-  margin: 0;
-  padding: 0;
-  min-width: 0;
+form {
   display: grid;
-  gap: 22px;
+  gap: 24px;
+  margin-top: 28px;
 }
-mat-form-field {
-  width: 100%;
-  min-width: 0;
-  font-size: 16px;
-  --mat-form-field-container-text-size: 16px;
-  --mat-form-field-subscript-text-size: 13px;
-  --mat-form-field-subscript-text-line-height: 20px;
-  --mat-form-field-outlined-label-text-size: 16px;
-  --mat-form-field-outlined-label-text-color: #c3b9d0;
-  --mat-select-trigger-text-size: 16px;
-  --mat-form-field-container-height: 56px;
-  --mat-form-field-container-vertical-padding: 13px;
-  --mat-form-field-outlined-container-shape: 8px;
-}
-.field-pair {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px;
-}
-.privacy-note {
-  font-size: 14px;
-  line-height: 1.8;
-  color: #bdb3cb;
-  margin: 4px 0 22px;
+button {
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid #674193;
+  background: white;
+  color: #512e7d;
+  cursor: pointer;
+  font: inherit;
 }
 .primary-button {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #b599ff55;
-  border-radius: 9px;
-  padding: 14px 17px;
-  background: #7a3cff;
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
+  background: #59339b;
+  color: white;
   font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    background 0.3s;
 }
-.primary-button > .material-icons {
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: #ffffff16;
-  width: 28px;
-  height: 28px;
-  font-size: 18px;
-}
-.primary-button:hover {
-  background: #8b54ff;
-  transform: translateY(-2px);
-}
-.primary-button:active {
-  transform: scale(0.99);
-}
-.primary-button:disabled {
+button:disabled {
   opacity: 0.6;
   cursor: wait;
 }
-.primary-button:focus-visible,
-.text-button:focus-visible {
-  outline: 2px solid #2cabe2;
-  outline-offset: 4px;
+button:focus-visible {
+  outline: 3px solid #a778df;
+  outline-offset: 3px;
 }
-.form-footnote {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  font-size: 12px;
-  color: #bdb3cb;
-  margin: 17px 0 0;
-  line-height: 1.6;
+
+.success-panel {
+  padding: 24px 0;
 }
-.form-footnote .material-icons {
-  font-size: 14px;
+.success-panel .material-icons {
+  font-size: 48px;
+  color: #85d6a2;
 }
 .form-error {
-  border: 1px solid #e8898955;
-  background: #e8898910;
-  color: #ffc7c7;
-  padding: 12px;
-  font-size: 14px;
+  padding: 16px;
   border-radius: 8px;
-  margin-bottom: 14px;
-}
-@media (max-width: 1100px) {
-  .registration-layout {
-    gap: 45px;
-    padding: 45px 30px;
-  }
-  .form-panel {
-    padding: 26px;
-  }
-}
-@media (max-width: 760px) {
-  .registration-layout {
-    max-width: 560px;
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 32px 22px 40px;
-  }
-  h1 {
-    font-size: clamp(46px, 16vw, 64px);
-    letter-spacing: -3px;
-    margin: 22px 0;
-  }
-  .intro {
-    max-width: 340px;
-  }
-  .invitation-note {
-    display: none;
-  }
-  .form-panel {
-    padding: 24px;
-  }
-}
-@media (max-width: 480px) {
-  .field-pair {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-  .time-note {
-    display: none;
-  }
+  background: #fff0f0;
+  color: #982727;
 }

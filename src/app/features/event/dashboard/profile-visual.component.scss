@@ -1,0 +1,155 @@
+:host {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.composition-band {
+  display: flex;
+  height: 24px;
+  overflow: hidden;
+  border-radius: 6px;
+  margin: 18px 0 14px;
+  background: #ffffff0a;
+}
+.composition-band span {
+  flex-basis: 0;
+  border-right: 2px solid #171220;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+}
+li {
+  border-top: 2px solid var(--accent);
+  background: #ffffff04;
+  padding: 10px;
+  border-radius: 0 0 6px 6px;
+}
+.category-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+strong {
+  font-size: 25px;
+  font-weight: 600;
+}
+.category-value span {
+  font-size: 11px;
+}
+.category-name {
+  font-size: 11px;
+  line-height: 1.4;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+  color: #dbd2e6;
+}
+.gauges {
+  margin-top: 15px;
+}
+.gauges li {
+  text-align: center;
+  border: 1px solid #ffffff0d;
+  padding: 8px;
+}
+.gauges .category-value {
+  justify-content: center;
+}
+.gauges .category-value strong {
+  font-size: 16px;
+}
+.gauges .category-value span {
+  display: none;
+}
+svg {
+  width: 100%;
+  max-width: 100px;
+}
+circle {
+  fill: none;
+  stroke-width: 5;
+}
+.gauge-track {
+  stroke: #ffffff0a;
+}
+.gauge-fill {
+  stroke: var(--accent);
+}
+text {
+  fill: #f2ebfa;
+  font-size: 15px;
+  font-weight: 600;
+}
+details {
+  font-size: 12px;
+  color: #c5b5d5;
+}
+summary {
+  cursor: pointer;
+  padding: 5px 0;
+}
+summary:focus-visible {
+  outline: 2px solid #55c8f4;
+}
+details p {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+details strong {
+  font-size: inherit;
+  white-space: nowrap;
+}
+@media (min-width: 1000px) and (orientation: landscape) {
+  .composition-band {
+    height: 1.6cqw;
+    margin: 0.6cqw 0;
+  }
+  ul {
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    gap: 0.4cqw;
+    margin-bottom: 0.2cqw;
+  }
+  li {
+    padding: 0.4cqw;
+  }
+  strong {
+    font-size: 1.7cqw;
+  }
+  .category-value {
+    gap: 0.35cqw;
+    flex-wrap: wrap;
+  }
+  .category-value span,
+  .category-name,
+  details {
+    font-size: 0.68cqw;
+  }
+  .category-name {
+    margin-top: 0.2cqw;
+  }
+  .gauges {
+    margin-top: 0.4cqw;
+  }
+  .gauges li {
+    padding: 0.2cqw;
+  }
+  .gauges svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 3.8cqw;
+  }
+  .gauges .category-value strong {
+    font-size: 0.85cqw;
+  }
+  summary {
+    padding: 0;
+  }
+}

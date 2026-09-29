@@ -1,7 +1,7 @@
 import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, catchError, switchMap, interval, merge, throttleTime } from 'rxjs';
-import { EVENT_GATEWAY } from '../data/event-gateway';
+import { EVENT_GATEWAY, RegistrationError } from '../data/event-gateway';
 import type { ConnectionState } from '../data/event-gateway';
 import { emptyStats } from '../domain';
 import { WelcomeQueue } from './welcome-queue';
@@ -18,6 +18,7 @@ export class DashboardStore {
   readonly stats = signal(emptyStats());
   readonly connection = signal<ConnectionState>('connecting');
   readonly loading = signal(true);
+  readonly hasStats = signal(false);
   readonly error = signal('');
   readonly greeting = signal<Greeting | null>(null);
   readonly welcomesEnabled = signal(true);
@@ -37,9 +38,15 @@ export class DashboardStore {
         throttleTime(300, undefined, { leading: true, trailing: true }),
         switchMap(() =>
           this.gateway.statistics().pipe(
-            catchError(() => {
+            catchError((error: unknown) => {
               this.loading.set(false);
-              this.error.set('Could not refresh. Showing the last available numbers.');
+              this.error.set(
+                error instanceof RegistrationError
+                  ? error.message
+                  : this.hasStats()
+                    ? 'Could not refresh. Showing the last available numbers.'
+                    : 'Could not load attendance statistics. Please retry.',
+              );
               return EMPTY;
             }),
           ),
@@ -48,6 +55,7 @@ export class DashboardStore {
       )
       .subscribe((stats) => {
         this.stats.set(stats);
+        this.hasStats.set(true);
         this.loading.set(false);
         this.error.set('');
         this.updatedAt.set(new Date());
@@ -63,6 +71,14 @@ export class DashboardStore {
               this.queue.clear();
               this.refresh();
             }
+          } else if (message.type === 'attendance-reset') {
+            this.queue.clear();
+            this.greeting.set(null);
+            clearTimeout(this.cooldown);
+            this.cooldown = undefined;
+            this.refresh();
+          } else if (message.type === 'roster') {
+            this.refresh();
           } else {
             this.refresh();
             if (this.welcomesEnabled() && this.queue.enqueue(message.event)) this.presentNext();

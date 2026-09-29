@@ -21,7 +21,7 @@ import { EventPartnersComponent } from './event-partners.component';
       [style.--event-secondary]="brand.colors.secondary"
     >
       <header class="event-header">
-        <a routerLink="/register" class="brand" [attr.aria-label]="brand.name + ' home'"
+        <a routerLink="/attendance" class="brand" [attr.aria-label]="brand.name + ' home'"
           ><img
             class="event-logo"
             [src]="brand.logo"
@@ -68,7 +68,8 @@ import { EventPartnersComponent } from './event-partners.component';
         <div class="demo-banner">
           Local demo
           <span
-            >Registrations stay in this browser. Open the live room in another tab to try it.</span
+            >Participants and attendance stay in this browser. Open the live room in another tab to
+            try it.</span
           >
         </div>
       }

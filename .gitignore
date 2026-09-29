@@ -59,3 +59,6 @@ Thumbs.db
 
 # Private local Supabase setup notes
 .supabase-setup.local.txt
+
+# Private attendee seed generated for SQL Editor
+/AI_EXPO_Jordan_2026_Seed.sql
