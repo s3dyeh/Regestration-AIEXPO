@@ -1,5 +1,27 @@
 import { expect, test } from '@playwright/test';
 
+test('Vercel plain-text invocation failure shows an actionable error without losing the draft', async ({
+  page,
+}) => {
+  await page.route('**/api/readme-ai', (route) =>
+    route.fulfill({
+      status: 500,
+      contentType: 'text/plain',
+      body: 'A server error has occurred\n\nFUNCTION_INVOCATION_FAILED\n\nbom1::test-request',
+    }),
+  );
+  await page.goto('/readme');
+  await page.locator('.editor > summary').click();
+  const about = 'I build tools in TypeScript and write documentation for them.';
+  await page.getByLabel('About you', { exact: true }).fill(about);
+  await page.getByRole('button', { name: 'Suggest improvements with AI', exact: true }).click();
+  await expect(page.locator('app-readme-assistant [role="status"]')).toContainText(
+    'AI server failed',
+  );
+  await expect(page.locator('app-readme-assistant')).not.toContainText('Unexpected token');
+  await expect(page.getByLabel('About you', { exact: true })).toHaveValue(about);
+});
+
 test('quick start produces a themed profile with clickable badges and expandable sections', async ({
   page,
 }) => {
@@ -193,27 +215,6 @@ test('profile README builder previews safely and exports matching Markdown', asy
   await expect(downloadButton).toBeDisabled();
   await page.getByLabel('GitHub username *', { exact: true }).fill('student');
   await page.getByLabel('Display name *', { exact: true }).fill('Ahmad');
-  await page.route('https://example.com/banner.png', (route) =>
-    route.fulfill({
-      contentType: 'image/svg+xml',
-      body: '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300"><rect width="1200" height="300" fill="#25654e"/><text x="60" y="170" fill="white" font-size="60">Building useful software</text></svg>',
-    }),
-  );
-  await page.route('https://example.com/missing.png', (route) => route.abort());
-  await page.getByLabel('Banner image URL', { exact: true }).fill('javascript:alert(1)');
-  await expect(downloadButton).toBeDisabled();
-  await expect(page.locator('.profile-banner')).toHaveCount(0);
-  await page
-    .getByLabel('Banner image URL', { exact: true })
-    .fill('https://example.com/missing.png');
-  await expect(page.locator('.banner-fallback')).toBeVisible();
-  await page
-    .getByLabel('Banner description (alt text)', { exact: true })
-    .fill('Building useful software');
-  await page.getByLabel('Banner image URL', { exact: true }).fill('https://example.com/banner.png');
-  await expect(page.locator('.profile-banner')).toBeVisible();
-  await expect(page.locator('.profile-banner')).toHaveAttribute('alt', 'Building useful software');
-  await expect(page.locator('.banner-fallback')).toHaveCount(0);
   await page.route('https://img.shields.io/**', (route) =>
     route.fulfill({
       contentType: 'image/svg+xml',
@@ -258,9 +259,6 @@ test('profile README builder previews safely and exports matching Markdown', asy
   await page.getByRole('button', { name: 'Markdown', exact: true }).click();
   const markdown = await page.getByLabel('Generated Markdown', { exact: true }).inputValue();
   expect(markdown).toContain("# Hi, I'm Ahmad");
-  expect(markdown.startsWith('![Building useful software](<https://example.com/banner.png>)')).toBe(
-    true,
-  );
   expect(markdown).toContain('&lt;script&gt;');
   expect(markdown).toContain(
     '![PyTorch](https://img.shields.io/badge/PyTorch-25654e?style=for-the-badge&logo=pytorch&logoColor=white)',
@@ -283,7 +281,6 @@ test('profile README builder previews safely and exports matching Markdown', asy
   await page.getByRole('button', { name: 'Remove project 1', exact: true }).click();
   await expect(page.locator('.preview')).not.toContainText('My project');
   expect(apiRequests).toBe(0);
-  await page.getByRole('button', { name: 'Remove banner', exact: true }).click();
   await expect(page.locator('.profile-banner')).toHaveCount(0);
   await page.getByRole('button', { name: 'Clear badges', exact: true }).click();
   await expect(page.locator('.badge-preview img')).toHaveCount(0);

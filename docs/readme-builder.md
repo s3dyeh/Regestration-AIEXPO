@@ -10,7 +10,7 @@ The quick-start path requires only a GitHub username and career focus. Choose Bo
 
 The badge studio has live visual selection, curated logos, four styles, theme-matched colors and links to GitHub topics in the exported README. Expandable sections use [GitHub-supported details markup](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections); there is no exported JavaScript or custom CSS. Theme colors apply to banner and badge images; GitHub controls its own page typography and heading colors.
 
-Generated banners use [Capsule Render](https://github.com/kyechan99/capsule-render) with URL-encoded display name and headline, and send those values to its public image endpoint. This third-party service is best-effort and can be unavailable. The preview reports image failures; custom image URLs remain supported and take precedence. Badges use [Shields.io](https://shields.io/badges/static-badge). Both image providers load independently of the optional OpenAI assistant. Theme, badge style and quick-start preferences are included in saved drafts; older version-1 backups receive defaults for the new settings.
+Generated banners use [Capsule Render](https://github.com/kyechan99/capsule-render) with URL-encoded display name and headline, and send those values to its public image endpoint. This third-party service is best-effort and can be unavailable. The preview reports image failures; custom image URLs in older drafts remain supported and take precedence; their entry section has been removed, and a removal button is available for saved custom banners. Badges use [Shields.io](https://shields.io/badges/static-badge). Both image providers load independently of the optional OpenAI assistant. Theme, badge style and quick-start preferences are included in saved drafts; older version-1 backups receive defaults for the new settings.
 
 - Classic or portfolio layout, with shared section ordering for preview and Markdown. Portfolio includes section navigation.
 - Introduction, location, current work, highlights, tools, learning goals, collaboration, website and LinkedIn.
@@ -55,9 +55,12 @@ Same-origin checks and a best-effort per-instance limit of five calls per ten mi
 ```sh
 npm run test:readme
 npm run typecheck:readme
+npm run test:readme:function
 npm run lint
 npm run build:prod
 npx playwright test e2e/readme.spec.ts
 ```
 
 Server tests use an injected fake upstream. Browser tests cover safe preview/export, autosave and backup restoration, layout visibility, suggestion review, stale edits, undo and quota failures. A real OpenAI response must be verified after the deployment has its key; automated tests do not assert live provider availability.
+
+The function smoke check transpiles the server files using the root TypeScript settings and starts them in plain Node, without tsx's import resolution. Server imports must include their emitted `.js` extensions because this project's `module: preserve` configuration retains ES imports. Extensionless imports can compile successfully yet crash at startup with `ERR_MODULE_NOT_FOUND` and Vercel's `FUNCTION_INVOCATION_FAILED`. After updating these files, redeploy the function; the Angular dev server cannot verify that deployment. Plain-text platform failures now produce a readable client message without exposing JSON parser errors or changing the draft.

@@ -244,36 +244,11 @@
           Expandable sections
         </button>
       </div>
-      <fieldset class="banner-editor">
-        <legend>Your profile banner</legend>
-        <p>Add a wide image to introduce your profile. It will appear above your name.</p>
-        <label for="profile-banner">Banner image URL</label>
-        <input
-          id="profile-banner"
-          type="url"
-          maxlength="2000"
-          placeholder="https://example.com/banner.png"
-          [value]="draft().banner"
-          (input)="update('banner', $event)"
-          aria-describedby="banner-help"
-        />
-        <small id="banner-help"
-          >Use a public, direct image link, for example an image uploaded to your GitHub repository.
-          A wide image around 1200 × 300 works well. The preview loads it from the supplied
-          host.</small
-        >
-        <label for="profile-banner-alt">Banner description (alt text)</label>
-        <input
-          id="profile-banner-alt"
-          maxlength="250"
-          placeholder="Describe your banner for screen readers"
-          [value]="draft().bannerAlt"
-          (input)="update('bannerAlt', $event)"
-        />
-        @if (draft().banner || draft().autoBanner) {
-          <button type="button" class="subtle" (click)="removeBanner()">Remove banner</button>
-        }
-      </fieldset>
+      @if (draft().banner) {
+        <button type="button" class="subtle" (click)="removeBanner()">
+          Remove saved custom banner
+        </button>
+      }
       <label for="profile-name">Display name *</label
       ><input
         id="profile-name"
@@ -481,16 +456,10 @@
             />
             @if (bannerFailed()) {
               <p class="banner-fallback" role="status">
-                The banner could not load. Check that your link opens an image publicly. The URL is
-                still included in your Markdown.
+                The banner could not load. Its image provider may be unavailable. The URL is still
+                included in your Markdown.
               </p>
             }
-          } @else {
-            <div class="banner-placeholder">
-              <span>YOUR PROFILE BANNER</span>
-              <p>Add an image URL to see your banner here.</p>
-              <small>Preview placeholder · not included in your README</small>
-            </div>
           }
           <h2>Hi, I'm {{ draft().name.trim() || '…' }}</h2>
           @if (draft().headline.trim()) {

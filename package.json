@@ -25,7 +25,8 @@
     "test:git-learning": "tsx --tsconfig learning/git/tsconfig.json --test learning/git/tests/*.test.ts",
     "typecheck:git-learning": "tsc --noEmit -p learning/git/tsconfig.json",
     "test:readme": "tsx --tsconfig server/tsconfig.json --test server/*.test.ts",
-    "typecheck:readme": "tsc -p server/tsconfig.json"
+    "typecheck:readme": "tsc -p server/tsconfig.json",
+    "test:readme:function": "node tools/check-readme-function.mjs"
   },
   "private": true,
   "dependencies": {

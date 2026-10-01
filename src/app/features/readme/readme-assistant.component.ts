@@ -252,24 +252,37 @@ export class ReadmeAssistantComponent {
         },
       }),
       selector: (response) =>
-        response
-          .json()
-          .then((data) => {
-            if (!response.ok)
+        response.text().then((body) => {
+          let data: unknown;
+          try {
+            data = JSON.parse(body);
+          } catch {
+            if (response.status >= 500)
               throw new Error(
+                'AI server failed to start or complete the request. Check Vercel Runtime Logs and redeploy the latest function. Your draft is safe.',
+              );
+            if (
+              response.status === 404 ||
+              response.headers.get('content-type')?.includes('text/html')
+            )
+              throw new Error(
+                'The AI endpoint is unavailable. Run vercel dev locally or deploy the API route on Vercel. Your draft is safe.',
+              );
+            throw new Error(
+              'AI returned an unreadable response. Your draft is safe. Please try again later.',
+            );
+          }
+          if (!response.ok)
+            throw new Error(
+              data !== null &&
+                typeof data === 'object' &&
+                'message' in data &&
                 typeof data.message === 'string'
-                  ? data.message
-                  : 'AI is unavailable. Your draft is safe.',
-              );
-            return data;
-          })
-          .catch((error) => {
-            if (response.headers.get('content-type')?.includes('text/html'))
-              throw new Error(
-                'The AI endpoint is available through Vercel. Run vercel dev locally or deploy with OPENAI_API_KEY.',
-              );
-            throw error;
-          }),
+                ? data.message
+                : 'AI is unavailable. Your draft is safe.',
+            );
+          return data;
+        }),
     })
       .pipe(
         timeout(30000),

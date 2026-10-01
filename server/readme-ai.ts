@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { aiRequestSchema, aiResultSchema } from '../src/app/features/readme/readme-ai-contract';
+import { aiRequestSchema, aiResultSchema } from '../src/app/features/readme/readme-ai-contract.js';
 
 interface Dependencies {
   key?: string;

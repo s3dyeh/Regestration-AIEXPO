@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createHash } from 'node:crypto';
 import { StringDecoder } from 'node:string_decoder';
-import { handleReadmeAi } from '../server/readme-ai';
+import { handleReadmeAi } from '../server/readme-ai.js';
 
 // Best-effort instance protection. Use a Vercel Firewall rate-limit rule for a shared production limit.
 const attempts = new Map<string, { until: number; count: number }>();
