@@ -108,7 +108,10 @@ export function analyzeGithub(
     switchMap((user) =>
       request<Repo[]>(`/users/${username}/repos?sort=pushed&per_page=100&type=owner`).pipe(
         switchMap((repos) => {
-          const eligible = repos.filter((repo) => !repo.fork && !repo.archived);
+          const eligible = repos.filter(
+            (repo) =>
+              !repo.fork && !repo.archived && repo.name.toLowerCase() !== user.login.toLowerCase(),
+          );
           const selected = eligible.slice(0, 6);
           return from(selected).pipe(
             concatMap((repo, index) => {

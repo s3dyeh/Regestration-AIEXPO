@@ -98,7 +98,8 @@
       </div>
       <p>
         Enter your GitHub profile. We’ll inspect up to six recently pushed, non-fork, non-archived
-        public repositories from your latest 100.
+        public repositories from your latest 100. Your profile README repository (matching your
+        username) is excluded from the rating.
       </p>
     </div>
     <form class="analysis-form" (submit)="analyze($event)" [attr.aria-busy]="pending()">
@@ -267,8 +268,8 @@
               {{ result.selection.selected }} selected from {{ result.selection.eligible }} eligible
               repositories among {{ result.selection.fetched }} fetched ({{ result.totalPublic }}
               public repositories reported). We inspect up to six recently pushed, non-fork,
-              non-archived repositories from the latest 100. This is a selected portfolio sample,
-              not your entire GitHub activity.
+              non-archived repositories from the latest 100, excluding your profile README
+              repository. This is a selected portfolio sample, not your entire GitHub activity.
             </p>
             <p>
               Per repository: root README, up to two documentation files, three source files spread
@@ -312,8 +313,9 @@
             <div class="report-body">
               <h3>No eligible repositories found.</h3>
               <p>
-                No non-fork, non-archived public repositories were found in the latest 100. Private
-                work may contain evidence that this report cannot see.
+                No eligible public project repositories were found in the latest 100. Profile README
+                repositories, forks and archived repositories are excluded. Private work may contain
+                evidence that this report cannot see.
               </p>
             </div>
           } @else {

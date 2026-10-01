@@ -1,8 +1,10 @@
 import { expect, test } from '@playwright/test';
 
 test('GitHub evidence, role map, actions and downloadable report', async ({ page }) => {
+  const profileRequests: string[] = [];
   await page.route('https://api.github.com/**', async (route) => {
     const url = route.request().url();
+    if (/\/repos\/student\/student\//i.test(url)) profileRequests.push(url);
     let data: unknown;
     if (url.includes('/git/trees/'))
       data = {
@@ -33,6 +35,7 @@ test('GitHub evidence, role map, actions and downloadable report', async ({ page
       }));
     else if (url.includes('/repos?'))
       data = [
+        { name: 'StUdEnT', fork: false, archived: false, default_branch: 'main' },
         {
           name: 'portfolio-api',
           description: 'A public API project',
@@ -44,7 +47,7 @@ test('GitHub evidence, role map, actions and downloadable report', async ({ page
         { name: 'forked-project', fork: true, archived: false },
         { name: 'archived-project', fork: false, archived: true },
       ];
-    else data = { login: 'student', public_repos: 3 };
+    else data = { login: 'student', public_repos: 4 };
     await route.fulfill({ json: data });
   });
   await page.goto('/');
@@ -100,7 +103,11 @@ test('GitHub evidence, role map, actions and downloadable report', async ({ page
   expect(exported.careerPlan.completed).toBe(0);
   expect(exported.score.lower).toBe(39);
   expect(exported.score.upper).toBe(46);
-  expect(exported.selection).toEqual({ fetched: 3, eligible: 1, selected: 1, limit: 6 });
+  expect(exported.selection).toEqual({ fetched: 4, eligible: 1, selected: 1, limit: 6 });
+  expect(profileRequests).toEqual([]);
+  expect(exported.repositories.map((repo: { name: string }) => repo.name)).toEqual([
+    'portfolio-api',
+  ]);
   await page.screenshot({ path: 'test-results/careerlens-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 375, height: 812 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
