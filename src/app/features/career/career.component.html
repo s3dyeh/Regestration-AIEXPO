@@ -1,0 +1,624 @@
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav wrap">
+  <a class="brand" href="#main" aria-label="CareerLens AI home"
+    ><span class="brand-icon" aria-hidden="true">◎</span> CareerLens<span class="ai">AI</span></a
+  >
+  <nav aria-label="Main navigation">
+    <a href="#how">How it works</a>
+    <a routerLink="/learn-git">Start learning Git</a>
+    <a routerLink="/readme">Start readme now !</a>
+    <a routerLink="/attendance" class="event-link">AI EXPO <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+<main id="main">
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="status-dot"></span> YOUR CODE. A CLEARER PICTURE.</p>
+      <h1 id="hero-title">
+        Your skills.<br />Your possibilities.<br /><span>Your next move.</span>
+      </h1>
+      <p class="intro">
+        You’ve been building. Now see the story your projects tell. Turn your public GitHub
+        repositories into an overall score, a practical quality breakdown and a clearer next step.
+      </p>
+      <a class="button primary" href="#analyze"
+        >Analyze my GitHub <span aria-hidden="true">↗</span></a
+      >
+      <p class="hero-note">
+        For students, fresh graduates &amp; early-career talent.<br />No account needed. Public
+        repositories only.
+      </p>
+    </div>
+    <div class="visual" aria-label="Illustrative career evidence card, not an analysis result">
+      <div class="orbit orbit-one"></div>
+      <div class="orbit orbit-two"></div>
+      <span class="source source-cv"
+        ><span class="material-icons" aria-hidden="true">code</span> Your repositories</span
+      >
+      <span class="source source-git"
+        ><span class="material-icons" aria-hidden="true">account_tree</span> Your
+        possibilities</span
+      >
+      <article class="snapshot">
+        <div class="snapshot-top">
+          <span class="eyebrow">THROUGH THE LENS</span
+          ><span class="sample-label">Illustration</span>
+        </div>
+        <div class="person">
+          <span class="avatar" aria-hidden="true">&lt;/&gt;</span>
+          <div>
+            <strong>A future worth exploring.</strong
+            ><small>Start with the work you’ve done.</small>
+          </div>
+        </div>
+        <div class="track">
+          <small>CONNECT THE DOTS</small>
+          <h2>Code → Evidence <span aria-hidden="true">↗</span></h2>
+          <span class="positive">Every signal has a source</span>
+        </div>
+        <div class="skill-pills"><span>Languages</span><span>Tests</span><span>CI / CD</span></div>
+        <div class="next">
+          <span class="material-icons" aria-hidden="true">subdirectory_arrow_right</span>
+          <div>
+            <small>A CLEARER NEXT STEP</small><strong>Build on what you already know.</strong>
+          </div>
+        </div>
+      </article>
+      <div class="evidence-note">
+        <span class="material-icons" aria-hidden="true">verified</span>
+        <div>
+          <strong>Evidence, not guesswork.</strong
+          ><small>Follow the insight back to the code.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="questions wrap" aria-label="What you can learn">
+    <div>
+      <span>01 / DISCOVER</span>
+      <h2>What do I demonstrate?</h2>
+      <p>Find technologies and engineering signals in your public work.</p>
+    </div>
+    <div>
+      <span>02 / UNDERSTAND</span>
+      <h2>Where could I go?</h2>
+      <p>Explore directions using a transparent capability map.</p>
+    </div>
+    <div>
+      <span>03 / MOVE FORWARD</span>
+      <h2>What’s my next move?</h2>
+      <p>Get three practical ways to make your evidence stronger.</p>
+    </div>
+  </section>
+  <section id="analyze" class="analysis-section wrap">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">LET YOUR WORK SPEAK</p>
+        <h2>A little perspective.<br />A lot of possibility.</h2>
+      </div>
+      <p>
+        Enter your GitHub profile. We’ll inspect up to six recently pushed, non-fork, non-archived
+        public repositories from your latest 100.
+      </p>
+    </div>
+    <form class="analysis-form" (submit)="analyze($event)" [attr.aria-busy]="pending()">
+      <label for="github">GitHub username or profile URL</label>
+      <div class="input-row">
+        <input
+          id="github"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="github.com/your-username"
+          [value]="input()"
+          (input)="input.set($any($event.target).value)"
+          [readOnly]="pending()"
+          aria-describedby="github-help github-error"
+          required
+        /><button type="submit" class="button primary" [disabled]="pending()">
+          {{ pending() ? 'Analyzing…' : 'Analyze my GitHub' }} <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+      <p id="github-help">
+        Your browser requests public data directly from GitHub. No files are uploaded or saved by
+        this app.
+      </p>
+      <p id="github-error" class="error" role="alert">{{ error() }}</p>
+      <details>
+        <summary>GitHub access options · avoid the shared public request limit</summary>
+        <p>
+          Public access is limited to 60 requests per hour per IP. For repeated analyses, optionally
+          use your own GitHub personal access token with public-repository read access. No write
+          permission is needed.
+        </p>
+        <label for="github-token">GitHub token (optional)</label>
+        <div class="input-row">
+          <input
+            id="github-token"
+            type="password"
+            autocomplete="off"
+            spellcheck="false"
+            [value]="token()"
+            [readOnly]="pending()"
+            (change)="setToken($any($event.target).value)"
+            aria-describedby="token-help"
+          />
+          <button
+            type="button"
+            class="button secondary"
+            [disabled]="pending() || !token()"
+            (click)="setToken('')"
+          >
+            Clear token
+          </button>
+        </div>
+        <p id="token-help">
+          Sent only to api.github.com. Kept in this page’s memory, never saved to browser storage or
+          included in downloaded reports. Reload or clear it to remove it. Successful responses are
+          reused for up to 5 minutes; scores can reflect that cached snapshot.
+        </p>
+        <a
+          href="https://github.com/settings/personal-access-tokens/new"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Create a fine-grained token on GitHub ↗</a
+        >
+      </details>
+      @if (pending()) {
+        <div class="loading">
+          <p role="status">{{ progress() }}</p>
+          <button type="button" class="text-link" (click)="cancel()">Cancel</button>
+        </div>
+      }
+    </form>
+  </section>
+  @if (!report() || report()?.repositories?.length === 0) {
+    <div class="wrap">
+      <app-career-path
+        [plan]="careerPlan()"
+        (focusChange)="chooseFocus($event)"
+        (milestoneChange)="validateMilestone($event)"
+      />
+    </div>
+  }
+  @if (report(); as result) {
+    <section id="report" class="report-section">
+      <div class="wrap">
+        <div class="report">
+          <div class="report-header">
+            <div>
+              <span class="sample-label">PUBLIC GITHUB EVIDENCE</span>
+              <h2>{{ result.username }}’s career lens</h2>
+              <p>
+                {{ result.repositories.length }} repositories selected ·
+                {{ result.totalPublic }} public repositories
+              </p>
+            </div>
+            <button class="button secondary" (click)="download()">
+              <span class="material-icons" aria-hidden="true">download</span> Download report
+            </button>
+          </div>
+          @if (result.repositories.length > 0) {
+            <section class="score-overview" aria-label="GitHub profile score">
+              <div class="score-total">
+                <p class="eyebrow">
+                  {{
+                    score().score === null
+                      ? 'INSUFFICIENT EVIDENCE'
+                      : score().coverage < 100
+                        ? 'PROVISIONAL EVIDENCE SCORE'
+                        : 'REPOSITORY EVIDENCE SCORE'
+                  }}
+                </p>
+                <div class="score-number" data-testid="overall-score">
+                  {{ score().score ?? '—' }}<span>/100</span>
+                </div>
+                <p>{{ score().coverage }}% weighted evidence coverage</p>
+                <p>Unresolved-evidence range: {{ score().lower }}–{{ score().upper }} / 100</p>
+                @if (score().score === null) {
+                  <p>At least 60% weighted coverage is required for a score.</p>
+                }
+                <small
+                  >Custom rubric v{{ scoringVersion }} · Evidence coverage is not statistical
+                  confidence or proof of ability.</small
+                >
+              </div>
+              <div class="score-categories">
+                @for (category of categoryScores(); track category.name) {
+                  <div>
+                    <div class="score-label">
+                      <strong>{{ category.name }}</strong
+                      ><span>{{ category.score ?? '—' }} / 100</span>
+                    </div>
+                    <progress
+                      [value]="category.score ?? 0"
+                      max="100"
+                      [attr.aria-label]="
+                        category.name + ': ' + (category.score ?? 'unassessed') + ' percent'
+                      "
+                    ></progress
+                    ><small
+                      >{{ category.coverage }}% assessed{{
+                        category.coverage < 100 ? ' · provisional' : ''
+                      }}</small
+                    >
+                  </div>
+                }
+              </div>
+            </section>
+          }
+          <details class="score-method">
+            <summary>How are the points calculated?</summary>
+            <p>
+              Rubric v{{ scoringVersion }} assigns 100 possible points per repository: README 20,
+              commit messages 15, code-maintenance practices 20, documentation 20, and
+              automation/stewardship 25. Checks have explicit weights; ratios earn partial credit.
+              The overall score is 100 × earned ÷ assessed weight, pooled across the selected
+              repositories. Missing evidence can change effective category weights; category bars
+              are independent percentages, not additive points.
+            </p>
+            <p>
+              We withhold scores below 60% weighted coverage. Unknown evidence is not a failure. The
+              range shows the result if all unknown checks failed versus all passed; it is not a
+              statistical confidence interval. Custom weights and thresholds are transparent product
+              choices, not validated predictors of performance or hiring success.
+            </p>
+            <p>
+              {{ result.selection.selected }} selected from {{ result.selection.eligible }} eligible
+              repositories among {{ result.selection.fetched }} fetched ({{ result.totalPublic }}
+              public repositories reported). We inspect up to six recently pushed, non-fork,
+              non-archived repositories from the latest 100. This is a selected portfolio sample,
+              not your entire GitHub activity.
+            </p>
+            <p>
+              Per repository: root README, up to two documentation files, three source files spread
+              deterministically across sorted paths, up to 30 user-attributed default-branch
+              commits, and up to 10 GitHub Actions runs. Files over 100 KB remain unknown. API reads
+              occur over an analysis window, not an atomic snapshot. Private work, forks and
+              contributions to other owners are outside this report.
+            </p>
+            <p>
+              English and Arabic section keywords are recognized; other languages and documentation
+              conventions may be missed. Commit counts, dates, stars and followers earn no points.
+              At least three non-merge commits are needed to assess message patterns. Configuration
+              presence does not prove checks pass; successful workflows do not prove tests ran. Four
+              low-weight source-style points do not measure clean architecture or correctness.
+            </p>
+            <p>
+              Informed by
+              <a
+                href="https://github.com/ossf/scorecard/blob/main/docs/checks.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                >OpenSSF Scorecard</a
+              >,
+              <a
+                href="https://www.bestpractices.dev/en/criteria/0"
+                target="_blank"
+                rel="noopener noreferrer"
+                >OpenSSF Best Practices</a
+              >
+              and
+              <a
+                href="https://www.microsoft.com/en-us/research/publication/the-space-of-developer-productivity-theres-more-to-it-than-you-think/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >SPACE research</a
+              >. This is an independent rubric, not an OpenSSF score, certification or developer
+              ranking.
+            </p>
+          </details>
+          @if (result.repositories.length === 0) {
+            <div class="report-body">
+              <h3>No eligible repositories found.</h3>
+              <p>
+                No non-fork, non-archived public repositories were found in the latest 100. Private
+                work may contain evidence that this report cannot see.
+              </p>
+            </div>
+          } @else {
+            <div class="tabs" role="group" aria-label="Report sections">
+              @for (item of tabs; track item) {
+                <button
+                  [class.active]="tab() === item"
+                  [attr.aria-pressed]="tab() === item"
+                  (click)="tab.set(item)"
+                >
+                  {{ item }}
+                </button>
+              }
+            </div>
+            <div class="report-body">
+              @if (tab() === 'Score breakdown') {
+                <div class="report-intro">
+                  <h3>Every point has a reason.</h3>
+                  <p>
+                    Open a category to inspect its weighted checks and source evidence. Improve a
+                    missing item, then reanalyze your profile.
+                  </p>
+                </div>
+                @for (repo of result.repositories; track repo.name) {
+                  <article class="repo-score">
+                    <div class="repo-heading">
+                      <h3>
+                        <a [href]="repo.url" target="_blank" rel="noopener noreferrer"
+                          >{{ repo.name }} ↗</a
+                        >
+                      </h3>
+                      <span class="repo-points"
+                        >{{ summarizeScore(repo.categories).score ?? '—' }} / 100</span
+                      >
+                    </div>
+                    <p class="score-context">
+                      {{ summarizeScore(repo.categories).coverage }}% assessed ·
+                      {{ repo.commitCount ?? 'Unavailable' }} authored commits sampled ·
+                      {{ repo.sampledFiles.length }} content files selected ·
+                      {{ repo.sampleScope.sourceSelected }}/{{
+                        repo.sampleScope.sourceCandidates
+                      }}
+                      supported source files sampled · {{ repo.sampleScope.documentSelected }}/{{
+                        repo.sampleScope.documentCandidates
+                      }}
+                      documentation files sampled
+                    </p>
+                    @if (repo.limitation) {
+                      <p class="error">{{ repo.limitation }}</p>
+                    }
+                    @for (category of repo.categories; track category.name) {
+                      <details class="category-details">
+                        <summary>
+                          {{ category.name }}
+                          <span>{{ summarizeScore([category]).score ?? '—' }} / 100</span>
+                        </summary>
+                        @for (check of category.checks; track check.label) {
+                          <div class="score-check">
+                            <div class="check-heading">
+                              <strong>{{ check.label }}</strong
+                              ><span [class.earned]="check.passed === true">{{
+                                !check.applicable
+                                  ? 'Not applicable'
+                                  : checkPoints(check.value, check.weight)
+                              }}</span>
+                            </div>
+                            <p>{{ check.evidence }}</p>
+                            @if (check.passed === false) {
+                              <p class="improvement">Next step: {{ check.action }}</p>
+                            }
+                            <a [href]="check.url" target="_blank" rel="noopener noreferrer"
+                              >Inspect source ↗</a
+                            >
+                          </div>
+                        }
+                      </details>
+                    }
+                    @if (repo.sampledFiles.length) {
+                      <details>
+                        <summary>Content sample</summary>
+                        <ul>
+                          @for (file of repo.sampledFiles; track file.path) {
+                            <li>
+                              <a [href]="file.url" target="_blank" rel="noopener noreferrer">{{
+                                file.path
+                              }}</a>
+                              · {{ file.assessed ? 'Read' : 'Unavailable' }}
+                            </li>
+                          }
+                        </ul>
+                      </details>
+                    }
+                  </article>
+                }
+              } @else if (tab() === 'Evidence profile') {
+                <div class="report-intro">
+                  <h3>A skill is more than a keyword.</h3>
+                  <p>
+                    Detected technologies. Open each repository below to inspect the supporting
+                    files.
+                  </p>
+                </div>
+                <div class="skill-pills">
+                  @for (skill of skills(); track skill.name) {
+                    <span
+                      >{{ skill.name }} · {{ skill.repos.length }}
+                      {{ skill.repos.length === 1 ? 'repository' : 'repositories' }}</span
+                    >
+                  } @empty {
+                    <p>No supported technology signals detected.</p>
+                  }
+                </div>
+                @for (repo of result.repositories; track repo.name) {
+                  <article class="repo">
+                    <div class="repo-heading">
+                      <h3>
+                        <a [href]="repo.url" target="_blank" rel="noopener noreferrer"
+                          >{{ repo.name }} ↗</a
+                        >
+                      </h3>
+                      <span class="sample-label">{{ repo.language || 'No primary language' }}</span>
+                    </div>
+                    <p>{{ repo.description }}</p>
+                    <div class="skill-pills">
+                      @for (signal of repo.signals; track signal) {
+                        <span>{{ signal }} detected</span>
+                      }
+                    </div>
+                    @if (repo.limitation) {
+                      <p class="error">{{ repo.limitation }}</p>
+                    }
+                    <details>
+                      <summary>Inspect supporting files ({{ repo.files.length }})</summary>
+                      <ul>
+                        @for (file of repo.files; track file.path) {
+                          <li>
+                            <a [href]="file.url" target="_blank" rel="noopener noreferrer">{{
+                              file.path
+                            }}</a>
+                          </li>
+                        } @empty {
+                          <li>
+                            {{
+                              repo.inspected
+                                ? 'No files matched the supported detection rules.'
+                                : 'File inspection unavailable; language metadata only.'
+                            }}
+                          </li>
+                        }
+                      </ul>
+                    </details>
+                  </article>
+                }
+                <p class="principle">
+                  No evidence found does not mean no skill. Private projects and unsupported file
+                  conventions may contain additional evidence.
+                </p>
+              } @else if (tab() === 'Career path') {
+                <app-career-path
+                  [plan]="careerPlan()"
+                  (focusChange)="chooseFocus($event)"
+                  (milestoneChange)="validateMilestone($event)"
+                />
+              } @else if (tab() === 'Career discovery') {
+                <div class="report-intro">
+                  <h3>Several possible directions.</h3>
+                  <p>
+                    Seven focus paths, including AI and software engineering. Counts show milestones
+                    with related evidence and no observed related check failures; they do not
+                    measure readiness. Choose the direction you want to pursue.
+                  </p>
+                </div>
+                @for (role of roles(); track role.name) {
+                  <article class="role">
+                    <h4>{{ role.name }}</h4>
+                    <button
+                      class="button secondary"
+                      (click)="chooseFocus(role.id); tab.set('Career path')"
+                    >
+                      Build my {{ role.name }} path
+                    </button>
+                    <p>
+                      <strong
+                        >{{ role.found.length }} of {{ role.capabilities.length }} mapped indicators
+                        detected</strong
+                      >
+                    </p>
+                    <p>Detected: {{ role.found.join(', ') || 'None in the inspected evidence' }}</p>
+                    <details>
+                      <summary>See the capability map</summary>
+                      <p>{{ role.capabilities.join(', ') }}</p>
+                    </details>
+                  </article>
+                }
+                <p class="principle">
+                  Current evidence does not determine long-term potential or personal preference.
+                  These suggestions do not compare against current jobs.
+                </p>
+              } @else {
+                <div class="report-intro">
+                  <h3>Your next 3 moves.</h3>
+                  <p>Practical improvements linked to the inspected repositories.</p>
+                </div>
+                @for (action of actions(); track action.title; let i = $index) {
+                  <article class="action">
+                    <span class="action-number">0{{ i + 1 }}</span>
+                    <div>
+                      <h4>{{ action.title }}</h4>
+                      <p>{{ action.text }}</p>
+                      <details>
+                        <summary>Why am I seeing this?</summary>
+                        <p>{{ action.why }}</p>
+                      </details>
+                    </div>
+                  </article>
+                } @empty {
+                  <p>
+                    No assessed checks currently need improvement. Unassessed checks may still need
+                    a retry. Review the score breakdown for coverage and actions.
+                  </p>
+                }
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+  <section class="learning-invitation wrap" aria-labelledby="readme-title">
+    <div>
+      <p class="eyebrow">GIVE YOUR WORK AN INTRODUCTION</p>
+      <h2 id="readme-title">Start readme now !</h2>
+      <p>
+        Write your GitHub profile README with a live preview, project highlights and learning goals.
+        Copy the Markdown or download a ready-to-use file.
+      </p>
+      <p class="learning-note">No token or API requests. Write in your own words.</p>
+    </div>
+    <a class="button primary" routerLink="/readme">Open README builder ↗</a>
+  </section>
+  <section class="learning-invitation wrap" aria-labelledby="learning-title">
+    <div>
+      <p class="eyebrow">TURN INSIGHT INTO PRACTICE</p>
+      <h2 id="learning-title">Start learning Git</h2>
+      <p>
+        Build confidence with 30 hands-on challenges. Practice commits, branches, merge conflicts,
+        stash and team workflows in an interactive Arabic workshop.
+      </p>
+      <p class="learning-note">
+        No installation or GitHub account. Your progress stays in this browser.
+      </p>
+    </div>
+    <a class="button primary" routerLink="/learn-git"
+      >Open the Git workshop <span aria-hidden="true">↗</span></a
+    >
+  </section>
+  <section id="how" class="how wrap">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">A TRANSPARENT PROCESS</p>
+        <h2>Less guesswork.<br />More direction.</h2>
+      </div>
+      <p>You should be able to understand every insight, and trace it back to your work.</p>
+    </div>
+    <div class="steps">
+      <article>
+        <span class="step-number">01</span>
+        <h3>Find your public work</h3>
+        <p>
+          We read public repository metadata through the GitHub API. Forks and archived repositories
+          are excluded from inspection.
+        </p>
+        <span class="step-tag">No login or token needed</span>
+      </article>
+      <article>
+        <span class="step-number">02</span>
+        <h3>Look for evidence</h3>
+        <p>
+          README and documentation content, commit messages, source samples and repository
+          configuration feed a transparent scoring rubric.
+        </p>
+        <span class="step-tag">Sources you can inspect</span>
+      </article>
+      <article>
+        <span class="step-number">03</span>
+        <h3>Choose your next move</h3>
+        <p>
+          Explore a transparent role map and recommendations linked to your repositories. Your
+          direction is always your choice.
+        </p>
+        <span class="step-tag">Practical, explainable actions</span>
+      </article>
+    </div>
+  </section>
+  <section class="closing wrap">
+    <span class="brand-icon" aria-hidden="true">◎</span>
+    <p class="eyebrow">YOUR STARTING POINT IS NOT YOUR LIMIT</p>
+    <h2>Build on what you know.<br />Become what you imagine.</h2>
+    <a class="button primary" href="#analyze"
+      >Find my next move <span aria-hidden="true">↗</span></a
+    >
+  </section>
+</main>
+<footer class="wrap">
+  <a class="brand" href="#main">CareerLens<span class="ai">AI</span></a
+  ><span>Evidence-driven career direction.</span
+  ><a routerLink="/attendance">AI EXPO attendance ↗</a>
+</footer>

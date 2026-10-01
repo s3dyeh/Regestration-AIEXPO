@@ -1,0 +1,220 @@
+.score-overview {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 35px;
+  margin: 0 30px 20px;
+  padding: 28px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.score-total {
+  border-right: 1px solid var(--line);
+  padding-right: 25px;
+}
+.score-number {
+  font-size: 76px;
+  font-weight: 700;
+  letter-spacing: -4px;
+  line-height: 1.25;
+  color: var(--green);
+}
+.score-number span {
+  font-size: 22px;
+  color: var(--muted);
+  letter-spacing: -1px;
+  margin-left: 7px;
+}
+.score-total > p:last-child {
+  font-size: 12px;
+}
+.score-categories {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 28px;
+}
+.score-label,
+.check-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+}
+.score-label span {
+  white-space: nowrap;
+}
+.score-categories small {
+  font-size: 10px;
+  color: var(--muted);
+}
+progress {
+  display: block;
+  width: 100%;
+  height: 7px;
+  margin: 10px 0 5px;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  accent-color: var(--green);
+  background: var(--line);
+}
+progress::-webkit-progress-bar {
+  background: var(--line);
+}
+progress::-webkit-progress-value {
+  background: var(--green);
+}
+progress::-moz-progress-bar {
+  background: var(--green);
+}
+.score-method {
+  margin: 0 30px 24px;
+}
+.repo-score {
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+.repo-score h3 {
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.repo-score a:hover {
+  text-decoration: underline;
+}
+.repo-points {
+  font-weight: 800;
+  color: var(--green);
+}
+.score-context {
+  font-size: 11px;
+  margin: 10px 0 18px;
+}
+.category-details {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: 8px 0;
+  padding: 2px 14px;
+}
+.category-details > summary {
+  font-size: 13px;
+  min-height: 44px;
+}
+.category-details > summary > span {
+  float: right;
+  font-weight: 700;
+}
+.score-check {
+  padding: 15px 0;
+  border-top: 1px solid var(--line);
+}
+.check-heading span {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.check-heading .earned {
+  color: var(--green);
+}
+.score-check p {
+  margin: 8px 0;
+  font-size: 12px;
+}
+.score-check .improvement {
+  color: var(--ink);
+}
+.score-check a {
+  color: var(--green);
+  text-decoration: underline;
+  font-size: 11px;
+}
+.repo-score ul {
+  padding-left: 18px;
+  overflow-wrap: anywhere;
+}
+.repo-score > .error {
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.tabs {
+  overflow-x: auto;
+}
+.tabs button {
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .score-overview {
+    grid-template-columns: 1fr;
+    margin-inline: 22px;
+    padding: 20px;
+    gap: 20px;
+  }
+  .score-total {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 16px;
+  }
+  .score-categories {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .score-method {
+    margin-inline: 22px;
+  }
+  .check-heading {
+    align-items: flex-start;
+  }
+  .check-heading strong {
+    font-size: 12px;
+  }
+  .score-number {
+    font-size: 64px;
+  }
+}
+.learning-invitation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 64px;
+  padding: 32px;
+  background: #edf1e8;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.learning-invitation h2 {
+  font-size: 30px;
+  letter-spacing: -1px;
+  margin: 14px 0;
+}
+.learning-invitation p:not(.eyebrow) {
+  max-width: 660px;
+  font-size: 14px;
+}
+.learning-invitation .learning-note {
+  margin-top: 12px;
+  font-size: 12px !important;
+}
+.learning-invitation > a {
+  flex-shrink: 0;
+}
+@media (max-width: 760px) {
+  .nav {
+    flex-wrap: wrap;
+    padding-block: 16px;
+  }
+  .nav nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .learning-invitation {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 24px;
+  }
+  .learning-invitation h2 {
+    font-size: 26px;
+  }
+}

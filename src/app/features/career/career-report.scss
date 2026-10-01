@@ -1,0 +1,180 @@
+.analysis-form {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 30px;
+}
+.analysis-form label {
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.input-row {
+  display: flex;
+  gap: 12px;
+}
+.input-row input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid #96a69c;
+  border-radius: 6px;
+  padding: 12px 16px;
+  background: white;
+  color: var(--ink);
+  font-size: 16px;
+}
+.analysis-form p {
+  font-size: 12px;
+  margin-top: 12px;
+}
+.error {
+  color: #a52b32;
+  overflow-wrap: anywhere;
+}
+.error:empty {
+  display: none;
+}
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.text-link {
+  background: transparent;
+  border: 0;
+  text-decoration: underline;
+  color: var(--green);
+  min-height: 44px;
+}
+.report-section {
+  background: #edf1e8;
+  padding-block: 60px;
+}
+.report {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 30px;
+}
+.report-header h2 {
+  font-size: 23px;
+  margin: 14px 0 9px;
+  overflow-wrap: anywhere;
+}
+.report-header p {
+  font-size: 12px;
+}
+.method {
+  padding: 0 30px 24px;
+  font-size: 12px;
+}
+.tabs {
+  display: flex;
+  gap: 25px;
+  padding-inline: 30px;
+  border-bottom: 1px solid var(--line);
+}
+.tabs button {
+  background: none;
+  color: var(--muted);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 16px 0;
+  font-size: 13px;
+  min-height: 48px;
+}
+.tabs button.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+  font-weight: 800;
+}
+.report-body {
+  padding: 30px;
+}
+.report-intro {
+  margin-bottom: 25px;
+}
+.report-intro h3 {
+  font-size: 20px;
+}
+.report-intro p {
+  font-size: 13px;
+  margin-top: 9px;
+}
+.repo {
+  border-top: 1px solid var(--line);
+  padding-block: 22px;
+}
+.repo h3 {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.repo > p {
+  font-size: 13px;
+  margin: 12px 0;
+}
+.repo-heading {
+  flex-wrap: wrap;
+}
+.repo a:hover {
+  text-decoration: underline;
+}
+.repo li {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  margin: 8px 0;
+}
+.repo ul {
+  padding-left: 20px;
+}
+.principle {
+  padding: 16px;
+  background: var(--paper);
+  font-size: 12px;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+details {
+  font-size: 12px;
+}
+summary {
+  color: var(--green);
+  padding-block: 10px;
+  font-weight: 600;
+}
+details p {
+  margin: 8px 0 14px;
+  max-width: 650px;
+}
+.role {
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+}
+.role h4,
+.action h4 {
+  font-size: 18px;
+}
+.role p,
+.action p {
+  font-size: 13px;
+  margin-top: 10px;
+}
+.action {
+  display: flex;
+  gap: 24px;
+  border-top: 1px solid var(--line);
+  padding: 25px 0;
+}
+.action-number {
+  font-size: 24px;
+  color: var(--green);
+}

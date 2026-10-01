@@ -1,0 +1,326 @@
+@let git = store.git();
+@switch (store.challenge().scene) {
+  @case ('collision') {
+    <section class="overwrite-experiment" aria-label="محاكاة فقدان تعديل عند استبدال الملف">
+      <div class="copy-options">
+        <article>
+          <small>EDIT A / FINAL_V2.TXT</small>
+          <pre dir="ltr">Venue: <mark>Auditorium</mark><br>Time: 10:00</pre>
+          <button
+            class="button ghost"
+            data-action="intro:sara"
+            [attr.aria-pressed]="store.session().introChoice === 'sara'"
+            (click)="store.dispatch({ type: 'intro/choose', choice: 'sara' })"
+          >
+            استبدل بالنسخة A ↓
+          </button>
+        </article>
+        <article>
+          <small>EDIT B / FINAL_FINAL.TXT</small>
+          <pre dir="ltr">Venue: Room A<br>Time: <mark>12:00</mark></pre>
+          <button
+            class="button ghost"
+            data-action="intro:omar"
+            [attr.aria-pressed]="store.session().introChoice === 'omar'"
+            (click)="store.dispatch({ type: 'intro/choose', choice: 'omar' })"
+          >
+            استبدل بالنسخة B ↓
+          </button>
+        </article>
+      </div>
+      <div class="overwrite-result" aria-live="polite">
+        <span class="file-icon">≡</span>
+        <div>
+          <small>الملف المشترك بعد الاستبدال · تجربة منفصلة</small>
+          <pre dir="ltr">{{
+            store.session().introChoice === 'sara'
+              ? 'Venue: Auditorium\nTime: 10:00'
+              : store.session().introChoice === 'omar'
+                ? 'Venue: Room A\nTime: 12:00'
+                : 'Venue: Room A\nTime: 10:00'
+          }}</pre>
+        </div>
+        <div class="lost-change">
+          @if (store.session().introChoice) {
+            <b>تعديل ضائع</b
+            ><del dir="ltr">{{
+              store.session().introChoice === 'sara' ? 'Time: 12:00' : 'Venue: Auditorium'
+            }}</del>
+          } @else {
+            <span>اختر نسخة وراقب ما يُمحى</span>
+          }
+        </div>
+      </div>
+      <div class="repository-seed" [class.ready]="git.initialized">
+        <span>{{ git.initialized ? '✓' : '○' }}</span
+        >{{
+          git.initialized
+            ? '.git جاهز · الآن يمكنك حفظ نسخ بدل استبدالها'
+            : 'لا يوجد تاريخ يحمي التعديلات بعد'
+        }}<code>{{ commits().length }} commits</code>
+      </div>
+    </section>
+  }
+  @case ('snapshot') {
+    <div class="pipeline">
+      @for (card of snapshot(); track card.className; let i = $index) {
+        <div [class]="'state-card ' + card.className">
+          <div>
+            <span>{{ card.label }}</span
+            ><span class="state-index">0{{ i + 1 }}</span>
+          </div>
+          <small>{{ card.en }}</small>
+          <pre dir="ltr">{{ card.value ?? '(not tracked yet)' }}</pre>
+          <span class="state-bottom">{{ card.status }}</span>
+        </div>
+        @if (i < 2) {
+          <div class="pipeline-arrow" aria-hidden="true">
+            <span>←</span><code>{{ i === 0 ? 'add' : 'commit' }}</code>
+          </div>
+        }
+      }
+    </div>
+  }
+  @case ('conflict') {
+    <div class="conflict-experiment">
+      <div class="conflict-sides">
+        @for (side of conflict(); track side.branch) {
+          <article>
+            <code>{{ side.branch }}</code>
+            <pre dir="ltr">{{ side.text }}</pre>
+          </article>
+        }
+      </div>
+      <div class="conflict-decision" [class.unresolved]="git.merging">
+        {{
+          git.merging
+            ? 'نفس السطر، قيمتان. التاريخان محفوظان — القرار لك.'
+            : 'راقب النسختين المحفوظتين أثناء التعديل والدمج.'
+        }}
+      </div>
+      <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
+    </div>
+  }
+  @case ('remote') {
+    <section class="network-experiment">
+      <div class="network-machines">
+        <article>
+          <small>YOUR MACHINE</small>
+          <h3>جهازك</h3>
+          <div class="ref-chip">
+            <code>main → {{ store.tip() }}</code>
+          </div>
+          <div class="ref-chip tracking">
+            <code>origin/main → {{ git.tracking['main'] ?? '?' }}</code>
+          </div>
+          <pre dir="ltr">{{ git.working['program.txt'] }}</pre>
+          <div class="network-event">
+            <small>event.txt · المكان والوقت</small>
+            <pre dir="ltr">{{ git.working['event.txt'] }}</pre>
+          </div>
+          <div class="object-dots" [attr.aria-label]="commits().length + ' commits محلية'">
+            @for (id of commits(); track id) {
+              <span [title]="id">{{ id }}</span>
+            }
+          </div>
+        </article>
+        <div class="network-wire">
+          <span dir="ltr">push →</span>
+          <div class="wire-line"></div>
+          <span dir="ltr">← fetch</span
+          ><b>{{ store.tip() === remote().id ? 'متزامنان' : 'تاريخ مختلف' }}</b>
+        </div>
+        <article>
+          <small>SIMULATED REMOTE</small>
+          <h3>المستودع البعيد</h3>
+          <div class="ref-chip">
+            <code>main → {{ remote().id ?? '∅' }}</code>
+          </div>
+          <pre dir="ltr">{{ remote().program }}</pre>
+          <div class="network-event">
+            <small>event.txt · المكان والوقت</small>
+            <pre dir="ltr">{{ remote().event }}</pre>
+          </div>
+          <div class="object-dots">
+            @for (id of remote().commits; track id) {
+              <span [title]="id">{{ id }}</span>
+            }
+          </div>
+        </article>
+      </div>
+      <div class="network-caption">
+        origin/main = آخر معرفة محلية بالبعيد · جميع عمليات النقل هنا محاكاة
+      </div>
+      <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
+    </section>
+  }
+  @case ('recovery') {
+    @let r = recovery();
+    <section class="recovery-scene" aria-label="مقارنة الملفات والتاريخ قبل وبعد العملية">
+      <div class="recovery-title">
+        <b>{{ r.title }}</b
+        ><span>{{
+          r.shared ? 'هذا الرأس موجود عند الفريق' : 'هذا الرأس محلي ولم يتزامن مع الفريق'
+        }}</span>
+      </div>
+      <div class="pointer-comparison">
+        <article>
+          <small>BEFORE / بداية التحدي</small><code>HEAD → {{ r.before ?? '∅' }}</code
+          ><span>{{ r.old?.message }}</span>
+          <div class="parent-pills">
+            @for (parent of r.old?.parents ?? []; track parent) {
+              <code>parent: {{ parent }}</code>
+            }
+          </div>
+        </article>
+        <div class="recovery-arrow" aria-hidden="true">
+          ←<span>{{ r.operation }}</span>
+        </div>
+        <article [class.operation-changed]="r.changed">
+          <small>NOW / الآن</small><code>HEAD → {{ r.after ?? '∅' }}</code
+          ><span>{{ r.current?.message }}</span>
+          <div class="parent-pills">
+            @for (parent of r.current?.parents ?? []; track parent) {
+              <code>parent: {{ parent }}</code>
+            }
+          </div>
+        </article>
+      </div>
+      <div class="recovery-files">
+        @for (card of r.cards; track card.label) {
+          <article>
+            <h3>{{ card.label }}</h3>
+            <small dir="ltr">{{ r.file }}</small>
+            <div class="recovery-diff" dir="ltr">
+              @for (line of card.removed; track $index) {
+                <del>− {{ line }}</del>
+              }
+              @for (line of card.lines; track $index) {
+                <div [class]="line.added ? 'added-line' : 'unchanged-line'">
+                  {{ line.added ? '+ ' : '  ' }}{{ line.text }}
+                </div>
+              }
+            </div>
+          </article>
+        }
+      </div>
+      <div class="operation-facts">
+        <span>{{ r.staged }} ملفات مجهّزة</span><span>{{ r.unstaged }} ملفات مختلفة عن التجهيز</span
+        ><span>{{ git.merging ? 'دمج جارٍ' : 'لا دمج جارٍ' }}</span>
+      </div>
+      <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
+    </section>
+  }
+  @case ('stash') {
+    @let s = stash();
+    <section class="stash-scene" aria-label="درج المسودات المحلية والملفات المستعادة">
+      <div class="stash-route">
+        <span>ملفات غير مكتملة</span><code>stash push →</code><b>درج محلي</b
+        ><code>← apply / pop</code><span>العودة للشغل</span>
+      </div>
+      <div class="stash-workbench">
+        <article class="stash-working">
+          <small>WORKING TREE</small>
+          <h3>أمامك على الجهاز</h3>
+          <code>HEAD → {{ store.tip() }} / {{ git.head }}</code>
+          <pre dir="ltr">{{ git.working[s.file] }}</pre>
+          <div class="stash-index">
+            <small>INDEX · النسخة المجهّزة</small>
+            <pre dir="ltr">{{ git.index[s.file] }}</pre>
+          </div>
+        </article>
+        <div class="stash-drawer">
+          <header>
+            <h3>درج المسودات</h3>
+            <span>{{ git.stashes.length }} محفوظة</span>
+          </header>
+          @for (entry of git.stashes; track entry.id; let i = $index) {
+            <details [open]="i === 0" class="stash-entry">
+              <summary>
+                <code>stash&#64;{{ '{' + i + '}' }}</code
+                ><span>{{ entry.message }}</span>
+              </summary>
+              <div class="stash-entry-meta">
+                <code>{{ entry.id }} · base {{ entry.base }}</code
+                ><code>on {{ entry.branch }}</code>
+              </div>
+              <p>المحتوى محفوظ مستقلًا عن ملفات الفرع الحالي</p>
+              <pre dir="ltr">{{ entry.working[s.file] }}</pre>
+              <details>
+                <summary>افحص حالة التجهيز المحفوظة</summary>
+                <pre dir="ltr">{{ entry.index[s.file] }}</pre>
+              </details>
+            </details>
+          } @empty {
+            <div class="empty-drawer">
+              <span>▱</span><b>الدرج فارغ</b>
+              <p>push يضع مسودة هنا. apply يبقيها؛ pop يحذفها بعد النجاح.</p>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="stash-result" [class.has-conflict]="git.stashConflicts.length > 0" role="status">
+        @if (git.stashConflicts.length) {
+          <b>تعارض استرجاع · النسخة بقيت محفوظة</b>
+          <p>
+            الـindex يعرض نسخة الفرع، وملف العمل يعرض القرارين. احسم المحتوى ثم add. لا يوجد merge
+            جارٍ لإلغائه بـmerge --abort.
+          </p>
+        } @else {
+          <b>{{
+            s.unstaged
+              ? 'تعديلات موجودة في ملف العمل'
+              : s.staged
+                ? 'تعديلات مجهّزة للحفظ'
+                : 'ملفات نظيفة وجاهزة لتبديل الفرع'
+          }}</b>
+          <p>
+            الـstash محلي، لا يصل عبر push، ولا يحرّك HEAD. بدون --index تعود التعديلات غير مجهّزة.
+          </p>
+        }
+      </div>
+    </section>
+  }
+  @case ('finish') {
+    <section class="finish-experiment">
+      <div class="finish-stats">
+        <div>
+          <strong>{{ commits().length }}</strong
+          ><span>snapshots محفوظة</span>
+        </div>
+        <div>
+          <strong>{{ branches().length }}</strong
+          ><span>فروع في نفس المستودع</span>
+        </div>
+        <div>
+          <strong>{{ store.session().commandHistory.length }}</strong
+          ><span>أمر جرّبته</span>
+        </div>
+      </div>
+      <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
+      <div class="finish-result">
+        <span>✓ تغييراتك مجتمعة ومحفوظة على الجهازين</span>
+        <pre dir="ltr">{{ store.head()['event.txt'] + '\n\n' + store.head()['program.txt'] }}</pre>
+      </div>
+    </section>
+  }
+  @default {
+    <section class="branch-experiment">
+      <div class="branch-pointers">
+        <b>أسماء الفروع مؤشّرات تتحرك</b>
+        @for (branch of branches(); track branch.name) {
+          <code [class.active]="git.head === branch.name"
+            >{{ git.head === branch.name ? 'HEAD → ' : '' }}{{ branch.name }} →
+            {{ branch.id }}</code
+          >
+        }
+      </div>
+      <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
+      <div class="branch-preview">
+        <small>ملفات الفرع الحالي · {{ git.head }}</small>
+        <pre dir="ltr">{{ git.working['event.txt'] }}</pre>
+        <pre dir="ltr">{{ git.working['program.txt'] }}</pre>
+      </div>
+    </section>
+  }
+}

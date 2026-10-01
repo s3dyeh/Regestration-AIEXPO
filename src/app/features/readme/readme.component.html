@@ -1,0 +1,381 @@
+<header class="top">
+  <a routerLink="/">◎ CareerLens AI</a><a routerLink="/learn-git">Start learning Git ↗</a>
+</header>
+<main>
+  <header class="intro">
+    <p class="eyebrow">YOUR PROFILE, IN YOUR WORDS</p>
+    <h1>Start readme now !</h1>
+    <p>Turn your introduction, projects and learning goals into a clean GitHub profile README.</p>
+    <span
+      >No GitHub API requests or token. Your draft stays in this page until you leave or
+      reload.</span
+    >
+  </header>
+  <figure class="profile-example">
+    <img
+      src="/assets/readme/profile-example.png"
+      width="1896"
+      height="1028"
+      alt="Example GitHub profile for Ahmad Sadieh with a custom banner, introduction, social badges and About me section"
+    />
+    <figcaption>A finished profile can look like this. Write your own story below.</figcaption>
+  </figure>
+  <div class="workspace">
+    <section class="editor" aria-label="Profile details">
+      <h2>01 / Tell your story</h2>
+      <fieldset class="banner-editor">
+        <legend>Your profile banner</legend>
+        <p>Add a wide image to introduce your profile. It will appear above your name.</p>
+        <label for="profile-banner">Banner image URL</label>
+        <input
+          id="profile-banner"
+          type="url"
+          maxlength="2000"
+          placeholder="https://example.com/banner.png"
+          [value]="draft().banner"
+          (input)="update('banner', $event)"
+          aria-describedby="banner-help"
+        />
+        <small id="banner-help"
+          >Use a public, direct image link, for example an image uploaded to your GitHub repository.
+          A wide image around 1200 × 300 works well. The preview loads it from the supplied
+          host.</small
+        >
+        <label for="profile-banner-alt">Banner description (alt text)</label>
+        <input
+          id="profile-banner-alt"
+          maxlength="250"
+          placeholder="Describe your banner for screen readers"
+          [value]="draft().bannerAlt"
+          (input)="update('bannerAlt', $event)"
+        />
+        @if (draft().banner) {
+          <button type="button" class="subtle" (click)="removeBanner()">Remove banner</button>
+        }
+      </fieldset>
+      <label for="profile-username">GitHub username *</label
+      ><input
+        id="profile-username"
+        autocomplete="off"
+        maxlength="39"
+        placeholder="your-username"
+        [value]="draft().username"
+        (input)="update('username', $event)"
+      />
+      <label for="profile-name">Display name *</label
+      ><input
+        id="profile-name"
+        maxlength="100"
+        placeholder="What should people call you?"
+        [value]="draft().name"
+        (input)="update('name', $event)"
+      />
+      <label for="profile-headline">Headline</label
+      ><input
+        id="profile-headline"
+        maxlength="180"
+        placeholder="What you build or want to explore"
+        [value]="draft().headline"
+        (input)="update('headline', $event)"
+      />
+      <label for="profile-about">About you</label
+      ><textarea
+        id="profile-about"
+        rows="4"
+        maxlength="3000"
+        placeholder="What interests you? What are you working toward?"
+        [value]="draft().about"
+        (input)="update('about', $event)"
+      ></textarea>
+      <label for="profile-skills">Tools and technologies</label
+      ><input
+        id="profile-skills"
+        maxlength="1000"
+        placeholder="Python, TypeScript, Git"
+        aria-describedby="skills-help"
+        [value]="draft().skills"
+        (input)="update('skills', $event)"
+      /><small id="skills-help">Separate with commas. Include only tools you actually use.</small>
+      <fieldset class="badge-picker">
+        <legend>Badges for your major</legend>
+        <p>
+          Choose your major or focus, then select tools you use. These are technology labels, not
+          certifications. Changing focus keeps your selections.
+        </p>
+        <label for="badge-major">Major or career focus</label>
+        <select id="badge-major" [value]="major()" (change)="changeMajor($event)">
+          @for (item of majors; track item.id) {
+            <option [value]="item.id">{{ item.name }}</option>
+          }
+        </select>
+        <label for="badge-search">Search all technology badges</label>
+        <input
+          id="badge-search"
+          type="search"
+          [value]="badgeSearch()"
+          (input)="searchBadges($event)"
+          placeholder="Find a tool across all majors"
+        />
+        <div class="badge-options" role="group" aria-label="Suggested technology badges">
+          @for (name of suggestedBadges(); track name) {
+            <button
+              type="button"
+              [attr.aria-pressed]="badges().includes(name)"
+              (click)="toggleBadge(name)"
+            >
+              {{ badges().includes(name) ? '✓ ' : '+ ' }}{{ name }}
+            </button>
+          } @empty {
+            <p>No matching badges. You can still list this tool in Tools and technologies.</p>
+          }
+        </div>
+        <p class="hint" role="status">{{ badges().length }} badges selected</p>
+        @if (badges().length) {
+          <div class="badge-options" role="group" aria-label="Selected technology badges">
+            @for (name of badges(); track name) {
+              <button
+                type="button"
+                [attr.aria-label]="'Remove ' + name + ' badge'"
+                (click)="toggleBadge(name)"
+              >
+                {{ name }} ×
+              </button>
+            }
+          </div>
+          <button type="button" class="subtle" (click)="clearBadges()">Clear badges</button>
+        }
+        <small
+          >Badge images load from
+          <a href="https://shields.io/badges/static-badge" target="_blank" rel="noopener noreferrer"
+            >Shields.io</a
+          >
+          in the preview and on GitHub.</small
+        >
+      </fieldset>
+      <label for="profile-learning">Currently learning</label
+      ><textarea
+        id="profile-learning"
+        rows="2"
+        maxlength="1500"
+        placeholder="Your next learning focus"
+        [value]="draft().learning"
+        (input)="update('learning', $event)"
+      ></textarea>
+      <h2>02 / Show your work</h2>
+      <p>Add up to six projects. Explain the problem and your contribution.</p>
+      @for (project of draft().projects; track project.id; let i = $index) {
+        <fieldset>
+          <legend>Project {{ i + 1 }}</legend>
+          <label [for]="'project-name-' + project.id">Project name</label
+          ><input
+            [id]="'project-name-' + project.id"
+            maxlength="120"
+            [value]="project.name"
+            (input)="updateProject(project.id, 'name', $event)"
+          />
+          <label [for]="'project-url-' + project.id">Project URL</label
+          ><input
+            [id]="'project-url-' + project.id"
+            type="url"
+            maxlength="2000"
+            placeholder="https://github.com/you/project"
+            [value]="project.url"
+            (input)="updateProject(project.id, 'url', $event)"
+          />
+          <label [for]="'project-description-' + project.id">Project description</label
+          ><textarea
+            [id]="'project-description-' + project.id"
+            rows="3"
+            maxlength="2000"
+            [value]="project.description"
+            (input)="updateProject(project.id, 'description', $event)"
+          ></textarea>
+          <button
+            type="button"
+            class="subtle"
+            (click)="removeProject(project.id)"
+            [attr.aria-label]="'Remove project ' + (i + 1)"
+          >
+            Remove project
+          </button>
+        </fieldset>
+      }
+      <button
+        type="button"
+        class="secondary"
+        (click)="addProject()"
+        [disabled]="draft().projects.length >= 6"
+      >
+        Add project
+      </button>
+      <h2>03 / Make a connection</h2>
+      <label for="profile-collaboration">Open to collaborating on</label
+      ><textarea
+        id="profile-collaboration"
+        rows="2"
+        maxlength="1500"
+        [value]="draft().collaboration"
+        (input)="update('collaboration', $event)"
+      ></textarea>
+      <label for="profile-website">Website or portfolio URL</label
+      ><input
+        id="profile-website"
+        type="url"
+        maxlength="2000"
+        placeholder="https://example.com"
+        [value]="draft().website"
+        (input)="update('website', $event)"
+      />
+    </section>
+    <section class="output" aria-label="README output">
+      <div class="output-head">
+        <span>README.md</span>
+        <div role="group" aria-label="Output view">
+          <button
+            type="button"
+            [attr.aria-pressed]="view() === 'preview'"
+            (click)="view.set('preview')"
+          >
+            Preview</button
+          ><button
+            type="button"
+            [attr.aria-pressed]="view() === 'markdown'"
+            (click)="view.set('markdown')"
+          >
+            Markdown
+          </button>
+        </div>
+      </div>
+      @if (view() === 'preview') {
+        <article class="preview" aria-label="Profile README preview">
+          @if (banner(); as url) {
+            <img
+              class="profile-banner"
+              [src]="url"
+              [alt]="draft().bannerAlt.trim() || 'Profile banner'"
+              referrerpolicy="no-referrer"
+              (error)="bannerFailed.set(true)"
+              (load)="bannerFailed.set(false)"
+              [hidden]="bannerFailed()"
+            />
+            @if (bannerFailed()) {
+              <p class="banner-fallback" role="status">
+                The banner could not load. Check that your link opens an image publicly. The URL is
+                still included in your Markdown.
+              </p>
+            }
+          } @else {
+            <div class="banner-placeholder">
+              <span>YOUR PROFILE BANNER</span>
+              <p>Add an image URL to see your banner here.</p>
+              <small>Preview placeholder · not included in your README</small>
+            </div>
+          }
+          <h2>Hi, I'm {{ draft().name.trim() || '…' }}</h2>
+          @if (draft().headline.trim()) {
+            <p>{{ draft().headline }}</p>
+          }
+          @if (draft().about.trim()) {
+            <h3>About me</h3>
+            <p class="prose">{{ draft().about }}</p>
+          }
+          @if (badges().length) {
+            <h3>Technology badges</h3>
+            <div class="badge-preview">
+              @for (name of badges(); track name) {
+                <img [src]="badgeUrl(name)" [alt]="name" height="28" referrerpolicy="no-referrer" />
+              }
+            </div>
+          }
+          @if (skills().length) {
+            <h3>Tools and technologies</h3>
+            <ul>
+              @for (skill of skills(); track skill) {
+                <li>{{ skill }}</li>
+              }
+            </ul>
+          }
+          @if (draft().learning.trim()) {
+            <h3>Currently learning</h3>
+            <p class="prose">{{ draft().learning }}</p>
+          }
+          @if (projects().length) {
+            <h3>Selected projects</h3>
+            @for (project of projects(); track project.id) {
+              <h4>
+                @if (project.link) {
+                  <a [href]="project.link" target="_blank" rel="noopener noreferrer">{{
+                    project.name
+                  }}</a>
+                } @else {
+                  {{ project.name }}
+                }
+              </h4>
+              <p class="prose">{{ project.description }}</p>
+            }
+          }
+          @if (draft().collaboration.trim()) {
+            <h3>Let's collaborate</h3>
+            <p class="prose">{{ draft().collaboration }}</p>
+          }
+          @if (website(); as url) {
+            <h3>Find me online</h3>
+            <a [href]="url" target="_blank" rel="noopener noreferrer">My website</a>
+          }
+          @if (!draft().name.trim()) {
+            <p class="empty">Start with your name. Your README will take shape as you write.</p>
+          }
+        </article>
+      } @else {
+        <label class="code-label" for="readme-markdown">Generated Markdown</label
+        ><textarea
+          id="readme-markdown"
+          class="code"
+          spellcheck="false"
+          readonly
+          [value]="markdown()"
+        ></textarea>
+      }
+      <div class="export">
+        <button type="button" class="primary" [disabled]="!ready()" (click)="download()">
+          Download README.md</button
+        ><button type="button" class="secondary" [disabled]="!ready()" (click)="copy()">
+          Copy Markdown
+        </button>
+      </div>
+      @if (!draft().name.trim() || !draft().username.trim()) {
+        <p class="hint">Add your name and GitHub username to enable export.</p>
+      }
+      @if (errors().length) {
+        <div class="errors" role="alert">
+          @for (error of errors(); track error) {
+            <p>{{ error }}</p>
+          }
+        </div>
+      }
+      <p class="hint" role="status">{{ status() }}</p>
+      <aside class="publish">
+        <h3>Put it on your GitHub profile</h3>
+        <ol>
+          <li>
+            Create a <strong>public</strong> repository named
+            <code>{{ draft().username || 'your-username' }}</code
+            >, exactly matching your GitHub username.
+          </li>
+          <li>
+            Add your downloaded <code>README.md</code> to the repository root, or paste the Markdown
+            into the existing file.
+          </li>
+          <li>Commit the change, then visit your profile.</li>
+        </ol>
+        <p>This builder does not publish or overwrite files on GitHub.</p>
+        <a
+          href="https://docs.github.com/en/account-and-profile/how-tos/profile-customization/managing-your-profile-readme"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub’s profile README instructions ↗</a
+        >
+      </aside>
+    </section>
+  </div>
+</main>
