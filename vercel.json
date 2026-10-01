@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build:prod",
+  "outputDirectory": "dist/monorepo/browser",
+  "functions": { "api/readme-ai.ts": { "maxDuration": 30 } },
+  "rewrites": [{ "source": "/((?!api/|assets/|.*\\.).*)", "destination": "/index.html" }]
+}

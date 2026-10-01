@@ -23,7 +23,9 @@
     "check:admin-export": "deno check --config supabase/functions/export-registrations/deno.json supabase/functions/export-registrations/index.ts",
     "test:admin-export": "deno test -A --config supabase/functions/export-registrations/deno.json supabase/functions/export-registrations",
     "test:git-learning": "tsx --tsconfig learning/git/tsconfig.json --test learning/git/tests/*.test.ts",
-    "typecheck:git-learning": "tsc --noEmit -p learning/git/tsconfig.json"
+    "typecheck:git-learning": "tsc --noEmit -p learning/git/tsconfig.json",
+    "test:readme": "tsx --tsconfig server/tsconfig.json --test server/*.test.ts",
+    "typecheck:readme": "tsc -p server/tsconfig.json"
   },
   "private": true,
   "dependencies": {

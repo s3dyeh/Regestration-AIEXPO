@@ -7,22 +7,243 @@
     <h1>Start readme now !</h1>
     <p>Turn your introduction, projects and learning goals into a clean GitHub profile README.</p>
     <span
-      >No GitHub API requests or token. Your draft stays in this page until you leave or
-      reload.</span
+      >Your draft saves on this device. Optional AI helps polish your words; you review every
+      change.</span
     >
   </header>
-  <figure class="profile-example">
-    <img
-      src="/assets/readme/profile-example.png"
-      width="1896"
-      height="1028"
-      alt="Example GitHub profile for Ahmad Sadieh with a custom banner, introduction, social badges and About me section"
-    />
-    <figcaption>A finished profile can look like this. Write your own story below.</figcaption>
-  </figure>
+  <details class="inspiration">
+    <summary>See a finished profile for inspiration</summary>
+    <figure class="profile-example">
+      <img
+        src="/assets/readme/profile-example.png"
+        width="1896"
+        height="1028"
+        alt="Example GitHub profile for Ahmad Sadieh with a custom banner, introduction, social badges and About me section"
+      />
+      <figcaption>A finished profile can look like this. Write your own story below.</figcaption>
+    </figure>
+  </details>
+  <section class="builder-tools" aria-label="Builder setup">
+    <div>
+      <p class="eyebrow">BUILD A PROFILE WITH PURPOSE</p>
+      <h2>One username. A whole new profile.</h2>
+      <label for="profile-username">GitHub username *</label
+      ><input
+        id="profile-username"
+        autocomplete="off"
+        maxlength="39"
+        placeholder="your-username"
+        [value]="draft().username"
+        (input)="update('username', $event)"
+      />
+      <label for="badge-major">Major or career focus</label>
+      <select id="badge-major" [value]="major()" (change)="changeMajor($event)">
+        @for (item of majors; track item.id) {
+          <option [value]="item.id">{{ item.name }}</option>
+        }
+      </select>
+      <div class="theme-picker" role="group" aria-label="Profile theme">
+        @for (item of themes; track item.id) {
+          <button
+            type="button"
+            [attr.aria-pressed]="draft().theme === item.id"
+            (click)="chooseTheme(item.id)"
+            [style.--swatch]="'#' + item.background"
+            [style.--ink]="'#' + item.accent"
+          >
+            <span class="theme-swatch" aria-hidden="true">Aa <span>────</span></span>
+            <strong>{{ item.name }}</strong
+            ><small>{{ item.description }}</small>
+          </button>
+        }
+      </div>
+      <button
+        class="primary quick-build"
+        type="button"
+        [disabled]="!draft().username.trim()"
+        (click)="quickStart()"
+      >
+        Create my profile ↗
+      </button>
+      <p class="hint">
+        No API key needed. We fill empty introduction fields and create your banner. Your existing
+        writing stays intact.
+      </p>
+      <p class="hint">
+        Generated banners load from Capsule Render and send your displayed name and headline to that
+        host.
+      </p>
+      <label for="readme-layout">README layout</label>
+      <select id="readme-layout" [value]="draft().layout" (change)="update('layout', $event)">
+        <option value="classic">Classic · introduction and skills first</option>
+        <option value="portfolio">Portfolio · projects first, with navigation</option>
+      </select>
+      <div class="export">
+        <button type="button" class="secondary" (click)="starter()">Start from my focus</button>
+        <button type="button" class="secondary" (click)="jump('writing-assistant')">
+          Review with AI
+        </button>
+        <button type="button" class="secondary" (click)="backup()">Download draft backup</button>
+      </div>
+      <small
+        >Starter text fills empty fields using your selected major. Personalize it before
+        publishing.</small
+      >
+      <details>
+        <summary>Save or restore your workspace</summary>
+        <label for="restore-draft">Restore draft backup (replaces current draft)</label>
+        <input
+          id="restore-draft"
+          type="file"
+          accept=".json,application/json"
+          (change)="restore($event)"
+        />
+      </details>
+      <p class="hint" role="status">{{ saved() }}</p>
+    </div>
+    <div>
+      <h2>Content checklist · {{ completedChecks() }}/{{ checklist().length }}</h2>
+      <p class="hint">Suggestions for a useful profile, not a score of your ability.</p>
+      <ul class="checklist">
+        @for (item of checklist(); track item.field + item.label) {
+          <li>
+            <button type="button" (click)="jump(item.field)">
+              <span [class.done]="item.done">{{ item.done ? '✓' : '○' }}</span> {{ item.label }}
+            </button>
+          </li>
+        }
+      </ul>
+      <details>
+        <summary>Choose sections to include</summary>
+        <div class="badge-options" role="group" aria-label="Included sections">
+          @for (item of sectionOptions; track item.id) {
+            <button
+              type="button"
+              [attr.aria-pressed]="!draft().hidden.includes(item.id)"
+              (click)="toggleSection(item.id)"
+            >
+              {{ item.title }}
+            </button>
+          }
+        </div>
+        <small>Hidden sections keep your text. Empty sections are omitted automatically.</small>
+      </details>
+    </div>
+  </section>
+  <section class="badge-studio" aria-label="Badge studio">
+    <div>
+      <p class="eyebrow">YOUR TOOLBOX, WITH PERSONALITY</p>
+      <h2>Pick your badges. Make them yours.</h2>
+      <p>Tap the tools you use. Each badge links to its GitHub topic in your exported README.</p>
+    </div>
+    <div class="badge-toolbar">
+      <label for="badge-format">Badge appearance</label>
+      <select
+        id="badge-format"
+        [value]="draft().badgeFormat"
+        (change)="update('badgeFormat', $event)"
+      >
+        <option value="logos">Framework logos</option>
+        <option value="labels">Text badges</option>
+      </select>
+      @if (draft().badgeFormat === 'labels') {
+        <label for="badge-style">Badge style</label>
+        <select
+          id="badge-style"
+          [value]="draft().badgeStyle"
+          (change)="update('badgeStyle', $event)"
+        >
+          <option value="for-the-badge">Statement</option>
+          <option value="flat">Minimal</option>
+          <option value="flat-square">Square</option>
+          <option value="plastic">Glossy</option>
+        </select>
+      }
+      <button type="button" class="secondary" (click)="addFocusBadges()">
+        Add focus badge pack
+      </button>
+      <small>Adds the suggested tools below. Remove any you do not use.</small>
+    </div>
+    <fieldset class="badge-picker">
+      <legend>Badges for your major</legend>
+      <p>
+        Choose your major or focus, then select tools you use. These are technology labels, not
+        certifications. Changing focus keeps your selections.
+      </p>
+      <label for="badge-search">Search all technology badges</label>
+      <input
+        id="badge-search"
+        type="search"
+        [value]="badgeSearch()"
+        (input)="searchBadges($event)"
+        placeholder="Find a tool across all majors"
+      />
+      <div class="badge-options" role="group" aria-label="Suggested technology badges">
+        @for (name of suggestedBadges(); track name) {
+          <button
+            type="button"
+            [attr.aria-pressed]="badges().includes(name)"
+            (click)="toggleBadge(name)"
+          >
+            <span>{{ badges().includes(name) ? '✓ ' : '+ ' }}{{ name }}</span>
+            <img
+              [src]="frameworkLogo(name)"
+              alt=""
+              width="48"
+              height="48"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+            />
+          </button>
+        } @empty {
+          <p>No matching badges. You can still list this tool in Tools and technologies.</p>
+        }
+      </div>
+      <p class="hint" role="status">{{ badges().length }} badges selected</p>
+      @if (badges().length) {
+        <div class="badge-options" role="group" aria-label="Selected technology badges">
+          @for (name of badges(); track name) {
+            <button
+              type="button"
+              [attr.aria-label]="'Remove ' + name + ' badge'"
+              (click)="toggleBadge(name)"
+            >
+              {{ name }} ×
+            </button>
+          }
+        </div>
+        <button type="button" class="subtle" (click)="clearBadges()">Clear badges</button>
+      }
+      <small
+        >Text badge images load from
+        <a href="https://shields.io/badges/static-badge" target="_blank" rel="noopener noreferrer"
+          >Shields.io</a
+        >
+        in the preview and on GitHub. Framework logos load from Skill Icons, Devicon (jsDelivr) and
+        Simple Icons.</small
+      >
+    </fieldset>
+  </section>
   <div class="workspace">
-    <section class="editor" aria-label="Profile details">
+    <details class="editor" aria-label="Profile details">
+      <summary>Customize your story, projects &amp; links <span>Optional details</span></summary>
       <h2>01 / Tell your story</h2>
+      <div class="badge-options" role="group" aria-label="Profile extras">
+        <button
+          type="button"
+          [attr.aria-pressed]="draft().autoBanner"
+          (click)="toggleOption('autoBanner')"
+        >
+          Generated banner
+        </button>
+        <button
+          type="button"
+          [attr.aria-pressed]="draft().compact"
+          (click)="toggleOption('compact')"
+        >
+          Expandable sections
+        </button>
+      </div>
       <fieldset class="banner-editor">
         <legend>Your profile banner</legend>
         <p>Add a wide image to introduce your profile. It will appear above your name.</p>
@@ -49,19 +270,10 @@
           [value]="draft().bannerAlt"
           (input)="update('bannerAlt', $event)"
         />
-        @if (draft().banner) {
+        @if (draft().banner || draft().autoBanner) {
           <button type="button" class="subtle" (click)="removeBanner()">Remove banner</button>
         }
       </fieldset>
-      <label for="profile-username">GitHub username *</label
-      ><input
-        id="profile-username"
-        autocomplete="off"
-        maxlength="39"
-        placeholder="your-username"
-        [value]="draft().username"
-        (input)="update('username', $event)"
-      />
       <label for="profile-name">Display name *</label
       ><input
         id="profile-name"
@@ -78,6 +290,14 @@
         [value]="draft().headline"
         (input)="update('headline', $event)"
       />
+      <label for="profile-location">Location (optional)</label>
+      <input
+        id="profile-location"
+        maxlength="100"
+        placeholder="City or country"
+        [value]="draft().location"
+        (input)="update('location', $event)"
+      />
       <label for="profile-about">About you</label
       ><textarea
         id="profile-about"
@@ -86,6 +306,24 @@
         placeholder="What interests you? What are you working toward?"
         [value]="draft().about"
         (input)="update('about', $event)"
+      ></textarea>
+      <label for="profile-current-work">Currently building</label>
+      <textarea
+        id="profile-current-work"
+        rows="3"
+        maxlength="1500"
+        placeholder="What are you making, and who is it for?"
+        [value]="draft().currentWork"
+        (input)="update('currentWork', $event)"
+      ></textarea>
+      <label for="profile-highlights">Highlights (one per line)</label>
+      <textarea
+        id="profile-highlights"
+        rows="3"
+        maxlength="2000"
+        placeholder="A contribution, a shipped feature, or something you learned"
+        [value]="draft().highlights"
+        (input)="update('highlights', $event)"
       ></textarea>
       <label for="profile-skills">Tools and technologies</label
       ><input
@@ -96,62 +334,7 @@
         [value]="draft().skills"
         (input)="update('skills', $event)"
       /><small id="skills-help">Separate with commas. Include only tools you actually use.</small>
-      <fieldset class="badge-picker">
-        <legend>Badges for your major</legend>
-        <p>
-          Choose your major or focus, then select tools you use. These are technology labels, not
-          certifications. Changing focus keeps your selections.
-        </p>
-        <label for="badge-major">Major or career focus</label>
-        <select id="badge-major" [value]="major()" (change)="changeMajor($event)">
-          @for (item of majors; track item.id) {
-            <option [value]="item.id">{{ item.name }}</option>
-          }
-        </select>
-        <label for="badge-search">Search all technology badges</label>
-        <input
-          id="badge-search"
-          type="search"
-          [value]="badgeSearch()"
-          (input)="searchBadges($event)"
-          placeholder="Find a tool across all majors"
-        />
-        <div class="badge-options" role="group" aria-label="Suggested technology badges">
-          @for (name of suggestedBadges(); track name) {
-            <button
-              type="button"
-              [attr.aria-pressed]="badges().includes(name)"
-              (click)="toggleBadge(name)"
-            >
-              {{ badges().includes(name) ? '✓ ' : '+ ' }}{{ name }}
-            </button>
-          } @empty {
-            <p>No matching badges. You can still list this tool in Tools and technologies.</p>
-          }
-        </div>
-        <p class="hint" role="status">{{ badges().length }} badges selected</p>
-        @if (badges().length) {
-          <div class="badge-options" role="group" aria-label="Selected technology badges">
-            @for (name of badges(); track name) {
-              <button
-                type="button"
-                [attr.aria-label]="'Remove ' + name + ' badge'"
-                (click)="toggleBadge(name)"
-              >
-                {{ name }} ×
-              </button>
-            }
-          </div>
-          <button type="button" class="subtle" (click)="clearBadges()">Clear badges</button>
-        }
-        <small
-          >Badge images load from
-          <a href="https://shields.io/badges/static-badge" target="_blank" rel="noopener noreferrer"
-            >Shields.io</a
-          >
-          in the preview and on GitHub.</small
-        >
-      </fieldset>
+
       <label for="profile-learning">Currently learning</label
       ><textarea
         id="profile-learning"
@@ -161,7 +344,7 @@
         [value]="draft().learning"
         (input)="update('learning', $event)"
       ></textarea>
-      <h2>02 / Show your work</h2>
+      <h2 id="projects-heading" tabindex="-1">02 / Show your work</h2>
       <p>Add up to six projects. Explain the problem and your contribution.</p>
       @for (project of draft().projects; track project.id; let i = $index) {
         <fieldset>
@@ -189,6 +372,15 @@
             maxlength="2000"
             [value]="project.description"
             (input)="updateProject(project.id, 'description', $event)"
+          ></textarea>
+          <label [for]="'project-outcome-' + project.id">Your contribution or outcome</label>
+          <textarea
+            [id]="'project-outcome-' + project.id"
+            rows="2"
+            maxlength="1000"
+            placeholder="What did you personally build or improve? Include only results you can support."
+            [value]="project.outcome || ''"
+            (input)="updateProject(project.id, 'outcome', $event)"
           ></textarea>
           <button
             type="button"
@@ -226,7 +418,32 @@
         [value]="draft().website"
         (input)="update('website', $event)"
       />
-    </section>
+      <label for="profile-linkedin">LinkedIn URL</label>
+      <input
+        id="profile-linkedin"
+        type="url"
+        maxlength="2000"
+        placeholder="https://www.linkedin.com/in/you"
+        [value]="draft().linkedin"
+        (input)="update('linkedin', $event)"
+      />
+      <div id="writing-assistant" tabindex="-1"></div>
+      <app-readme-assistant
+        [draft]="draft()"
+        [focus]="focusName()"
+        (applySuggestion)="applyAi($event)"
+      />
+      @if (lastAiChange()) {
+        <button type="button" class="secondary" [disabled]="!canUndo()" (click)="undoAi()">
+          Undo last AI edit
+        </button>
+        @if (!canUndo()) {
+          <p class="hint">
+            This field changed after the AI edit. Your newer changes are preserved.
+          </p>
+        }
+      }
+    </details>
     <section class="output" aria-label="README output">
       <div class="output-head">
         <span>README.md</span>
@@ -247,7 +464,11 @@
         </div>
       </div>
       @if (view() === 'preview') {
-        <article class="preview" aria-label="Profile README preview">
+        <article
+          class="preview"
+          aria-label="Profile README preview"
+          [style.--profile-accent]="'#' + theme().color"
+        >
           @if (banner(); as url) {
             <img
               class="profile-banner"
@@ -275,52 +496,94 @@
           @if (draft().headline.trim()) {
             <p>{{ draft().headline }}</p>
           }
-          @if (draft().about.trim()) {
-            <h3>About me</h3>
-            <p class="prose">{{ draft().about }}</p>
+          @if (draft().location.trim()) {
+            <p>Based in {{ draft().location }}</p>
           }
-          @if (badges().length) {
-            <h3>Technology badges</h3>
-            <div class="badge-preview">
-              @for (name of badges(); track name) {
-                <img [src]="badgeUrl(name)" [alt]="name" height="28" referrerpolicy="no-referrer" />
+          @if (draft().autoBanner && draft().username) {
+            <a
+              [href]="'https://github.com/' + draft().username"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><img [src]="badgeUrl('Explore my GitHub')" alt="Explore my GitHub" height="28"
+            /></a>
+          }
+          @if (draft().layout === 'portfolio' && sections().length) {
+            <nav class="preview-nav" aria-label="README sections">
+              @for (section of navigationSections(); track section.id) {
+                <a [href]="'#preview-' + section.id">{{ section.title }}</a>
               }
-            </div>
+            </nav>
           }
-          @if (skills().length) {
-            <h3>Tools and technologies</h3>
-            <ul>
-              @for (skill of skills(); track skill) {
-                <li>{{ skill }}</li>
-              }
-            </ul>
-          }
-          @if (draft().learning.trim()) {
-            <h3>Currently learning</h3>
-            <p class="prose">{{ draft().learning }}</p>
-          }
-          @if (projects().length) {
-            <h3>Selected projects</h3>
-            @for (project of projects(); track project.id) {
-              <h4>
-                @if (project.link) {
-                  <a [href]="project.link" target="_blank" rel="noopener noreferrer">{{
-                    project.name
-                  }}</a>
-                } @else {
-                  {{ project.name }}
+          @for (section of sections(); track section.id) {
+            <ng-template #sectionContent>
+              @switch (section.kind) {
+                @case ('text') {
+                  <p class="prose">{{ section.text }}</p>
                 }
-              </h4>
-              <p class="prose">{{ project.description }}</p>
+                @case ('list') {
+                  <ul>
+                    @for (item of section.items; track $index) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                }
+                @case ('badges') {
+                  <div class="badge-preview">
+                    @for (name of section.items; track name) {
+                      <a
+                        [href]="badgeTopic(name)"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        [title]="'Explore ' + name + ' on GitHub'"
+                        ><img
+                          [src]="technologyImage(name)"
+                          [alt]="name"
+                          [attr.width]="draft().badgeFormat === 'logos' ? 48 : null"
+                          [attr.height]="draft().badgeFormat === 'logos' ? 48 : 28"
+                          referrerpolicy="no-referrer"
+                      /></a>
+                    }
+                  </div>
+                }
+                @case ('projects') {
+                  @for (project of section.projects; track project.id) {
+                    <h4>
+                      @if (project.link) {
+                        <a [href]="project.link" target="_blank" rel="noopener noreferrer">{{
+                          project.name
+                        }}</a>
+                      } @else {
+                        {{ project.name }}
+                      }
+                    </h4>
+                    @if (project.description.trim()) {
+                      <p class="prose">{{ project.description }}</p>
+                    }
+                    @if (project.outcome?.trim()) {
+                      <p class="prose"><strong>Outcome:</strong> {{ project.outcome }}</p>
+                    }
+                  }
+                }
+                @case ('links') {
+                  <div class="preview-nav">
+                    @for (link of section.links; track link.label) {
+                      <a [href]="link.url" target="_blank" rel="noopener noreferrer">{{
+                        link.label
+                      }}</a>
+                    }
+                  </div>
+                }
+              }
+            </ng-template>
+            @if (isCollapsed(section.id)) {
+              <details class="readme-disclosure">
+                <summary>{{ section.title }}</summary>
+                <ng-container [ngTemplateOutlet]="sectionContent" />
+              </details>
+            } @else {
+              <h3 [id]="'preview-' + section.id">{{ section.title }}</h3>
+              <ng-container [ngTemplateOutlet]="sectionContent" />
             }
-          }
-          @if (draft().collaboration.trim()) {
-            <h3>Let's collaborate</h3>
-            <p class="prose">{{ draft().collaboration }}</p>
-          }
-          @if (website(); as url) {
-            <h3>Find me online</h3>
-            <a [href]="url" target="_blank" rel="noopener noreferrer">My website</a>
           }
           @if (!draft().name.trim()) {
             <p class="empty">Start with your name. Your README will take shape as you write.</p>

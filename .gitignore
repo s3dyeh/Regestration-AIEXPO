@@ -62,3 +62,6 @@ Thumbs.db
 
 # Private attendee seed generated for SQL Editor
 /AI_EXPO_Jordan_2026_Seed.sql
+
+# Local Vercel project configuration
+.vercel/
