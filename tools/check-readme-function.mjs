@@ -22,7 +22,8 @@ for (const file of [
     ts.transpileModule(source, { compilerOptions: options, fileName: file }).outputText,
   );
 }
-await writeFile(join(out, 'package.json'), JSON.stringify({ type: 'module' }));
+const packageJson = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
+await writeFile(join(out, 'package.json'), JSON.stringify({ type: packageJson.type }));
 const probe = `
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
@@ -43,7 +44,12 @@ try {
 } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 `;
 await writeFile(join(out, 'probe.mjs'), probe);
-const result = spawnSync(process.execPath, [join(out, 'probe.mjs')], { encoding: 'utf8' });
+// Vercel's loader does not rely on Node's automatic ESM syntax detection.
+const result = spawnSync(
+  process.execPath,
+  ['--no-experimental-detect-module', '--no-experimental-require-module', join(out, 'probe.mjs')],
+  { encoding: 'utf8' },
+);
 process.stdout.write(result.stdout ?? '');
 process.stderr.write(result.stderr ?? '');
 process.exitCode = result.status ?? 1;
