@@ -4,6 +4,8 @@ Open `/readme` for the signal-based Angular editor. Manual editing needs no GitH
 
 ## Authoring
 
+Framework logos are the default badge appearance, including when restoring older drafts. All 41 catalog tools have a logo mapping: [Skill Icons](https://github.com/tandpfun/skill-icons) provides most logo tiles, with pinned Devicon SVGs via jsDelivr and Simple Icons for the remaining tools. The picker always shows the recognizable logos. The preview and README export display clickable 48px logos with accessible names; Text badges remains an optional appearance. These external image providers receive image requests, not API credentials.
+
 The quick-start path requires only a GitHub username and career focus. Choose Botanical, After hours or Daybreak, then click **Create my profile**. It uses the username as the initial display name, fills empty introduction fields, selects portfolio navigation and enables a generated banner and expandable learning sections. It does not invent projects, achievements or tool proficiency. Add a focus badge pack separately and remove tools you do not use. The detailed editor is collapsed until needed.
 
 The badge studio has live visual selection, curated logos, four styles, theme-matched colors and links to GitHub topics in the exported README. Expandable sections use [GitHub-supported details markup](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections); there is no exported JavaScript or custom CSS. Theme colors apply to banner and badge images; GitHub controls its own page typography and heading colors.
