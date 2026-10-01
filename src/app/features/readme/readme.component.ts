@@ -10,6 +10,8 @@ import {
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { badgeTopic, generatedBanner, profileThemes, themeFor } from './profile-presentation';
 import { RouterLink } from '@angular/router';
+import { ReadmeGeneratorComponent } from './readme-generator.component';
+import type { GeneratedProfile } from './readme-generator.component';
 import { profileReadme, safeProfileUrl, profileSections, sectionLabels } from './profile-readme';
 import { draftKey, restoreDraft, workspaceSchema, readmeChecklist } from './readme-workspace';
 import { ReadmeAssistantComponent, suggestionValue } from './readme-assistant.component';
@@ -25,7 +27,7 @@ import {
 } from './profile-badges';
 @Component({
   selector: 'app-profile-readme',
-  imports: [RouterLink, ReadmeAssistantComponent, NgTemplateOutlet],
+  imports: [RouterLink, ReadmeAssistantComponent, ReadmeGeneratorComponent, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './readme.component.html',
   styleUrls: ['./readme.component.scss', './readme-studio.scss'],
@@ -34,6 +36,30 @@ export class ReadmeComponent {
   private readonly document = inject(DOCUMENT);
   protected readonly draft = signal<ProfileDraft>(this.loadDraft());
   protected readonly saved = signal('');
+  protected readonly generationNote = signal('');
+  private generationBaseline: ProfileDraft | null = null;
+  private previousDraft: ProfileDraft | null = null;
+  protected readonly generatedSnapshot = signal('');
+  protected readonly canUndoGeneration = computed(() => !!this.generatedSnapshot() && JSON.stringify(this.draft()) === this.generatedSnapshot());
+  protected generationStarted(): void { this.generationBaseline = structuredClone(this.draft()); this.generationNote.set(''); }
+  protected applyGeneration(result: GeneratedProfile): void {
+    const baseline = this.generationBaseline, current = this.draft();
+    if (!baseline || (['username', 'name', 'focus'] as const).some(key => baseline[key] !== current[key])) {
+      this.generationNote.set('Your name, username or major changed during generation. Build again to use the new information.'); return;
+    }
+    const { skills, projects, ...prose } = result.content;
+    const proposal: ProfileDraft = { ...current, ...prose, skills: skills.join(', '), badges: result.badges.filter(name => badgeCatalog.some(tool => tool === name)), location: result.location, website: safeProfileUrl(result.website) ?? '',
+      projects: projects.flatMap(project => { const repo = result.repositories.find(repo => repo.id === project.id); return repo ? [{ id: project.id, name: repo.name, url: safeProfileUrl(repo.url) ?? '', description: project.description, outcome: project.outcome }] : []; }),
+      layout: 'portfolio', autoBanner: true, compact: true, badgeFormat: 'logos',
+    };
+    // Preserve edits made while the network request was in flight, including project removals.
+    for (const key of Object.keys(current) as (keyof ProfileDraft)[]) {
+      if (JSON.stringify(current[key]) !== JSON.stringify(baseline[key])) Object.assign(proposal, { [key]: current[key] });
+    }
+    this.previousDraft = structuredClone(current); this.draft.set(proposal); this.generatedSnapshot.set(JSON.stringify(proposal));
+    this.lastAiChange.set(null); this.generationNote.set(result.note + ' Changes you made during generation were preserved.');
+  }
+  protected undoGeneration(): void { if (!this.canUndoGeneration() || !this.previousDraft) return; this.draft.set(this.previousDraft); this.previousDraft = null; this.generatedSnapshot.set(''); this.generationNote.set('Previous draft restored.'); }
   protected readonly frameworkLogo = frameworkLogoUrl;
   protected technologyImage(name: string): string {
     return technologyImageUrl(

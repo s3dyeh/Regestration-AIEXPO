@@ -5,10 +5,9 @@
   <header class="intro">
     <p class="eyebrow">YOUR PROFILE, IN YOUR WORDS</p>
     <h1>Start readme now !</h1>
-    <p>Turn your introduction, projects and learning goals into a clean GitHub profile README.</p>
+    <p>Your name, username and major are all you need. Generate a complete first draft, then make it yours.</p>
     <span
-      >Your draft saves on this device. Optional AI helps polish your words; you review every
-      change.</span
+      >Your draft saves on this device. Review AI suggestions before publishing.</span
     >
   </header>
   <details class="inspiration">
@@ -23,10 +22,18 @@
       <figcaption>A finished profile can look like this. Write your own story below.</figcaption>
     </figure>
   </details>
-  <section class="builder-tools" aria-label="Builder setup">
-    <div>
-      <p class="eyebrow">BUILD A PROFILE WITH PURPOSE</p>
-      <h2>One username. A whole new profile.</h2>
+  <section class="simple-builder" aria-label="Generate your README">
+    <p class="eyebrow">THREE DETAILS. ONE COMPLETE DRAFT.</p>
+    <h2>Let your GitHub tell your story.</h2>
+    <p>AI reads your public profile and recent projects, writes your introduction, and suggests technology logos from your repositories.</p>
+      <label for="profile-name">Display name *</label
+      ><input
+        id="profile-name"
+        maxlength="100"
+        placeholder="What should people call you?"
+        [value]="draft().name"
+        (input)="update('name', $event)"
+      />
       <label for="profile-username">GitHub username *</label
       ><input
         id="profile-username"
@@ -42,6 +49,31 @@
           <option [value]="item.id">{{ item.name }}</option>
         }
       </select>
+    <app-readme-generator [name]="draft().name" [username]="draft().username" [focus]="focusName()" (started)="generationStarted()" (generated)="applyGeneration($event)" />
+    @if (generationNote()) { <p class="hint" role="status">{{ generationNote() }}</p> }
+    @if (canUndoGeneration()) { <button type="button" class="secondary" (click)="undoGeneration()">Undo generated draft</button> }
+    <p class="hint">{{ saved() }}</p>
+  </section>
+  @if (draft().about || draft().headline) {
+    <section class="connect-profile" aria-label="Add your LinkedIn">
+      <h2>Add a way to connect</h2>
+      <label for="profile-linkedin">LinkedIn URL</label>
+      <input
+        id="profile-linkedin"
+        type="url"
+        maxlength="2000"
+        placeholder="https://www.linkedin.com/in/you"
+        [value]="draft().linkedin"
+        (input)="update('linkedin', $event)"
+      />
+      <small>Your LinkedIn URL appears as a clickable LinkedIn logo in your README.</small>
+    </section>
+  }
+  <details class="customization"><summary>Customize appearance, badges and sections</summary>
+  <section class="builder-tools" aria-label="Builder setup">
+    <div>
+      <p class="eyebrow">BUILD A PROFILE WITH PURPOSE</p>
+      <h2>Make it your own</h2>
       <div class="theme-picker" role="group" aria-label="Profile theme">
         @for (item of themes; track item.id) {
           <button
@@ -57,22 +89,6 @@
           </button>
         }
       </div>
-      <button
-        class="primary quick-build"
-        type="button"
-        [disabled]="!draft().username.trim()"
-        (click)="quickStart()"
-      >
-        Create my profile ↗
-      </button>
-      <p class="hint">
-        No API key needed. We fill empty introduction fields and create your banner. Your existing
-        writing stays intact.
-      </p>
-      <p class="hint">
-        Generated banners load from Capsule Render and send your displayed name and headline to that
-        host.
-      </p>
       <label for="readme-layout">README layout</label>
       <select id="readme-layout" [value]="draft().layout" (change)="update('layout', $event)">
         <option value="classic">Classic · introduction and skills first</option>
@@ -224,9 +240,10 @@
       >
     </fieldset>
   </section>
+  </details>
   <div class="workspace">
     <details class="editor" aria-label="Profile details">
-      <summary>Customize your story, projects &amp; links <span>Optional details</span></summary>
+      <summary>Edit your README <span>Optional details</span></summary>
       <h2>01 / Tell your story</h2>
       <div class="badge-options" role="group" aria-label="Profile extras">
         <button
@@ -249,14 +266,6 @@
           Remove saved custom banner
         </button>
       }
-      <label for="profile-name">Display name *</label
-      ><input
-        id="profile-name"
-        maxlength="100"
-        placeholder="What should people call you?"
-        [value]="draft().name"
-        (input)="update('name', $event)"
-      />
       <label for="profile-headline">Headline</label
       ><input
         id="profile-headline"
@@ -392,15 +401,6 @@
         placeholder="https://example.com"
         [value]="draft().website"
         (input)="update('website', $event)"
-      />
-      <label for="profile-linkedin">LinkedIn URL</label>
-      <input
-        id="profile-linkedin"
-        type="url"
-        maxlength="2000"
-        placeholder="https://www.linkedin.com/in/you"
-        [value]="draft().linkedin"
-        (input)="update('linkedin', $event)"
       />
       <div id="writing-assistant" tabindex="-1"></div>
       <app-readme-assistant

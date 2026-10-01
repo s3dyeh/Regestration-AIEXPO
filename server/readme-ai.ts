@@ -1,9 +1,12 @@
 import { z } from 'zod';
 import { aiRequestSchema, aiResultSchema } from '../src/app/features/readme/readme-ai-contract.js';
+import { generationRequestSchema } from '../src/app/features/readme/readme-generation-contract.js';
+import { generateReadme } from './readme-generate.js';
 
 interface Dependencies {
   key?: string;
   model?: string;
+  githubToken?: string;
   fetcher?: typeof fetch;
   permitted?: () => boolean;
 }
@@ -44,7 +47,14 @@ export async function handleReadmeAi(request: Request, deps: Dependencies): Prom
       text += decoder.decode(value, { stream: true });
     }
     text += decoder.decode();
-    parsed = aiRequestSchema.safeParse(JSON.parse(text));
+    const value = JSON.parse(text);
+    if (value?.mode === 'generate') {
+      const generation = generationRequestSchema.safeParse(value);
+      if (!generation.success) return reply(400, { message: 'Enter your name, a valid GitHub username and your major.' });
+      if (deps.permitted && !deps.permitted()) return reply(429, { message: 'AI request limit reached. Wait ten minutes before trying again.' });
+      return generateReadme(generation.data, deps);
+    }
+    parsed = aiRequestSchema.safeParse(value);
   } catch {
     return reply(400, { message: 'Invalid profile facts.' });
   }

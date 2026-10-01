@@ -12,6 +12,9 @@ const { options } = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
 for (const file of [
   'api/readme-ai.ts',
   'server/readme-ai.ts',
+  'server/readme-generate.ts',
+  'src/app/features/readme/readme-generation-contract.ts',
+  'src/app/features/readme/profile-badges.ts',
   'src/app/features/readme/readme-ai-contract.ts',
 ]) {
   const source = await readFile(join(root, file), 'utf8');

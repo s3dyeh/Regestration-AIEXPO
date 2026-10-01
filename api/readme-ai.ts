@@ -69,6 +69,7 @@ export default async function handler(
     {
       key: process.env['OPENAI_API_KEY'],
       model: process.env['OPENAI_README_MODEL'],
+      githubToken: process.env['GITHUB_README_TOKEN'],
       permitted: () =>
         permit(
           String(req.headers['x-vercel-forwarded-for'] ?? req.socket.remoteAddress ?? 'unknown'),
