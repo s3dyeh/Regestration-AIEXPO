@@ -1,0 +1,160 @@
+<!-- Native dialog.showModal() manages focus; a dialog must not have a tabindex attribute. -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<dialog
+  #dialogElement
+  id="detail-dialog"
+  [class.wide]="dialog.selection()?.kind === 'commit' || dialog.selection()?.kind === 'reference'"
+  aria-labelledby="workshop-dialog-title"
+  (cancel)="cancel($event)"
+  (click)="backdrop($event)"
+  (keydown.escape)="cancel($event)"
+>
+  @if (dialog.selection(); as selected) {
+    <div class="dialog-header">
+      <h2 id="workshop-dialog-title">{{ title() }}</h2>
+      <button class="button ghost small" data-action="close" (click)="dialog.close()">
+        إغلاق ×
+      </button>
+    </div>
+    <div class="dialog-body">
+      @switch (selected.kind) {
+        @case ('course') {
+          <p>أكمل كل تجربة لفتح التالية. يبقى نفس المستودع معك طوال المسار.</p>
+          <ol class="course-map">
+            @for (challenge of store.lessons; track challenge.id; let i = $index) {
+              <li
+                [attr.aria-current]="store.session().step === i ? 'step' : null"
+                [class.course-passed]="i < store.session().step"
+              >
+                {{ challenge.title
+                }}<small>{{
+                  i < store.session().step
+                    ? '✓ مكتمل'
+                    : i === store.session().step
+                      ? 'أنت هنا'
+                      : 'قادم'
+                }}</small>
+              </li>
+            }
+          </ol>
+        }
+        @case ('reference') {
+          <p>هذا مختبر محاكاة محدود، وليس طرفية النظام. لا ينفّذ أي أوامر على ملفات جهازك.</p>
+          <div class="reference-search">
+            <label for="reference-search">ابحث عن أمر أو مفهوم</label>
+            <input
+              id="reference-search"
+              type="search"
+              dir="auto"
+              autocomplete="off"
+              placeholder="git stash، تعارض، commit…"
+              [value]="query()"
+              (input)="search($event)"
+            />
+            <span role="status">{{ reference().length }} مجموعات مطابقة</span>
+          </div>
+          <div class="command-reference">
+            @for (group of reference(); track group[0]) {
+              <section>
+                <h3>{{ group[0] }}</h3>
+                <pre><code>{{group[1]}}</code></pre>
+                <p>{{ group[2] }}</p>
+              </section>
+            } @empty {
+              <div class="reference-empty">
+                <p>لا توجد أوامر مطابقة. جرّب اسم أمر مثل stash أو مفهوم مثل دمج.</p>
+                <button class="button ghost" (click)="query.set('')">مسح البحث</button>
+              </div>
+            }
+          </div>
+          <p>
+            اختصارات: ↑ و↓ لسجل الأوامر، Tab للإكمال، Ctrl/⌘ + Enter لحفظ الملف. اكتب help لعرض
+            الأوامر المدعومة.
+          </p>
+        }
+        @case ('settings') {
+          <p>
+            كبّر النصوص أثناء العرض على شاشة كبيرة، واختر حركة أقل إذا كانت أنسب للمجموعة. تبقى هذه
+            الخيارات عند بدء مجموعة جديدة.
+          </p>
+          <div class="display-options">
+            <button
+              class="button primary"
+              data-action="projection"
+              (click)="store.dispatch({ type: 'preferences/toggle', key: 'projection' })"
+            >
+              {{
+                store.session().preferences.projection
+                  ? 'العودة للحجم العادي'
+                  : 'تكبير نصوص التجربة'
+              }}</button
+            ><button
+              class="button ghost"
+              data-action="motion"
+              (click)="store.dispatch({ type: 'preferences/toggle', key: 'reducedMotion' })"
+            >
+              {{
+                store.session().preferences.reducedMotion ? 'استخدم حركة النظام' : 'تقليل الحركة'
+              }}
+            </button>
+          </div>
+          <p class="checkpoint-note">
+            يمكنك أيضًا تكبير المتصفح بـ Ctrl + Plus. الخطوط مضمنة محليًا.
+          </p>
+        }
+        @case ('reset') {
+          <p>ستُمسح تجربة هذه المجموعة ويبدأ مستودع جديد.</p>
+          <button class="button primary" data-action="confirm-reset" (click)="reset()">
+            ابدأ مجموعة جديدة
+          </button>
+        }
+        @case ('fullscreen') {
+          <p>استخدم F11 من المتصفح.</p>
+        }
+        @case ('commit') {
+          @if (inspector(); as view) {
+            <p>{{ view.commit.message }}</p>
+            <dl class="commit-details">
+              <div>
+                <dt>المؤلف</dt>
+                <dd>{{ view.commit.author }}</dd>
+              </div>
+              <div>
+                <dt>الآباء</dt>
+                <dd dir="ltr">{{ view.commit.parents.join(' + ') || '(root: no parents)' }}</dd>
+              </div>
+              <div>
+                <dt>مكان الحفظ</dt>
+                <dd>المستودع المحلي</dd>
+              </div>
+            </dl>
+            <p class="muted">
+              {{ view.commit.id }} معرّف تعليمي. في Git الحقيقي يشير commit إلى root tree تربط أسماء
+              الملفات بكائنات محتواها.
+            </p>
+            <div class="object-tree">
+              <b dir="ltr">{{ view.commit.id }} → root tree</b>
+              @for (file of view.files; track file.file) {
+                <details open>
+                  <summary dir="ltr">
+                    {{ file.file }} → blob {{ file.index + 1 }}
+                    <span>{{
+                      file.shared
+                        ? '· محتوى مشترك مع ' + file.shared + ' commit'
+                        : '· محتوى هذه النسخة'
+                    }}</span>
+                  </summary>
+                  <pre dir="ltr">{{ file.content }}</pre>
+                </details>
+              }
+            </div>
+            <p class="checkpoint-note">
+              أرقام blobs هنا للتوضيح، وليست object IDs. المحتوى نفسه يمكن إعادة استخدامه دون نسخ.
+              هذه معاينة؛ فتح commit لا يغيّر HEAD.
+            </p>
+          }
+        }
+      }
+    </div>
+  }
+</dialog>

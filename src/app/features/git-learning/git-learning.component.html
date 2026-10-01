@@ -1,0 +1,207 @@
+<div
+  class="workshop"
+  lang="ar"
+  dir="rtl"
+  [class.projection]="store.session().preferences.projection"
+  [class.reduced-motion]="store.session().preferences.reducedMotion"
+>
+  <a class="workshop-skip" href="#git-main">تجاوز إلى التجربة</a>
+  <header class="learning-app-header" dir="ltr">
+    <a routerLink="/">← CareerLens AI</a><strong>Start learning Git</strong
+    ><span>30 interactive challenges · العربية</span>
+  </header>
+  <header class="topbar wizard-topbar">
+    <div class="brand">
+      <span class="brand-symbol" aria-hidden="true">⑂</span
+      ><span dir="ltr">Start learning Git</span>
+    </div>
+    <span class="simulation-label">محاكاة تفاعلية · مجموعة {{ store.session().group }}</span>
+    <div class="top-tools">
+      <button
+        type="button"
+        class="icon-button"
+        aria-label="إعدادات العرض والحركة"
+        (click)="dialog.open({ kind: 'settings' })"
+      >
+        Aa</button
+      ><button type="button" class="icon-button" aria-label="ملء الشاشة" (click)="fullscreen()">
+        ⛶</button
+      ><button
+        type="button"
+        class="icon-button"
+        aria-label="إعادة الجولة"
+        (click)="dialog.open({ kind: 'reset' })"
+      >
+        ↻
+      </button>
+    </div>
+  </header>
+  <div class="learning-status">
+    <span role="status">{{ store.savedStatus() }}</span
+    ><span class="lesson-completion">{{ store.session().step }} / 30 تجربة مكتملة</span>
+    <div class="learning-tools">
+      <button (click)="dialog.open({ kind: 'course' })">مسار التعلّم</button
+      ><button (click)="dialog.open({ kind: 'reference' })">دليل الأوامر</button>
+    </div>
+  </div>
+  <main id="git-main">
+    <div class="wizard" [attr.data-step]="store.challenge().id">
+      <div
+        class="wizard-progress"
+        [attr.aria-label]="'التحدي ' + (store.final() ? 30 : store.session().step + 1) + ' من 30'"
+      >
+        @for (challenge of store.lessons; track challenge.id; let i = $index) {
+          <span
+            [class.passed]="i < store.session().step"
+            [class.current]="i === store.session().step"
+            [attr.aria-current]="i === store.session().step ? 'step' : null"
+            [title]="challenge.title"
+          ></span>
+        }
+      </div>
+      <header class="challenge-heading">
+        <div class="eyebrow">
+          START LEARNING GIT
+          <span
+            >/
+            {{
+              store.final() ? 'COMPLETE' : 'EXPERIMENT ' + (store.session().step + 1) + ' OF 30'
+            }}</span
+          >
+        </div>
+        @if (!store.final()) {
+          <div [class]="'work-mode ' + store.mode()">
+            <span>{{ store.mode() === 'solo' ? '◉ تعمل وحدك' : '◉ تعمل مع فريق' }}</span
+            ><small>{{
+              store.mode() === 'solo'
+                ? 'جهازك · تاريخك · مسوداتك المحلية'
+                : 'مسارات متوازية · قرارات مشتركة · تبادل التاريخ'
+            }}</small>
+          </div>
+        }
+        <h1 #heading tabindex="-1">{{ store.challenge().title }}</h1>
+        <p>{{ store.challenge().instruction }}</p>
+      </header>
+      <app-learning-coach (navigate)="navigate($event)" />
+      <app-learning-scene />
+      @if (!store.final()) {
+        <section class="challenge-tasks" aria-label="نتائج التحدي">
+          @for (goal of store.goals(); track goal.label; let i = $index) {
+            <div [class.achieved]="goal.done">
+              <span>{{ goal.done ? '✓' : i + 1 }}</span
+              >{{ goal.label }}
+            </div>
+          }
+        </section>
+        @if (store.challenge().id === 'staging') {
+          <div class="prediction">
+            <b>قبل commit: أي مكان سيدخل بالتاريخ؟</b>
+            <div>
+              @for (value of ['Auditorium', 'Library']; track value) {
+                <button
+                  class="button ghost"
+                  [attr.aria-pressed]="store.session().prediction === value"
+                  (click)="store.dispatch({ type: 'prediction', value: value })"
+                >
+                  {{ value }}
+                </button>
+              }
+            </div>
+            @if (store.session().prediction) {
+              <span role="status">{{
+                store.session().prediction === 'Auditorium'
+                  ? '✓ الـindex يحدد ما يدخل بالـcommit. جرّب لتثبت توقّعك.'
+                  : 'جرّب مرة ثانية: قارن عمود الـindex بملف العمل.'
+              }}</span>
+            }
+          </div>
+        }
+        <div class="experiment-tools" [class.terminal-only]="!store.showEditor()">
+          <section class="command-lab">
+            <div class="panel-label">
+              <span>اكتب الأمر. راقب الأثر.</span><span class="tiny-label">COMMAND LAB</span>
+            </div>
+            <app-learning-terminal
+              [branch]="store.git().head"
+              [entries]="store.session().transcript"
+              [history]="store.session().commandHistory"
+              [suggestions]="store.challenge().commands"
+              [checkpoint]="store.session().checkpoint"
+              (execute)="store.dispatch({ type: 'terminal/execute', command: $event })"
+            />
+          </section>
+          @if (store.showEditor()) {
+            <section class="edit-lab">
+              <div class="panel-label">
+                <span>عدّل الملف</span><span class="tiny-label">WORKING TREE</span>
+              </div>
+              <app-learning-editor />
+              @if (store.challenge().edit; as edits) {
+                <div class="edit-shortcuts">
+                  <small>تعديل سريع للمسودة — ثم اضغط حفظ الملف</small>
+                  @for (edit of edits; track edit.label) {
+                    <button class="button ghost small" (click)="store.quickEdit(edit)">
+                      {{ edit.label }}
+                    </button>
+                  }
+                </div>
+              }
+            </section>
+          }
+        </div>
+        <div class="wizard-feedback" role="status">
+          <span>↳</span>
+          <p>{{ store.session().explanation }}</p>
+        </div>
+      }
+      <footer class="wizard-controls">
+        <div>
+          @if (!store.final()) {
+            <button
+              class="button ghost"
+              data-action="solution"
+              (click)="store.dispatch({ type: 'solution/next' })"
+            >
+              حل</button
+            ><small class="solution-reset-note">ينفّذ خطوة متبقية واحدة ويحافظ على شغلك</small
+            ><button
+              class="button text-button"
+              data-action="retry"
+              (click)="store.dispatch({ type: 'wizard/retry' })"
+            >
+              إعادة هذا التحدي
+            </button>
+          }
+        </div>
+        <div>
+          <span id="completion" class="completion" [class.done]="store.complete()">{{
+            store.final()
+              ? 'جولة مكتملة'
+              : store.complete()
+                ? '✓ نجحت التجربة'
+                : 'أكمل النتائج لفتح التالي'
+          }}</span
+          ><button
+            class="button primary"
+            [attr.data-action]="store.final() ? 'repeat' : 'next'"
+            [disabled]="!store.complete()"
+            (click)="next()"
+          >
+            {{
+              store.final()
+                ? 'مجموعة جديدة · ابدأ من جديد ↻'
+                : store.session().step === 29
+                  ? 'شاهد النتيجة ←'
+                  : 'التحدي التالي ←'
+            }}
+          </button>
+        </div>
+      </footer>
+    </div>
+  </main>
+  <footer class="wizard-footnote">
+    <span dir="ltr">LOCAL SIMULATION / NO SYSTEM COMMANDS</span
+    ><span>معرّفات commits تعليمية · يعمل دون إنترنت</span>
+  </footer>
+  <app-workshop-dialog />
+</div>

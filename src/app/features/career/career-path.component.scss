@@ -1,0 +1,138 @@
+:host {
+  display: block;
+}
+.path-planner {
+  color: var(--ink, #203b32);
+  padding-block: 30px;
+}
+h3 {
+  font-size: clamp(24px, 3vw, 36px);
+  margin: 8px 0 16px;
+}
+h4 {
+  font-size: 17px;
+  margin: 0;
+}
+p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 12px 0;
+}
+a {
+  color: var(--green, #25654e);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+select {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  min-height: 48px;
+  padding: 10px;
+  margin: 8px 0 20px;
+  border: 1px solid #80988b;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  color: inherit;
+}
+.path-summary,
+.step-heading,
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.path-summary {
+  font-size: 14px;
+}
+progress {
+  width: 100%;
+  height: 9px;
+  accent-color: #25654e;
+  margin: 14px 0;
+}
+.note {
+  font-size: 12px;
+  color: #506457;
+}
+summary {
+  padding: 12px 0;
+  cursor: pointer;
+  color: #25654e;
+  font-size: 13px;
+}
+.next-step,
+.capstone {
+  background: #edf2e8;
+  padding: 22px;
+  border-radius: 8px;
+  margin-block: 24px;
+}
+.milestones {
+  padding: 0;
+  list-style: none;
+}
+.milestones > li {
+  padding: 24px 0;
+  border-top: 1px solid #d6dfd3;
+}
+.milestones > .done {
+  border-inline-start: 3px solid #25654e;
+  padding-inline-start: 16px;
+}
+.status {
+  padding: 4px 8px;
+  background: #eef1ea;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.status[data-status='needs-work'] {
+  background: #fff0d4;
+  color: #71500b;
+}
+.status[data-status='observed'] {
+  background: #dff1e5;
+  color: #24553b;
+}
+.blocked {
+  font-size: 12px;
+  color: #685b3e;
+}
+.step-actions {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.step-actions label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+}
+input {
+  width: 18px;
+  height: 18px;
+  accent-color: #25654e;
+}
+details li {
+  font-size: 12px;
+  margin: 8px 0;
+}
+:where(a, button, input, select, summary):focus-visible {
+  outline: 3px solid #25654e;
+  outline-offset: 4px;
+}
+@media (max-width: 480px) {
+  .next-step,
+  .capstone {
+    padding: 16px;
+  }
+}
