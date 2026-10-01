@@ -1,3 +1,4 @@
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   afterRenderEffect,
   ChangeDetectionStrategy,
@@ -8,15 +9,19 @@ import {
   viewChild,
 } from '@angular/core';
 import type { ElementRef } from '@angular/core';
+import { WorkshopLocale } from '../i18n/workshop-i18n';
 import { GitLearningStore } from '../state/git-learning.store';
 import { WorkshopDialogService } from '../state/workshop-dialog.service';
 import { commandReference } from '../curriculum/reference';
 @Component({
   selector: 'app-workshop-dialog',
+  imports: [TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dialog.component.html',
 })
 export class LearningDialogComponent {
+  private readonly locale = inject(WorkshopLocale);
+  private readonly transloco = inject(TranslocoService);
   protected readonly store = inject(GitLearningStore);
   protected readonly dialog = inject(WorkshopDialogService);
   protected readonly query = linkedSignal(() => {
@@ -26,9 +31,16 @@ export class LearningDialogComponent {
   protected readonly reference = computed(() => {
     const normalize = (value: string) =>
       value.toLocaleLowerCase().normalize('NFD').replace(/\p{M}/gu, '').trim();
+    this.locale.language();
     const terms = normalize(this.query()).split(/\s+/).filter(Boolean);
     return commandReference.filter((group) =>
-      terms.every((term) => normalize(group.join(' ')).includes(term)),
+      terms.every((term) =>
+        normalize(
+          [this.transloco.translate(group[0]), group[1], this.transloco.translate(group[2])].join(
+            ' ',
+          ),
+        ).includes(term),
+      ),
     );
   });
   protected search(event: Event): void {
@@ -39,13 +51,13 @@ export class LearningDialogComponent {
   protected readonly title = computed(() => {
     const selection = this.dialog.selection();
     if (!selection) return '';
-    if (selection.kind === 'commit') return selection.id + ' · داخل الـcommit';
+    if (selection.kind === 'commit') return 'common.commitTitle';
     return {
-      course: 'مسار تعلّم Git',
-      reference: 'دليل الأوامر والمفاهيم',
-      settings: 'إعدادات العرض',
-      reset: 'إعادة الجولة من البداية؟',
-      fullscreen: 'ملء الشاشة',
+      course: 'dialog.gitLearningPath',
+      reference: 'dialog.commandAndConceptReference',
+      settings: 'dialog.displaySettings',
+      reset: 'dialog.restartTheSessionFromTheBeginning',
+      fullscreen: 'git_learning.fullscreen',
     }[selection.kind];
   });
   protected readonly inspector = computed(() => {

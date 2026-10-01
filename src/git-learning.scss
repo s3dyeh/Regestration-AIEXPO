@@ -18,7 +18,46 @@
 }
 
 app-git-learning {
+  .workshop[dir='ltr'] {
+    --workshop-direction: ltr;
+    font-family: Manrope, system-ui, sans-serif;
+  }
+  .workshop-language {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: 12px 24px;
+  }
+  .workshop-language label {
+    font-size: 14px;
+  }
+  .workshop-language select {
+    min-height: 44px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .workshop code {
+    unicode-bidi: isolate;
+    direction: ltr;
+  }
+  .workshop[dir='ltr'] .pipeline-arrow > span {
+    display: inline-block;
+    transform: scaleX(-1);
+  }
+  @media (max-width: 760px) {
+    .workshop[dir='ltr'] .pipeline-arrow > span {
+      transform: rotate(-90deg);
+    }
+  }
   .workshop {
+    --workshop-direction: rtl;
     color-scheme: dark;
     --bg: #0b1016;
     --surface: #111820;
@@ -813,8 +852,7 @@ app-git-learning {
     font-size: 11px;
     letter-spacing: 2px;
     color: var(--mint);
-    direction: ltr;
-    text-align: right;
+    text-align: start;
   }
   .challenge-heading .eyebrow span {
     color: var(--muted);
@@ -969,11 +1007,11 @@ app-git-learning {
     display: grid;
     grid-template-columns: 1.15fr 1fr;
     gap: 24px;
-    direction: ltr;
+    direction: inherit;
   }
   .experiment-tools > section {
     min-width: 0;
-    direction: rtl;
+    direction: var(--workshop-direction);
   }
   .experiment-tools.terminal-only {
     grid-template-columns: 1fr;
@@ -982,14 +1020,14 @@ app-git-learning {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 0 22px;
-    direction: ltr;
+    direction: inherit;
   }
   .terminal-only .panel-label {
     grid-column: 1 / -1;
-    direction: rtl;
+    direction: var(--workshop-direction);
   }
   .terminal-only .command-palette {
-    direction: rtl;
+    direction: var(--workshop-direction);
     margin: 0;
     padding: 17px;
     background: var(--surface);
@@ -1050,7 +1088,7 @@ app-git-learning {
     align-items: baseline;
     margin-top: 18px;
     padding: 13px 18px;
-    border-right: 2px solid var(--mint);
+    border-inline-start: 2px solid var(--mint);
     background: #11201b;
     color: #c9e3d6;
     font-size: 14px;
@@ -1211,7 +1249,7 @@ app-git-learning {
     gap: 14px;
   }
   .network-machines article {
-    direction: rtl;
+    direction: var(--workshop-direction);
     background: var(--bg);
     border: 1px solid var(--line);
     padding: 18px;
@@ -1852,7 +1890,8 @@ app-git-learning {
     min-height: 44px;
   }
   .course-map {
-    padding-right: 24px;
+    padding-inline-start: 24px;
+    padding-inline-end: 0;
     display: grid;
     gap: 8px;
     max-height: 55vh;
@@ -1908,7 +1947,7 @@ app-git-learning {
   .workshop-skip {
     position: absolute;
     top: 0;
-    right: 20px;
+    inset-inline-start: 20px;
     clip-path: inset(50%);
     height: 1px;
     width: 1px;

@@ -219,7 +219,7 @@ test('keyboard, command suggestions, retry and reset', async ({ page }) => {
   await expect(input).toHaveValue('git status');
   await commit(page);
   await action(page, 'retry').click();
-  await expect(page.locator('.saved pre')).toContainText('not tracked');
+  await expect(page.locator('.saved pre')).toContainText('لم يُتتبع بعد');
   await expect(action(page, 'next')).toBeDisabled();
   await commit(page);
   await next(page, 'staging');
@@ -244,9 +244,9 @@ test('solution performs one remaining action without timers, replay or losing ma
   await editor.fill((await editor.inputValue()) + '\nStudent note: keep me');
   await action(page, 'solution').click();
   await expect(page.locator('.working pre')).toContainText('keep me');
-  await expect(page.locator('.staged pre')).toContainText('not tracked');
+  await expect(page.locator('.staged pre')).toContainText('لم يُتتبع بعد');
   await page.clock.runFor(60000);
-  await expect(page.locator('.saved pre')).toContainText('not tracked');
+  await expect(page.locator('.saved pre')).toContainText('لم يُتتبع بعد');
   await command(page, 'git add .');
   await action(page, 'solution').click();
   await expect(page.locator('.saved pre')).toContainText('keep me');

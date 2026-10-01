@@ -1,3 +1,4 @@
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   afterRenderEffect,
   ChangeDetectionStrategy,
@@ -13,6 +14,7 @@ import type { TerminalEntry } from '../state/session';
 
 @Component({
   selector: 'app-learning-terminal',
+  imports: [TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div id="terminal" dir="ltr" [class.expanded]="expanded()">
@@ -22,7 +24,11 @@ import type { TerminalEntry } from '../state/session';
         ><button
           type="button"
           class="terminal-zoom"
-          [attr.aria-label]="expanded() ? 'تصغير الطرفية' : 'تكبير الطرفية'"
+          [attr.aria-label]="
+            expanded()
+              ? ('terminal.shrinkTerminal' | transloco)
+              : ('terminal.expandTerminal' | transloco)
+          "
           [attr.aria-pressed]="expanded()"
           (click)="toggleExpanded()"
         >
@@ -33,14 +39,12 @@ import type { TerminalEntry } from '../state/session';
         #log
         class="terminal-output"
         role="log"
-        aria-label="مخرجات الطرفية"
+        [attr.aria-label]="'terminal.terminalOutput' | transloco"
         aria-live="polite"
         tabindex="0"
       >
         @if (!entries().length) {
-          <pre
-            class="welcome-line"
-          >Git Booth / interactive laboratory<br>Educational IDs: c001… · type help to explore</pre>
+          <pre class="welcome-line">{{ 'common.terminalWelcome' | transloco }}</pre>
         }
         @for (entry of entries(); track $index) {
           <div>
@@ -54,7 +58,7 @@ import type { TerminalEntry } from '../state/session';
         ><input
           #commandInput
           id="command-input"
-          aria-label="اكتب أمر Git"
+          [attr.aria-label]="'terminal.typeAGitCommand' | transloco"
           spellcheck="false"
           autocomplete="off"
           autocapitalize="off"
@@ -62,14 +66,17 @@ import type { TerminalEntry } from '../state/session';
           [value]="command()"
           (input)="editCommand($event)"
           (keydown)="handleKey($event)"
-        /><button type="submit" aria-label="تنفيذ الأمر">Enter ↵</button>
+        /><button type="submit" [attr.aria-label]="'terminal.runCommand' | transloco">
+          Enter ↵
+        </button>
       </form>
       <div class="terminal-foot">
-        SIMULATION · NO SYSTEM COMMANDS <span>↑ ↓ history &nbsp; ⇥ complete</span>
+        {{ 'common.simulation' | transloco }}
+        <span>{{ 'common.historyShortcuts' | transloco }}</span>
       </div>
     </div>
-    <div class="command-palette" aria-label="أوامر مقترحة">
-      <small>اضغط لتعبئة الأمر، ثم نفّذه بنفسك</small>
+    <div class="command-palette" [attr.aria-label]="'terminal.suggestedCommands' | transloco">
+      <small>{{ 'terminal.clickToFillACommandThenRun' | transloco }}</small>
       <div>
         @for (suggestion of suggestions(); track suggestion) {
           <button type="button" dir="ltr" (click)="fill(suggestion)">{{ suggestion }}</button>

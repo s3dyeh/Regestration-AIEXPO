@@ -1,3 +1,4 @@
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   afterRenderEffect,
   ChangeDetectionStrategy,
@@ -13,23 +14,24 @@ import type { GitState } from '../domain/engine';
 
 @Component({
   selector: 'app-learning-graph',
+  imports: [TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (!graph().nodes.length) {
-      <div class="empty-history">لسّه ما في commits. البداية عندك.</div>
+      <div class="empty-history">{{ 'commit_graph.noCommitsYetItStartsWithYou' | transloco }}</div>
     } @else {
       <div
         #canvas
         class="commit-graph"
         dir="ltr"
         tabindex="0"
-        aria-label="التاريخ قابل للتمرير أفقيًا"
+        [attr.aria-label]="'commit_graph.historyScrollsHorizontally' | transloco"
       >
         <svg
           [attr.viewBox]="'0 0 ' + graph().width + ' 205'"
           [style.min-width.px]="graph().minWidth"
           role="group"
-          aria-label="رسم تاريخ المستودع، الأسهم تشير من commit إلى آبائه"
+          [attr.aria-label]="'commit_graph.repositoryHistoryGraphArrowsPointFromA' | transloco"
         >
           <defs>
             <marker
@@ -52,7 +54,10 @@ import type { GitState } from '../domain/engine';
               [class.detached-commit]="node.detached"
               tabindex="0"
               role="button"
-              [attr.aria-label]="'افتح ' + node.commit.id + ': ' + node.commit.message"
+              [attr.aria-label]="
+                'common.openCommit'
+                  | transloco: { id: node.commit.id, message: node.commit.message }
+              "
               [attr.data-action]="'commit:' + node.commit.id"
               (click)="inspect.emit(node.commit.id)"
               (keydown)="key($event, node.commit.id)"
@@ -68,7 +73,7 @@ import type { GitState } from '../domain/engine';
               </text>
               @if (node.detached) {
                 <text [attr.x]="node.x" [attr.y]="node.y + 48" text-anchor="middle">
-                  خارج الفروع
+                  {{ 'commit_graph.outsideBranches' | transloco }}
                 </text>
               }
               <text class="ref-label" [attr.x]="node.x" [attr.y]="node.y - 26" text-anchor="middle">
@@ -99,8 +104,8 @@ import type { GitState } from '../domain/engine';
         </svg>
       </div>
       <div class="graph-footer">
-        <span>الأسهم نحو الآباء · اضغط للفحص · المتقطّع كائن قديم خارج الفروع</span
-        ><span dir="ltr">{{ graph().nodes.length }} commits · educational IDs</span>
+        <span>{{ 'commit_graph.arrowsPointToParentsClickToInspect' | transloco }}</span
+        ><span>{{ 'common.graphCount' | transloco: { count: graph().nodes.length } }}</span>
       </div>
     }
   `,

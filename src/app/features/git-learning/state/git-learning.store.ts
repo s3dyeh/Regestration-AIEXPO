@@ -39,10 +39,10 @@ export class GitLearningStore {
   );
   readonly savedStatus = computed(() =>
     this.storageFailed()
-      ? 'الحفظ غير متاح — أبقِ هذه الصفحة مفتوحة للاحتفاظ بتقدّمك'
+      ? 'git_learning.store.savingIsUnavailableKeepThisPageOpen'
       : this.state().recovered
-        ? 'بدأنا جلسة جديدة لأن الحفظ السابق غير صالح.'
-        : 'تقدّمك محفوظ تلقائيًا على هذا المتصفح',
+        ? 'git_learning.store.startedANewSessionBecauseThePrevious'
+        : 'git_learning.store.yourProgressIsSavedAutomaticallyInThis',
   );
   readonly challenges = challenges;
   readonly lessons = challenges.slice(0, -1);

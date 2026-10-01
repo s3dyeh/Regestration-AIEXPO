@@ -11,71 +11,77 @@
 >
   @if (dialog.selection(); as selected) {
     <div class="dialog-header">
-      <h2 id="workshop-dialog-title">{{ title() }}</h2>
+      <h2 id="workshop-dialog-title">
+        {{ title() | transloco: { id: selected.kind === 'commit' ? selected.id : '' } }}
+      </h2>
       <button class="button ghost small" data-action="close" (click)="dialog.close()">
-        إغلاق ×
+        {{ 'dialog.close' | transloco }}
       </button>
     </div>
     <div class="dialog-body">
       @switch (selected.kind) {
         @case ('course') {
-          <p>أكمل كل تجربة لفتح التالية. يبقى نفس المستودع معك طوال المسار.</p>
+          <p>{{ 'dialog.completeEachExperimentToUnlockTheNext' | transloco }}</p>
           <ol class="course-map">
             @for (challenge of store.lessons; track challenge.id; let i = $index) {
               <li
                 [attr.aria-current]="store.session().step === i ? 'step' : null"
                 [class.course-passed]="i < store.session().step"
               >
-                {{ challenge.title
+                {{ challenge.title | transloco
                 }}<small>{{
                   i < store.session().step
-                    ? '✓ مكتمل'
+                    ? ('dialog.completed' | transloco)
                     : i === store.session().step
-                      ? 'أنت هنا'
-                      : 'قادم'
+                      ? ('dialog.youAreHere' | transloco)
+                      : ('dialog.comingUp' | transloco)
                 }}</small>
               </li>
             }
           </ol>
         }
         @case ('reference') {
-          <p>هذا مختبر محاكاة محدود، وليس طرفية النظام. لا ينفّذ أي أوامر على ملفات جهازك.</p>
+          <p>{{ 'dialog.thisIsALimitedSimulationLabNot' | transloco }}</p>
           <div class="reference-search">
-            <label for="reference-search">ابحث عن أمر أو مفهوم</label>
+            <label for="reference-search">{{
+              'dialog.searchForACommandOrConcept' | transloco
+            }}</label>
             <input
               id="reference-search"
               type="search"
               dir="auto"
               autocomplete="off"
-              placeholder="git stash، تعارض، commit…"
+              [attr.placeholder]="'dialog.gitStashConflictCommit' | transloco"
               [value]="query()"
               (input)="search($event)"
             />
-            <span role="status">{{ reference().length }} مجموعات مطابقة</span>
+            <span role="status">{{
+              'dialog.matchingGroups' | transloco: { p0: reference().length }
+            }}</span>
           </div>
           <div class="command-reference">
             @for (group of reference(); track group[0]) {
               <section>
-                <h3>{{ group[0] }}</h3>
+                <h3>{{ group[0] | transloco }}</h3>
                 <pre><code>{{group[1]}}</code></pre>
-                <p>{{ group[2] }}</p>
+                <p>{{ group[2] | transloco }}</p>
               </section>
             } @empty {
               <div class="reference-empty">
-                <p>لا توجد أوامر مطابقة. جرّب اسم أمر مثل stash أو مفهوم مثل دمج.</p>
-                <button class="button ghost" (click)="query.set('')">مسح البحث</button>
+                <p>{{ 'dialog.noMatchingCommandsTryACommandSuch' | transloco }}</p>
+                <button class="button ghost" (click)="query.set('')">
+                  {{ 'dialog.clearSearch' | transloco }}
+                </button>
               </div>
             }
           </div>
           <p>
-            اختصارات: ↑ و↓ لسجل الأوامر، Tab للإكمال، Ctrl/⌘ + Enter لحفظ الملف. اكتب help لعرض
-            الأوامر المدعومة.
+            {{ 'dialog.shortcutsAndForHistoryTabToComplete' | transloco }}
           </p>
         }
         @case ('settings') {
           <p>
-            كبّر النصوص أثناء العرض على شاشة كبيرة، واختر حركة أقل إذا كانت أنسب للمجموعة. تبقى هذه
-            الخيارات عند بدء مجموعة جديدة.
+            {{ 'dialog.enlargeTextForProjectionAndReduceMotion' | transloco }}
           </p>
           <div class="display-options">
             <button
@@ -85,8 +91,8 @@
             >
               {{
                 store.session().preferences.projection
-                  ? 'العودة للحجم العادي'
-                  : 'تكبير نصوص التجربة'
+                  ? ('dialog.returnToNormalSize' | transloco)
+                  : ('dialog.enlargeExperimentText' | transloco)
               }}</button
             ><button
               class="button ghost"
@@ -94,43 +100,46 @@
               (click)="store.dispatch({ type: 'preferences/toggle', key: 'reducedMotion' })"
             >
               {{
-                store.session().preferences.reducedMotion ? 'استخدم حركة النظام' : 'تقليل الحركة'
+                store.session().preferences.reducedMotion
+                  ? ('dialog.useSystemMotionSettings' | transloco)
+                  : ('dialog.reduceMotion' | transloco)
               }}
             </button>
           </div>
           <p class="checkpoint-note">
-            يمكنك أيضًا تكبير المتصفح بـ Ctrl + Plus. الخطوط مضمنة محليًا.
+            {{ 'dialog.youCanAlsoZoomTheBrowserWith' | transloco }}
           </p>
         }
         @case ('reset') {
-          <p>ستُمسح تجربة هذه المجموعة ويبدأ مستودع جديد.</p>
+          <p>{{ 'dialog.thisGroupSExperimentWillBeCleared' | transloco }}</p>
           <button class="button primary" data-action="confirm-reset" (click)="reset()">
-            ابدأ مجموعة جديدة
+            {{ 'dialog.startANewGroup' | transloco }}
           </button>
         }
         @case ('fullscreen') {
-          <p>استخدم F11 من المتصفح.</p>
+          <p>{{ 'dialog.useF11InYourBrowser' | transloco }}</p>
         }
         @case ('commit') {
           @if (inspector(); as view) {
             <p>{{ view.commit.message }}</p>
             <dl class="commit-details">
               <div>
-                <dt>المؤلف</dt>
+                <dt>{{ 'dialog.author' | transloco }}</dt>
                 <dd>{{ view.commit.author }}</dd>
               </div>
               <div>
-                <dt>الآباء</dt>
-                <dd dir="ltr">{{ view.commit.parents.join(' + ') || '(root: no parents)' }}</dd>
+                <dt>{{ 'dialog.parents' | transloco }}</dt>
+                <dd dir="ltr">
+                  {{ view.commit.parents.join(' + ') || ('common.rootCommit' | transloco) }}
+                </dd>
               </div>
               <div>
-                <dt>مكان الحفظ</dt>
-                <dd>المستودع المحلي</dd>
+                <dt>{{ 'dialog.storageLocation' | transloco }}</dt>
+                <dd>{{ 'dialog.localRepository' | transloco }}</dd>
               </div>
             </dl>
             <p class="muted">
-              {{ view.commit.id }} معرّف تعليمي. في Git الحقيقي يشير commit إلى root tree تربط أسماء
-              الملفات بكائنات محتواها.
+              {{ 'dialog.isAnEducationalIdInRealGit' | transloco: { p0: view.commit.id } }}
             </p>
             <div class="object-tree">
               <b dir="ltr">{{ view.commit.id }} → root tree</b>
@@ -140,8 +149,8 @@
                     {{ file.file }} → blob {{ file.index + 1 }}
                     <span>{{
                       file.shared
-                        ? '· محتوى مشترك مع ' + file.shared + ' commit'
-                        : '· محتوى هذه النسخة'
+                        ? ('common.sharedContent' | transloco: { count: file.shared })
+                        : ('dialog.contentOfThisVersion' | transloco)
                     }}</span>
                   </summary>
                   <pre dir="ltr">{{ file.content }}</pre>
@@ -149,8 +158,7 @@
               }
             </div>
             <p class="checkpoint-note">
-              أرقام blobs هنا للتوضيح، وليست object IDs. المحتوى نفسه يمكن إعادة استخدامه دون نسخ.
-              هذه معاينة؛ فتح commit لا يغيّر HEAD.
+              {{ 'dialog.blobNumbersHereAreIllustrativeNotObject' | transloco }}
             </p>
           }
         }

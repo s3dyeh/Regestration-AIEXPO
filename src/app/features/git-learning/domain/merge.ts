@@ -21,7 +21,7 @@ export function integrate(
   if (isAncestor(s, target, ours))
     return {
       output: 'Already up to date.',
-      event: { kind: 'unchanged', text: 'التاريخ المطلوب موجود بالفعل في فرعك.' },
+      event: { kind: 'unchanged', text: 'merge.theRequestedHistoryIsAlreadyInYour' },
     };
   if (!clean(s)) throw new Error('Save and commit your changes before merging in this lab.');
   if (s.merging) throw new Error('Finish the current merge first.');
@@ -33,7 +33,7 @@ export function integrate(
       output: `Fast-forward ${ours ?? '(empty)'}..${target}`,
       event: {
         kind: 'fast-forward',
-        text: 'تحرّك مؤشّر الفرع إلى commit موجود. لم يُنشأ merge commit.',
+        text: 'merge.movedTheBranchPointerToAnExisting',
       },
     };
   }
@@ -99,7 +99,7 @@ export function integrate(
       output: `CONFLICT in ${conflicts.join(', ')}\nEdit the file, remove markers, git add, then git commit.`,
       event: {
         kind: 'conflict',
-        text: 'التاريخ محفوظ. Git يحتاج قرارك في المحتوى المتعارض؛ عدّل الملف ثم جهّزه واحفظ الدمج.',
+        text: 'merge.historyIsPreservedGitNeedsYourDecision',
       },
     };
   }
@@ -108,7 +108,7 @@ export function integrate(
     output: `Merge made: ${id} (two parents)`,
     event: {
       kind: 'merged',
-      text: 'اجتمع التعديلان في snapshot جديد. لهذا الـcommit أبوان يشيران للمسارين.',
+      text: 'merge.combinedBothEditsInANewSnapshot',
     },
   };
 }

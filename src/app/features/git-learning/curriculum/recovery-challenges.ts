@@ -13,92 +13,89 @@ export const mergeRecoveryChallenges: Challenge[] = [
   {
     id: 'abort',
     mode: 'team',
-    title: 'مش جاهز للقرار؟ ألغِ الدمج.',
-    instruction:
-      'الدمج ما زال جاريًا. نفّذ merge --abort وأثبت أن ملفات main عادت إلى 14:00 وأن فرع time ما زال يحفظ 12:00.',
+    title: 'recovery_challenges.notReadyToDecideAbortTheMerge',
+    instruction: 'recovery_challenges.theMergeIsStillInProgressRun',
     scene: 'recovery',
     commands: ['git status', 'git merge --abort'],
-    hint: 'abort يلغي العملية الجارية فقط. لا يحذف أي فرع أو commit. بدأت هذه المحاكاة الدمج من ملفات نظيفة.',
+    hint: 'recovery_challenges.abortCancelsOnlyTheOngoingOperationIt',
   },
   {
     id: 'retry-merge',
     mode: 'team',
-    title: 'أعد المحاولة، ثم احسم التعارض',
-    instruction: 'ابدأ دمج time مجددًا. ستعود علامات التعارض لأن تعديلَي الفرعين ما زالا موجودين.',
+    title: 'recovery_challenges.tryAgainThenResolveTheConflict',
+    instruction: 'recovery_challenges.startMergingTimeAgainTheConflictMarkers',
     scene: 'conflict',
     commands: ['git merge time'],
-    hint: 'إلغاء الدمج ليس حذفًا لأحد المسارين. في الخطوة التالية ستختار الحل وتكمل الدمج.',
+    hint: 'recovery_challenges.abortingAMergeDoesNotDeleteEither',
   },
 ];
 export const recoveryChallenges: Challenge[] = [
   {
     id: 'local-error',
     mode: 'solo',
-    title: 'عملت commit بالغلط… ولسّه محلي.',
-    instruction:
-      'أضف 16:00 Wrong إلى program.txt واحفظ commit دون push. هذه نسخة خاطئة لم تصل لأي زميل.',
+    title: 'recovery_challenges.anAccidentalCommitStillOnlyLocal',
+    instruction: 'recovery_challenges.add1600WrongToProgramTxt',
     scene: 'recovery',
     commands: ['git add program.txt', 'git commit -m "Wrong session"'],
-    hint: 'المحاكاة تقارن HEAD المحلي بالبعيد. هذا التغيير لم يُنشر؛ سنصححه قبل المشاركة.',
-    edit: [edit('program.txt', program + '\n16:00 Wrong', 'أضف فقرة خاطئة')],
+    hint: 'recovery_challenges.theSimulationComparesLocalHeadWithThe',
+    edit: [
+      edit('program.txt', program + '\n16:00 Wrong', 'recovery_challenges.addAnIncorrectEntry'),
+    ],
   },
   {
     id: 'amend',
     mode: 'solo',
-    title: 'صحّح آخر commit قبل مشاركته',
-    instruction:
-      'بدّل Wrong إلى Review واحفظ الملف وجهّزه، ثم استخدم commit --amend. راقب المعرّف القديم والجديد والآباء.',
+    title: 'recovery_challenges.correctTheLastCommitBeforeSharing',
+    instruction: 'recovery_challenges.replaceWrongWithReviewSaveAndStage',
     scene: 'recovery',
     commands: ['git add program.txt', 'git commit --amend -m "Review session"'],
-    hint: 'amend يصنع commit بديلًا؛ لا يعدّل الكائن القديم. في هذا المختبر نمنع تعديل commit منشور لحماية تاريخ الفريق.',
-    edit: [edit('program.txt', 'Review', 'صحّح Wrong إلى Review', 'Wrong')],
+    hint: 'recovery_challenges.amendCreatesAReplacementCommitItDoes',
+    edit: [edit('program.txt', 'Review', 'recovery_challenges.correctWrongToReview', 'Wrong')],
   },
   {
     id: 'soft-reset',
     mode: 'solo',
-    title: 'ألغِ الـcommit، واحتفظ بالشغل',
-    instruction:
-      'استخدم reset --soft HEAD~1. يجب أن يرجع الفرع فقط، وتبقى Review في ملفات العمل والـindex.',
+    title: 'recovery_challenges.undoTheCommitKeepTheWork',
+    instruction: 'recovery_challenges.useResetSoftHead1OnlyThe',
     scene: 'recovery',
     commands: ['git reset --soft HEAD~1', 'git diff --staged'],
-    hint: 'soft يحرك HEAD، ولا يمس الملفات أو التجهيز. لا نستخدم reset --hard في هذا المختبر.',
+    hint: 'recovery_challenges.softMovesHeadWithoutTouchingFilesOr',
   },
   {
     id: 'recommit',
     mode: 'solo',
-    title: 'احفظ التعديل من جديد',
-    instruction: 'التعديل ما زال مجهّزًا. نفّذ commit برسالة واضحة، دون إعادة كتابة الملف.',
+    title: 'recovery_challenges.commitTheChangeAgain',
+    instruction: 'recovery_challenges.theChangeIsStillStagedCommitIt',
     scene: 'recovery',
     commands: ['git diff --staged', 'git commit -m "Reviewed schedule"'],
-    hint: 'بعد soft reset المحتوى جاهز للحفظ؛ لا تحتاج add إذا لم تغيّر الـindex.',
+    hint: 'recovery_challenges.afterASoftResetContentIsReady',
   },
   {
     id: 'unstage',
     mode: 'solo',
-    title: 'جهّزت ملفًا بالغلط؟',
-    instruction:
-      'غيّر Auditorium إلى Courtyard واحفظ الملف. نفّذ add، ثم restore --staged event.txt. يجب أن يبقى التعديل في العمل فقط.',
+    title: 'recovery_challenges.stagedAFileByMistake',
+    instruction: 'recovery_challenges.changeAuditoriumToCourtyardAndSaveRun',
     scene: 'snapshot',
     commands: ['git add event.txt', 'git restore --staged event.txt', 'git diff'],
-    hint: 'restore --staged يلغي التجهيز؛ لا يلغي تعديل الملف ولا ينشئ commit.',
-    edit: [edit('event.txt', 'Courtyard', 'غيّر المكان إلى Courtyard', 'Auditorium')],
+    hint: 'recovery_challenges.restoreStagedUnstagesContentItDoesNot',
+    edit: [
+      edit('event.txt', 'Courtyard', 'recovery_challenges.changeTheVenueToCourtyard', 'Auditorium'),
+    ],
   },
   {
     id: 'discard',
     mode: 'solo',
-    title: 'هذه التجربة لا نريد حفظها',
-    instruction:
-      'ألغِ تعديل Courtyard غير المجهّز باستخدام restore event.txt. راقب رجوع الملف إلى محتوى الـindex دون تغيير التاريخ.',
+    title: 'recovery_challenges.discardThisExperiment',
+    instruction: 'recovery_challenges.discardTheUnstagedCourtyardEditUsingRestore',
     scene: 'snapshot',
     commands: ['git diff', 'git restore event.txt'],
-    hint: 'restore بدون --staged يستبدل التعديل غير المجهّز. هنا ستتخلّى عن هذه التجربة تحديدًا.',
+    hint: 'recovery_challenges.restoreWithoutStagedReplacesTheUnstagedEdit',
   },
   {
     id: 'stash-save',
     mode: 'solo',
-    title: 'شغلك مش جاهز… وبدك تبدّل فرع',
-    instruction:
-      'أضف 17:00 Draft إلى البرنامج واحفظ الملف وجهّزه. خزّنه مؤقتًا باستخدام stash push. راقب درج المسودات وعودة الملفات إلى HEAD.',
+    title: 'recovery_challenges.unfinishedWorkButYouNeedToSwitch',
+    instruction: 'recovery_challenges.add1700DraftToTheProgram',
     scene: 'stash',
     commands: [
       'git add program.txt',
@@ -106,35 +103,38 @@ export const recoveryChallenges: Challenge[] = [
       'git stash list',
       'git stash show',
     ],
-    hint: 'stash يحفظ العمل والـindex محليًا دون commit على الفرع. الملفات غير المتتبعة لا تُحفظ افتراضيًا.',
-    edit: [edit('program.txt', program + '\n16:00 Review\n17:00 Draft', 'أضف مسودة Draft')],
+    hint: 'recovery_challenges.stashSavesTheWorkingTreeAndIndex',
+    edit: [
+      edit(
+        'program.txt',
+        program + '\n16:00 Review\n17:00 Draft',
+        'recovery_challenges.addTheDraftEntry',
+      ),
+    ],
   },
   {
     id: 'stash-apply',
     mode: 'solo',
-    title: 'غيّر الفرع وارجع لمسودتك',
-    instruction:
-      'انتقل إلى venue ثم ارجع إلى main. استخدم stash apply. راقب عودة Draft وبقاء النسخة في الدرج، دون تحريك HEAD.',
+    title: 'recovery_challenges.switchBranchesAndReturnToYourDraft',
+    instruction: 'recovery_challenges.switchToVenueThenBackToMain',
     scene: 'stash',
     commands: ['git switch venue', 'git switch main', 'git stash apply', 'git stash list'],
-    hint: 'apply يبقي النسخة في stash. دون --index يعود التعديل غير مجهّز، حتى لو جهّزته قبل التخزين.',
+    hint: 'recovery_challenges.applyKeepsTheStashEntryWithoutIndex',
   },
   {
     id: 'stash-drop',
     mode: 'solo',
-    title: 'نسختك رجعت. نظّف الدرج واحفظها.',
-    instruction:
-      'احذف النسخة المؤقتة باستخدام stash drop، ثم جهّز Draft واحفظ commit. حذف الـstash لا يحذف الملف المستعاد.',
+    title: 'recovery_challenges.yourDraftIsBackCleanUpAnd',
+    instruction: 'recovery_challenges.removeTheTemporaryCopyWithStashDrop',
     scene: 'stash',
     commands: ['git stash drop', 'git add program.txt', 'git commit -m "Finish draft"'],
-    hint: 'drop يحذف مدخل stash فقط. احفظ العمل المستعاد قبل الانتقال إلى تجربة جديدة.',
+    hint: 'recovery_challenges.dropRemovesOnlyTheStashEntryCommit',
   },
   {
     id: 'stash-pop',
     mode: 'solo',
-    title: 'استرجع المسودة واحذف نسختها بخطوة',
-    instruction:
-      'أضف 18:00 Demo واحفظ الملف. خزّنه في stash ثم استرجعه بـpop. بعد نجاح الاسترجاع جهّز التعديل واحفظه.',
+    title: 'recovery_challenges.restoreADraftAndRemoveItsCopy',
+    instruction: 'recovery_challenges.add1800DemoAndSaveStash',
     scene: 'stash',
     commands: [
       'git stash push -m "Demo draft"',
@@ -142,17 +142,20 @@ export const recoveryChallenges: Challenge[] = [
       'git add program.txt',
       'git commit -m "Add demo"',
     ],
-    hint: 'عند النجاح: pop = تطبيق ثم حذف النسخة. إذا حدث تعارض تبقى النسخة محفوظة.',
+    hint: 'recovery_challenges.onSuccessPopAppliesAndThenDrops',
     edit: [
-      edit('program.txt', program + '\n16:00 Review\n17:00 Draft\n18:00 Demo', 'أضف مسودة Demo'),
+      edit(
+        'program.txt',
+        program + '\n16:00 Review\n17:00 Draft\n18:00 Demo',
+        'recovery_challenges.addTheDemoEntry',
+      ),
     ],
   },
   {
     id: 'stash-conflict',
     mode: 'solo',
-    title: 'حتى المسودة قد تتعارض',
-    instruction:
-      'غيّر Auditorium إلى Courtyard واحفظ ثم stash. غيّر الملف الحالي إلى Studio واحفظ commit. الآن جرّب stash pop: نفس السطر يحمل قرارين.',
+    title: 'recovery_challenges.evenADraftCanConflict',
+    instruction: 'recovery_challenges.changeAuditoriumToCourtyardSaveAndStash',
     scene: 'stash',
     commands: [
       'git stash push -m "Courtyard draft"',
@@ -160,62 +163,65 @@ export const recoveryChallenges: Challenge[] = [
       'git commit -m "Choose studio"',
       'git stash pop',
     ],
-    hint: 'خزّن Courtyard أولًا، ثم احفظ Studio في التاريخ. بعد pop المتعارض ستبقى النسخة في درج stash.',
+    hint: 'recovery_challenges.stashCourtyardFirstThenCommitStudioAfter',
     edit: [
-      edit('event.txt', 'Courtyard', 'مسودة Courtyard', 'Auditorium'),
-      edit('event.txt', 'Studio', 'قرار جديد: Studio', 'Auditorium'),
+      edit('event.txt', 'Courtyard', 'recovery_challenges.draftCourtyard', 'Auditorium'),
+      edit('event.txt', 'Studio', 'recovery_challenges.newDecisionStudio', 'Auditorium'),
     ],
   },
   {
     id: 'stash-resolve',
     mode: 'solo',
-    title: 'حل تعارض المسودة دون فقدها',
-    instruction:
-      'في event.txt احذف العلامات واحتفظ بالمكان Courtyard والوقت 13:00. احفظ، ثم add وcommit، ثم احذف النسخة القديمة بـstash drop.',
+    title: 'recovery_challenges.resolveTheDraftConflictWithoutLosingIt',
+    instruction: 'recovery_challenges.removeTheMarkersInEventTxtKeeping',
     scene: 'stash',
     commands: ['git add event.txt', 'git commit -m "Keep courtyard"', 'git stash drop'],
-    hint: 'هذا تعارض تطبيق stash، وليس دمج فرعين؛ الـcommit الجديد له أب واحد. add يعلّم الملف بأنه محلول.',
+    hint: 'recovery_challenges.thisIsAStashApplicationConflictNot',
   },
   {
     id: 'shared-error',
     mode: 'team',
-    title: 'الخطأ وصل للفريق بالفعل',
-    instruction:
-      'بدّل Courtyard إلى Cancelled، واحفظ commit ثم push. راقب الجهازين يعرضان الخطأ نفسه.',
+    title: 'recovery_challenges.theMistakeHasAlreadyReachedTheTeam',
+    instruction: 'recovery_challenges.replaceCourtyardWithCancelledCommitAndPush',
     scene: 'remote',
     commands: ['git add event.txt', 'git commit -m "Cancel venue by mistake"', 'git push'],
-    hint: 'الآن الخطأ منشور. في الخطوة التالية سنعكسه دون حذف التاريخ الذي قد يعتمد عليه زميل.',
-    edit: [edit('event.txt', 'Cancelled', 'انشر خطأ تجريبيًا', 'Courtyard')],
+    hint: 'recovery_challenges.theMistakeIsNowPublishedNextWe',
+    edit: [
+      edit(
+        'event.txt',
+        'Cancelled',
+        'recovery_challenges.publishAnExperimentalMistake',
+        'Courtyard',
+      ),
+    ],
   },
   {
     id: 'revert',
     mode: 'team',
-    title: 'صحّح المنشور دون إعادة كتابة التاريخ',
-    instruction: 'نفّذ revert HEAD، ثم push. يبقى commit الخاطئ، ويضاف بعده commit يعيد Courtyard.',
+    title: 'recovery_challenges.correctPublishedWorkWithoutRewritingHistory',
+    instruction: 'recovery_challenges.runRevertHeadThenPushTheIncorrect',
     scene: 'recovery',
     commands: ['git revert HEAD', 'git log --oneline --graph', 'git push'],
-    hint: 'revert يسجل عكس التغيير في commit جديد. المختبر يدعم HEAD ذا الأب الواحد؛ عكس merge commit يحتاج اختيار mainline وهو خارج هذا التدريب.',
+    hint: 'recovery_challenges.revertRecordsTheInverseChangeInA',
   },
   {
     id: 'team-diverge',
     mode: 'team',
-    title: 'زميلك سبقك إلى المستودع البعيد',
-    instruction:
-      'زميل أضاف 19:00 Team review بعيدًا. غيّر الوقت محليًا من 13:00 إلى 14:00 واحفظ commit، ثم جرّب push. لماذا يُرفض؟',
+    title: 'recovery_challenges.yourTeammateReachedTheRemoteFirst',
+    instruction: 'recovery_challenges.aTeammateAdded1900TeamReview',
     scene: 'remote',
     commands: ['git add event.txt', 'git commit -m "Local time update"', 'git push'],
-    hint: 'الرفض يحمي تعديل الزميل. لا نحتاج force push؛ سنجلب التاريخ ونجمع المسارين.',
-    edit: [edit('event.txt', '14:00', 'غيّر الوقت إلى 14:00', '13:00')],
+    hint: 'recovery_challenges.theRejectionProtectsYourTeammateSChange',
+    edit: [edit('event.txt', '14:00', 'recovery_challenges.changeTheTimeTo1400', '13:00')],
   },
   {
     id: 'team-sync',
     mode: 'team',
-    title: 'اجمع شغلك وشغل زميلك',
-    instruction:
-      'نفّذ fetch، ثم جرّب pull --ff-only وشاهد رفضه لتفرّع التاريخ. ادمج origin/main صراحةً ثم push.',
+    title: 'recovery_challenges.combineYourWorkWithYourTeammateS',
+    instruction: 'recovery_challenges.runFetchThenTryPullFfOnly',
     scene: 'remote',
     commands: ['git fetch', 'git pull --ff-only', 'git merge origin/main', 'git push'],
-    hint: 'الزميل عدّل البرنامج وأنت عدّلت الوقت؛ الدمج يجمعهما. commit الدمج له أبوان، وpush ينجح بعد أن يحتوي تاريخك عمل الزميل.',
+    hint: 'recovery_challenges.yourTeammateChangedTheProgramAndYou',
   },
 ];
 
@@ -235,11 +241,11 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'abort':
       return [
         goal(
-          'أُلغي الدمج، وبقي HEAD مكانه',
+          'recovery_challenges.theMergeIsAbortedAndHeadStays',
           effect('merge-aborted') && !g.merging && current === prior,
         ),
         goal(
-          'ملفات main عادت وبقي time محفوظًا',
+          'recovery_challenges.mainFilesAreRestoredAndTimeIs',
           clean(g) &&
             tree['event.txt']?.includes('14:00') &&
             g.branches['time'] === before.branches['time'],
@@ -248,14 +254,14 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'retry-merge':
       return [
         goal(
-          'عاد تعارض event.txt بين نفس الفرعين',
+          'recovery_challenges.theEventTxtConflictReturnsBetweenThe',
           g.merging?.branch === 'time' && g.merging.unresolved.includes('event.txt'),
         ),
       ];
     case 'local-error':
       return [
         goal(
-          'Wrong محفوظة محليًا فقط',
+          'recovery_challenges.wrongIsCommittedOnlyLocally',
           fresh &&
             tree['program.txt']?.includes('16:00 Wrong') &&
             g.remote?.branches['main'] !== current &&
@@ -265,14 +271,14 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'amend':
       return [
         goal(
-          'استُبدل HEAD بآباء النسخة السابقة',
+          'recovery_challenges.headIsReplacedWithThePreviousCommit',
           effect('amended') &&
             fresh &&
             JSON.stringify(head?.parents) ===
               JSON.stringify(prior ? before.commits[prior].parents : []),
         ),
         goal(
-          'Review محفوظة بدل Wrong',
+          'recovery_challenges.reviewIsCommittedInsteadOfWrong',
           tree['program.txt']?.includes('16:00 Review') &&
             !tree['program.txt']?.includes('Wrong') &&
             clean(g),
@@ -281,13 +287,13 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'soft-reset':
       return [
         goal(
-          'رجع الفرع إلى الأب وبقي الـcommit القديم محفوظًا',
+          'recovery_challenges.theBranchMovesToItsParentAnd',
           effect('reset-soft') &&
             current === (prior ? before.commits[prior].parents[0] : null) &&
             !!g.commits[prior ?? ''],
         ),
         goal(
-          'Review بقيت في الملفات والـindex',
+          'recovery_challenges.reviewStaysInTheWorkingFilesAnd',
           g.index['program.txt'] === old['program.txt'] &&
             g.working['program.txt'] === old['program.txt'] &&
             changed(tree, g.index).length > 0,
@@ -296,15 +302,18 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'recommit':
       return [
         goal(
-          'commit جديد يحفظ Review من التجهيز',
+          'recovery_challenges.aNewCommitSavesReviewFromStaging',
           fresh && tree['program.txt']?.includes('16:00 Review') && clean(g),
         ),
       ];
     case 'unstage':
       return [
-        goal('جهّزت الملف ثم ألغيت التجهيز', effect('staged') && effect('unstaged')),
         goal(
-          'Courtyard في العمل فقط، والتاريخ ثابت',
+          'recovery_challenges.stageTheFileThenUnstageIt',
+          effect('staged') && effect('unstaged'),
+        ),
+        goal(
+          'recovery_challenges.courtyardIsOnlyInTheWorkingFile',
           g.working['event.txt']?.includes('Courtyard') &&
             g.index['event.txt'] === tree['event.txt'] &&
             current === prior,
@@ -313,27 +322,27 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'discard':
       return [
         goal(
-          'عاد الملف إلى الـindex دون commit',
+          'recovery_challenges.theFileReturnsToTheIndexWithout',
           effect('restored') && clean(g) && current === prior,
         ),
       ];
     case 'stash-save':
       return [
         goal(
-          'حُفظت Draft وحالة تجهيزها في درج المسودات',
+          'recovery_challenges.draftAndItsStagedStateAreSaved',
           g.stashes[0]?.working['program.txt']?.includes('17:00 Draft') &&
             g.stashes[0]?.index['program.txt']?.includes('17:00 Draft'),
         ),
-        goal('الملفات نظيفة وHEAD ثابت', clean(g) && current === prior),
+        goal('recovery_challenges.filesAreCleanAndHeadIsUnchanged', clean(g) && current === prior),
       ];
     case 'stash-apply':
       return [
         goal(
-          'بدّلت إلى venue ثم عدت إلى main',
+          'recovery_challenges.switchToVenueThenReturnToMain',
           did('git switch venue') && did('git switch main') && g.head === 'main',
         ),
         goal(
-          'عادت Draft غير مجهّزة وبقي الـstash',
+          'recovery_challenges.draftReturnsUnstagedAndTheStashRemains',
           effect('stash-applied') &&
             g.working['program.txt']?.includes('17:00 Draft') &&
             !g.index['program.txt']?.includes('17:00 Draft') &&
@@ -344,7 +353,7 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'stash-drop':
       return [
         goal(
-          'حذفت النسخة المؤقتة وحفظت Draft في التاريخ',
+          'recovery_challenges.dropTheTemporaryCopyAndCommitDraft',
           effect('stash-dropped') &&
             !g.stashes.length &&
             fresh &&
@@ -355,40 +364,46 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'stash-pop':
       return [
         goal(
-          'خزّنت المسودة ثم استرجعتها بنجاح بـpop',
+          'recovery_challenges.stashTheDraftThenSuccessfullyRestoreIt',
           effect('stashed') && effect('stash-popped') && !g.stashes.length,
         ),
         goal(
-          'Demo محفوظة في commit جديد',
+          'recovery_challenges.demoIsSavedInANewCommit',
           fresh && tree['program.txt']?.includes('18:00 Demo') && clean(g),
         ),
       ];
     case 'stash-conflict':
       return [
         goal(
-          'pop كشف تعارضًا وبقيت نسخة Courtyard',
+          'recovery_challenges.popRevealsAConflictAndTheCourtyard',
           effect('stash-conflict') &&
             g.stashConflicts.includes('event.txt') &&
             g.stashes[0]?.working['event.txt']?.includes('Courtyard'),
         ),
-        goal('قرار Studio ما زال محفوظًا في HEAD', tree['event.txt']?.includes('Studio')),
+        goal(
+          'recovery_challenges.theStudioDecisionIsStillSavedIn',
+          tree['event.txt']?.includes('Studio'),
+        ),
       ];
     case 'stash-resolve':
       return [
         goal(
-          'Courtyard و13:00 محفوظان دون تعارض',
+          'recovery_challenges.courtyardAnd1300AreCommittedWithout',
           fresh &&
             tree['event.txt']?.includes('Venue: Courtyard') &&
             tree['event.txt']?.includes('Time: 13:00') &&
             !g.stashConflicts.length &&
             clean(g),
         ),
-        goal('الـcommit له أب واحد والدرج فارغ', head?.parents.length === 1 && !g.stashes.length),
+        goal(
+          'recovery_challenges.theCommitHasOneParentAndThe',
+          head?.parents.length === 1 && !g.stashes.length,
+        ),
       ];
     case 'shared-error':
       return [
         goal(
-          'Cancelled محفوظة على الجهازين',
+          'recovery_challenges.cancelledIsCommittedOnBothMachines',
           fresh &&
             tree['event.txt']?.includes('Cancelled') &&
             g.remote?.branches['main'] === current &&
@@ -398,34 +413,37 @@ export function recoveryRequirements(s: BoothSession, id: string) {
     case 'revert':
       return [
         goal(
-          'commit عكسي جديد يحتفظ بالخطأ كأب',
+          'recovery_challenges.aNewInverseCommitKeepsTheMistake',
           effect('reverted') &&
             fresh &&
             head?.parents[0] === prior &&
             tree['event.txt']?.includes('Courtyard'),
         ),
-        goal('وصل التصحيح إلى الفريق', g.remote?.branches['main'] === current && clean(g)),
+        goal(
+          'recovery_challenges.theCorrectionReachesTheTeam',
+          g.remote?.branches['main'] === current && clean(g),
+        ),
       ];
     case 'team-diverge':
       return [
         goal(
-          'حفظت 14:00 محليًا والبعيد متقدّم بمسار آخر',
+          'recovery_challenges.1400IsCommittedLocallyWhileThe',
           fresh && tree['event.txt']?.includes('14:00') && g.remote?.branches['main'] === 'r002',
         ),
-        goal('push رُفض لحماية تعديل الزميل', effect('push-rejected')),
+        goal('recovery_challenges.pushIsRejectedToProtectTheTeammate', effect('push-rejected')),
       ];
     case 'team-sync':
       return [
-        goal('رأيت أن fast-forward لا يكفي', effect('ff-rejected')),
+        goal('recovery_challenges.observeThatFastForwardIsNotEnough', effect('ff-rejected')),
         goal(
-          'دمجت التعديلين بأبوين',
+          'recovery_challenges.mergeBothChangesWithTwoParents',
           fresh &&
             head?.parents.length === 2 &&
             tree['event.txt']?.includes('14:00') &&
             tree['program.txt']?.includes('19:00 Team review'),
         ),
         goal(
-          'الجهازان متزامنان دون force push',
+          'recovery_challenges.bothMachinesAreSynchronizedWithoutForcePush',
           g.remote?.branches['main'] === current && clean(g),
         ),
       ];

@@ -12,14 +12,15 @@ export type SolutionStep =
 const command = (value: string): SolutionStep => ({
   kind: 'command',
   command: value,
-  label: `تم تنفيذ ${value} لإكمال الخطوة المتبقية.`,
+  label: 'solutions.executedTheCommandToCompleteTheRemaining',
 });
 
 /** Choose ONE action from the live repository, never replay or restore a checkpoint. */
 export function nextSolution(s: BoothSession): SolutionStep | null {
   if (requirements(s).every((goal) => goal.done) && !Object.keys(s.drafts).length) return null;
   const draft = Object.hasOwn(s.drafts, s.selectedFile) ? s.selectedFile : Object.keys(s.drafts)[0];
-  if (draft) return { kind: 'save', file: draft, label: 'حُفظت مسودتك الحالية في ملف العمل فقط.' };
+  if (draft)
+    return { kind: 'save', file: draft, label: 'solutions.savedYourCurrentDraftToTheWorking' };
   const g = s.git,
     tree = headTree(g),
     id = challenges[s.step].id;
@@ -34,7 +35,7 @@ export function nextSolution(s: BoothSession): SolutionStep | null {
     kind: 'edit',
     file,
     content,
-    label: `تم تعديل المسودة ${file} للخطوة المطلوبة فقط. اضغط حل مجددًا لحفظها.`,
+    label: 'solutions.editedTheDraftForTheRequiredStep',
   });
   const field = (name: string, value: string) => {
     const text = g.working['event.txt'] ?? '';
@@ -63,7 +64,7 @@ export function nextSolution(s: BoothSession): SolutionStep | null {
   switch (id) {
     case 'problem':
       return !s.introChoice
-        ? { kind: 'choose', label: 'اخترنا النسخة A لرؤية التعديل المفقود.' }
+        ? { kind: 'choose', label: 'solutions.selectedVersionAToRevealTheLost' }
         : command('git init');
     case 'first':
       return saveCommit();
@@ -75,11 +76,11 @@ export function nextSolution(s: BoothSession): SolutionStep | null {
             : command('git add event.txt');
         if (!has(g.working['event.txt'], 'Library')) return field('Venue', 'Library');
         if (s.prediction !== 'Auditorium')
-          return { kind: 'predict', label: 'النسخة المجهّزة Auditorium هي التي تدخل الـcommit.' };
+          return { kind: 'predict', label: 'solutions.theStagedAuditoriumVersionIsWhatEnters' };
         return command('git commit -m "Staged venue"');
       }
       if (!has(g.working['event.txt'], 'Library')) return field('Venue', 'Library');
-      return { kind: 'predict', label: 'الـcommit يأخذ نسخة الـindex: Auditorium.' };
+      return { kind: 'predict', label: 'solutions.theCommitTakesTheIndexVersionAuditorium' };
     }
     case 'save':
       return !did('git diff')

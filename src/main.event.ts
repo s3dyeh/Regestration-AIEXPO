@@ -17,9 +17,9 @@ bootstrapApplication(EventApp, {
       {
         path: 'learn-git',
         title: 'Start learning Git | CareerLens AI',
-        loadComponent: () =>
-          import('./app/features/git-learning/git-learning.component').then(
-            (module) => module.GitLearningComponent,
+        loadChildren: () =>
+          import('./app/features/git-learning/git-learning.routes').then(
+            (module) => module.gitLearningRoutes,
           ),
       },
       {

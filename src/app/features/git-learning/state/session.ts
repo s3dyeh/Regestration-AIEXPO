@@ -60,7 +60,7 @@ export function createSession(): BoothSession {
     commandHistory: [],
     observed: [],
     effects: [],
-    explanation: 'جرّب استبدال الملف بإحدى النسختين. أي تعديل سيضيع؟',
+    explanation: 'session.tryReplacingTheFileWithEitherVersion',
     introChoice: null,
     prediction: null,
     preferences: { projection: false, reducedMotion: false },
@@ -200,7 +200,7 @@ function transition(session: BoothSession, action: BoothAction): BoothSession {
         ...session,
         git,
         drafts,
-        explanation: 'تغيّر ملف العمل. راقب الفرق بينه وبين الـindex والـcommit.',
+        explanation: 'session.theWorkingFileChangedCompareItWith',
       };
     }
     case 'intro/choose':

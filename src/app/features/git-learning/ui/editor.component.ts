@@ -1,15 +1,17 @@
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GitLearningStore } from '../state/git-learning.store';
 @Component({
   selector: 'app-learning-editor',
+  imports: [TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div id="editor">
       <label class="file-picker"
-        >الملف
-        <select
+        >{{ 'editor.file' | transloco
+        }}<select
           id="file-select"
-          aria-label="اختر ملف المشروع"
+          [attr.aria-label]="'editor.chooseAProjectFile' | transloco"
           [value]="store.session().selectedFile"
           (change)="selectFile($event)"
         >
@@ -22,21 +24,23 @@ import { GitLearningStore } from '../state/git-learning.store';
         id="file-content"
         dir="ltr"
         spellcheck="false"
-        [attr.aria-label]="'محتوى الملف ' + store.session().selectedFile"
+        [attr.aria-label]="'common.fileContent' | transloco: { file: store.session().selectedFile }"
         [value]="store.editorContent()"
         (input)="edit($event)"
         (keydown)="shortcut($event)"
       ></textarea>
       <div class="editor-bottom">
         <span id="editor-status">{{
-          store.editorDirty() ? 'مسودة غير محفوظة — اضغط حفظ الملف' : 'المحرر يغيّر ملفات العمل فقط'
+          store.editorDirty()
+            ? ('editor.unsavedDraftPressSaveFile' | transloco)
+            : ('editor.theEditorChangesOnlyWorkingFiles' | transloco)
         }}</span
         ><button
           class="button secondary small"
           data-action="save-file"
           (click)="store.dispatch({ type: 'editor/save' })"
         >
-          حفظ الملف
+          {{ 'editor.saveFile' | transloco }}
         </button>
       </div>
     </div>

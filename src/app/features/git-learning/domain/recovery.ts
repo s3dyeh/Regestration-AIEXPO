@@ -38,7 +38,7 @@ export function amend(s: GitState, message: string): Outcome {
   return result(
     'amended',
     `[${s.head} ${id}] ${message}\nReplaces ${old}; previous object retained.`,
-    'استُبدل آخر commit بآخر جديد له نفس الآباء، من محتوى الـindex. النسخة القديمة لم تُعدّل؛ تغيّر مؤشّر الفرع.',
+    'recovery.replacedTheLastCommitWithANew',
   );
 }
 export function softReset(s: GitState): Outcome {
@@ -53,7 +53,7 @@ export function softReset(s: GitState): Outcome {
   return result(
     'reset-soft',
     `HEAD moved ${old} → ${parent}. Index and working tree unchanged.`,
-    'رجع الفرع خطوة؛ الـindex وملفات العمل لم يتغيرا. التعديل جاهز لإعادة commit. هذا تدريب على commit محلي غير منشور.',
+    'recovery.movedTheBranchBackOneStepThe',
   );
 }
 export function revertHead(s: GitState): Outcome {
@@ -71,7 +71,7 @@ export function revertHead(s: GitState): Outcome {
   return result(
     'reverted',
     `[${s.head} ${id}] Revert ${old}\nOriginal commit remains in history.`,
-    'أُضيف commit يعكس أثر آخر commit. بقي الخطأ وتصحيحه في التاريخ؛ يمكنك push دون إعادة كتابة تاريخ الفريق.',
+    'recovery.addedACommitReversingTheLastCommit',
   );
 }
 export function abortMerge(s: GitState): Outcome {
@@ -83,7 +83,7 @@ export function abortMerge(s: GitState): Outcome {
   return result(
     'merge-aborted',
     'Merge aborted. HEAD unchanged; pre-merge files restored.',
-    'أُلغي الدمج الجاري وعادت ملفات بداية الدمج. لم يُحذف أي commit من أي فرع. يمكنك المحاولة مجددًا.',
+    'recovery.abortedTheOngoingMergeAndRestoredThe',
   );
 }
 
@@ -146,7 +146,7 @@ export function stash(s: GitState, args: string[]): Outcome {
       s.stashes
         .map((entry, i) => `stash@{${i}}: On ${entry.branch}: ${entry.message}`)
         .join('\n') || 'No stash entries.',
-      'الـstash محلي. القائمة تعرض الأحدث أولًا؛ لا تتغير الفروع.',
+      'recovery.stashesAreLocalTheListShowsThe',
     );
   const preview = s.stashes[0];
   if (operation === 'show') {
@@ -156,7 +156,7 @@ export function stash(s: GitState, args: string[]): Outcome {
       changed(s.commits[preview.base].tree, preview.working)
         .map((f) => `${f}\n${preview.working[f] ?? '(deleted)'}`)
         .join('\n'),
-      'معاينة محتوى stash فقط؛ لم يُطبّق شيء.',
+      'recovery.previewedStashContentOnlyNothingWasApplied',
     );
   }
   requireNoOperation(s);
@@ -169,7 +169,7 @@ export function stash(s: GitState, args: string[]): Outcome {
       return result(
         'unchanged',
         'No local changes to save.',
-        'لا تغييرات في الملفات المتتبعة لحفظها في stash.',
+        'recovery.noTrackedFileChangesToStash',
       );
     s.stashes.unshift({
       id: `s${String(s.nextStashId++).padStart(3, '0')}`,
@@ -187,7 +187,7 @@ export function stash(s: GitState, args: string[]): Outcome {
     return result(
       'stashed',
       'Saved working directory and index to stash@{0}. Untracked files not included.',
-      'انتقل العمل غير المكتمل إلى stash محلي، وعادت الملفات المتتبعة إلى HEAD. الـstash لا يتحرك معه الفرع ولا يذهب عبر push.',
+      'recovery.movedUnfinishedWorkIntoALocalStash',
     );
   }
   const entry = s.stashes[0];
@@ -197,7 +197,7 @@ export function stash(s: GitState, args: string[]): Outcome {
     return result(
       'stash-dropped',
       'Dropped stash@{0}. Working files unchanged.',
-      'حُذفت النسخة من قائمة stash فقط. الملفات المستعادة تبقى كما هي.',
+      'recovery.removedOnlyTheStashEntryRestoredFiles',
     );
   }
   if (!clean(s))
@@ -217,14 +217,14 @@ export function stash(s: GitState, args: string[]): Outcome {
     return result(
       'stash-conflict',
       `CONFLICT in ${applied.conflicts.join(', ')}. Stash entry kept. Resolve and git add.`,
-      'تعارضت المسودة مع الفرع الحالي. بقي الـstash حتى مع pop. احسم المحتوى ثم add؛ هذا ليس merge commit.',
+      'recovery.theDraftConflictsWithTheCurrentBranch',
     );
   if (operation === 'pop') s.stashes.shift();
   return result(
     operation === 'pop' ? 'stash-popped' : 'stash-applied',
     `Applied stash@{0}.${operation === 'pop' ? ' Entry removed.' : ' Entry kept.'}${rest.length ? ' Saved index restored.' : ' Changes are unstaged.'}`,
     operation === 'pop'
-      ? 'عادت المسودة وحُذف الـstash بعد نجاح التطبيق. HEAD لم يتحرك.'
-      : 'عادت المسودة وبقيت نسخة في stash. apply لا يحذفها؛ --index يعيد حالة التجهيز أيضًا.',
+      ? 'recovery.restoredTheDraftAndDroppedTheStash'
+      : 'recovery.restoredTheDraftAndKeptTheStash',
   );
 }

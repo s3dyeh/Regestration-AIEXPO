@@ -25,7 +25,7 @@ export { commands, tokenize } from './parser';
 export function execute(command: string, state: GitState): Result {
   const s = copy(state);
   let output: string;
-  let event: Event = { kind: 'inspect', text: 'قراءة الحالة لا تغيّر تاريخ المشروع.' };
+  let event: Event = { kind: 'inspect', text: 'engine.inspectingTheStateDoesNotChangeProject' };
   try {
     const tokens = tokenize(command);
     const [program, verb, ...args] = tokens;
@@ -43,8 +43,8 @@ export function execute(command: string, state: GitState): Result {
             kind: program,
             text:
               program === 'clear'
-                ? 'تم مسح مخرجات الطرفية فقط؛ المستودع لم يتغير.'
-                : 'هذه الأوامر المتاحة في المحاكاة. استخدم المحرر لتعديل الملفات.',
+                ? 'engine.clearedOnlyTheTerminalOutputTheRepository'
+                : 'engine.theseCommandsAreAvailableInTheSimulation',
           },
         ],
       };
@@ -59,7 +59,7 @@ export function execute(command: string, state: GitState): Result {
         output = 'Initialized empty educational repository (.git model).';
         event = {
           kind: 'init',
-          text: 'أُنشئت قاعدة تاريخ محلية. لم تُرفع أي ملفات، ولم يُنشأ commit بعد.',
+          text: 'engine.createdALocalHistoryDatabaseNoFiles',
         };
       }
     } else {
@@ -103,7 +103,7 @@ export function execute(command: string, state: GitState): Result {
           output = `Staged: ${files.join(', ')}`;
           event = {
             kind: 'staged',
-            text: 'أخذ الـindex محتوى الملفات الآن. أي تعديل لاحق يحتاج git add مرة ثانية حتى يدخل بالـcommit.',
+            text: 'engine.theIndexCapturedTheCurrentFileContent',
           };
           break;
         }
@@ -131,7 +131,7 @@ export function execute(command: string, state: GitState): Result {
           output = `[${s.head} ${id}] ${args[1]}\n${parents.length} parent(s) · educational ID, not a real hash`;
           event = {
             kind: 'committed',
-            text: 'حُفظ snapshot من الـindex وتحرك مؤشّر الفرع. الملفات غير المجهّزة بقيت خارج هذا الحفظ. كل هذا محلي.',
+            text: 'engine.savedASnapshotFromTheIndexAnd',
           };
           break;
         }
@@ -178,7 +178,7 @@ export function execute(command: string, state: GitState): Result {
             output = `Created branch ${name}`;
             event = {
               kind: 'branch',
-              text: 'أُنشئ مؤشّر إضافي إلى نفس الـcommit. لم تُنسخ ملفات المشروع.',
+              text: 'engine.createdAnotherPointerToTheSameCommit',
             };
           }
           break;
@@ -205,7 +205,7 @@ export function execute(command: string, state: GitState): Result {
           output = `Switched to branch '${name}'`;
           event = {
             kind: 'switched',
-            text: 'يشير HEAD الآن للفرع المختار، والملفات تعرض snapshot رأس هذا الفرع.',
+            text: 'engine.headNowPointsToTheSelectedBranch',
           };
           break;
         }
@@ -262,8 +262,8 @@ export function execute(command: string, state: GitState): Result {
           event = {
             kind: staged ? 'unstaged' : 'restored',
             text: staged
-              ? 'خرج التعديل من التجهيز وبقي في ملف العمل. لم يتغير التاريخ.'
-              : 'عاد ملف العمل إلى محتوى الـindex؛ أُلغي التعديل غير المجهّز في الملف المختار.',
+              ? 'engine.unstagedTheEditAndKeptItIn'
+              : 'engine.restoredTheWorkingFileFromTheIndex',
           };
           break;
         }
@@ -290,7 +290,7 @@ export function execute(command: string, state: GitState): Result {
           output = `origin/${s.head} → ${tip(s)} (simulated push)`;
           event = {
             kind: 'pushed',
-            text: 'انتقلت commits ومحتوياتها اللازمة إلى المستودع البعيد الافتراضي. التعديلات غير المحفوظة لم تنتقل.',
+            text: 'engine.transferredCommitsAndRequiredContentToThe',
           };
           break;
         }
@@ -313,7 +313,7 @@ export function execute(command: string, state: GitState): Result {
             output = 'Fetched remote history. Local branch and working files unchanged.';
             event = {
               kind: 'fetched',
-              text: 'وصلت معلومات التاريخ وتحدّث origin. فرعك وملفاتك لم يتغيرا؛ fetch لا يدمج.',
+              text: 'engine.fetchedHistoryAndUpdatedOriginYourBranch',
             };
           }
           break;
@@ -336,7 +336,7 @@ export function execute(command: string, state: GitState): Result {
             : error.startsWith('Not possible to fast-forward')
               ? 'ff-rejected'
               : 'error',
-          text: 'لم تتغيّر الحالة. راجع الرسالة أو افتح التلميح؛ التجربة قابلة للإعادة.',
+          text: 'engine.theStateIsUnchangedCheckTheMessage',
         },
       ],
     };

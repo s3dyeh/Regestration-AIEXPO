@@ -1,3 +1,4 @@
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   afterRenderEffect,
   ChangeDetectionStrategy,
@@ -15,9 +16,11 @@ import { LearningTerminalComponent } from './ui/terminal.component';
 import { LearningEditorComponent } from './ui/editor.component';
 import { LearningDialogComponent } from './ui/dialog.component';
 import { LearningCoachComponent } from './ui/learning-coach.component';
+import { WorkshopLocale } from './i18n/workshop-i18n';
 @Component({
   selector: 'app-git-learning',
   imports: [
+    TranslocoPipe,
     RouterLink,
     LearningSceneComponent,
     LearningTerminalComponent,
@@ -25,11 +28,12 @@ import { LearningCoachComponent } from './ui/learning-coach.component';
     LearningDialogComponent,
     LearningCoachComponent,
   ],
-  providers: [GitLearningStore, WorkshopDialogService],
+  providers: [GitLearningStore, WorkshopDialogService, WorkshopLocale],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './git-learning.component.html',
 })
 export class GitLearningComponent {
+  protected readonly locale = inject(WorkshopLocale);
   protected readonly store = inject(GitLearningStore);
   protected readonly dialog = inject(WorkshopDialogService);
   private readonly document = inject(DOCUMENT);

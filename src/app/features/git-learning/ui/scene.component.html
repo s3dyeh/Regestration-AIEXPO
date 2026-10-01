@@ -1,7 +1,10 @@
 @let git = store.git();
 @switch (store.challenge().scene) {
   @case ('collision') {
-    <section class="overwrite-experiment" aria-label="محاكاة فقدان تعديل عند استبدال الملف">
+    <section
+      class="overwrite-experiment"
+      [attr.aria-label]="'scene.simulationOfAnEditLostWhenReplacing' | transloco"
+    >
       <div class="copy-options">
         <article>
           <small>EDIT A / FINAL_V2.TXT</small>
@@ -12,7 +15,7 @@
             [attr.aria-pressed]="store.session().introChoice === 'sara'"
             (click)="store.dispatch({ type: 'intro/choose', choice: 'sara' })"
           >
-            استبدل بالنسخة A ↓
+            {{ 'scene.replaceWithVersionA' | transloco }}
           </button>
         </article>
         <article>
@@ -24,14 +27,14 @@
             [attr.aria-pressed]="store.session().introChoice === 'omar'"
             (click)="store.dispatch({ type: 'intro/choose', choice: 'omar' })"
           >
-            استبدل بالنسخة B ↓
+            {{ 'scene.replaceWithVersionB' | transloco }}
           </button>
         </article>
       </div>
       <div class="overwrite-result" aria-live="polite">
         <span class="file-icon">≡</span>
         <div>
-          <small>الملف المشترك بعد الاستبدال · تجربة منفصلة</small>
+          <small>{{ 'scene.sharedFileAfterReplacementSeparateExperiment' | transloco }}</small>
           <pre dir="ltr">{{
             store.session().introChoice === 'sara'
               ? 'Venue: Auditorium\nTime: 10:00'
@@ -42,12 +45,12 @@
         </div>
         <div class="lost-change">
           @if (store.session().introChoice) {
-            <b>تعديل ضائع</b
+            <b>{{ 'scene.lostEdit' | transloco }}</b
             ><del dir="ltr">{{
               store.session().introChoice === 'sara' ? 'Time: 12:00' : 'Venue: Auditorium'
             }}</del>
           } @else {
-            <span>اختر نسخة وراقب ما يُمحى</span>
+            <span>{{ 'scene.chooseAVersionAndWatchWhatGets' | transloco }}</span>
           }
         </div>
       </div>
@@ -55,8 +58,8 @@
         <span>{{ git.initialized ? '✓' : '○' }}</span
         >{{
           git.initialized
-            ? '.git جاهز · الآن يمكنك حفظ نسخ بدل استبدالها'
-            : 'لا يوجد تاريخ يحمي التعديلات بعد'
+            ? ('scene.gitIsReadyNowSaveVersionsInstead' | transloco)
+            : ('scene.noHistoryProtectsYourEditsYet' | transloco)
         }}<code>{{ commits().length }} commits</code>
       </div>
     </section>
@@ -66,12 +69,14 @@
       @for (card of snapshot(); track card.className; let i = $index) {
         <div [class]="'state-card ' + card.className">
           <div>
-            <span>{{ card.label }}</span
+            <span>{{ card.label | transloco }}</span
             ><span class="state-index">0{{ i + 1 }}</span>
           </div>
-          <small>{{ card.en }}</small>
-          <pre dir="ltr">{{ card.value ?? '(not tracked yet)' }}</pre>
-          <span class="state-bottom">{{ card.status }}</span>
+          <small>{{ card.en | transloco }}</small>
+          <pre dir="ltr">{{ card.value ?? ('common.notTracked' | transloco) }}</pre>
+          <span class="state-bottom">{{
+            card.className === 'saved' && store.tip() ? store.tip() : (card.status | transloco)
+          }}</span>
         </div>
         @if (i < 2) {
           <div class="pipeline-arrow" aria-hidden="true">
@@ -87,15 +92,15 @@
         @for (side of conflict(); track side.branch) {
           <article>
             <code>{{ side.branch }}</code>
-            <pre dir="ltr">{{ side.text }}</pre>
+            <pre dir="ltr">{{ side.text ?? ('scene.notCreatedYet' | transloco) }}</pre>
           </article>
         }
       </div>
       <div class="conflict-decision" [class.unresolved]="git.merging">
         {{
           git.merging
-            ? 'نفس السطر، قيمتان. التاريخان محفوظان — القرار لك.'
-            : 'راقب النسختين المحفوظتين أثناء التعديل والدمج.'
+            ? ('scene.sameLineTwoValuesBothHistoriesAre' | transloco)
+            : ('scene.watchBothSavedVersionsWhileEditingAnd' | transloco)
         }}
       </div>
       <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
@@ -105,8 +110,8 @@
     <section class="network-experiment">
       <div class="network-machines">
         <article>
-          <small>YOUR MACHINE</small>
-          <h3>جهازك</h3>
+          <small>{{ 'common.yourMachine' | transloco }}</small>
+          <h3>{{ 'scene.yourMachine' | transloco }}</h3>
           <div class="ref-chip">
             <code>main → {{ store.tip() }}</code>
           </div>
@@ -115,10 +120,13 @@
           </div>
           <pre dir="ltr">{{ git.working['program.txt'] }}</pre>
           <div class="network-event">
-            <small>event.txt · المكان والوقت</small>
+            <small>{{ 'scene.eventTxtVenueAndTime' | transloco }}</small>
             <pre dir="ltr">{{ git.working['event.txt'] }}</pre>
           </div>
-          <div class="object-dots" [attr.aria-label]="commits().length + ' commits محلية'">
+          <div
+            class="object-dots"
+            [attr.aria-label]="'common.localCommits' | transloco: { count: commits().length }"
+          >
             @for (id of commits(); track id) {
               <span [title]="id">{{ id }}</span>
             }
@@ -128,18 +136,22 @@
           <span dir="ltr">push →</span>
           <div class="wire-line"></div>
           <span dir="ltr">← fetch</span
-          ><b>{{ store.tip() === remote().id ? 'متزامنان' : 'تاريخ مختلف' }}</b>
+          ><b>{{
+            store.tip() === remote().id
+              ? ('scene.synchronized' | transloco)
+              : ('scene.differentHistories' | transloco)
+          }}</b>
         </div>
         <article>
-          <small>SIMULATED REMOTE</small>
-          <h3>المستودع البعيد</h3>
+          <small>{{ 'common.simulatedRemote' | transloco }}</small>
+          <h3>{{ 'scene.remoteRepository' | transloco }}</h3>
           <div class="ref-chip">
             <code>main → {{ remote().id ?? '∅' }}</code>
           </div>
-          <pre dir="ltr">{{ remote().program }}</pre>
+          <pre dir="ltr">{{ remote().program ?? ('common.emptyRemote' | transloco) }}</pre>
           <div class="network-event">
-            <small>event.txt · المكان والوقت</small>
-            <pre dir="ltr">{{ remote().event }}</pre>
+            <small>{{ 'scene.eventTxtVenueAndTime' | transloco }}</small>
+            <pre dir="ltr">{{ remote().event ?? ('common.notReceived' | transloco) }}</pre>
           </div>
           <div class="object-dots">
             @for (id of remote().commits; track id) {
@@ -149,23 +161,29 @@
         </article>
       </div>
       <div class="network-caption">
-        origin/main = آخر معرفة محلية بالبعيد · جميع عمليات النقل هنا محاكاة
+        {{ 'scene.originMainLastLocalKnowledgeOfThe' | transloco }}
       </div>
       <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
     </section>
   }
   @case ('recovery') {
     @let r = recovery();
-    <section class="recovery-scene" aria-label="مقارنة الملفات والتاريخ قبل وبعد العملية">
+    <section
+      class="recovery-scene"
+      [attr.aria-label]="'scene.compareFilesAndHistoryBeforeAndAfter' | transloco"
+    >
       <div class="recovery-title">
-        <b>{{ r.title }}</b
+        <b>{{ r.title | transloco }}</b
         ><span>{{
-          r.shared ? 'هذا الرأس موجود عند الفريق' : 'هذا الرأس محلي ولم يتزامن مع الفريق'
+          r.shared
+            ? ('scene.thisTipIsSharedWithTheTeam' | transloco)
+            : ('scene.thisTipIsLocalAndHasNot' | transloco)
         }}</span>
       </div>
       <div class="pointer-comparison">
         <article>
-          <small>BEFORE / بداية التحدي</small><code>HEAD → {{ r.before ?? '∅' }}</code
+          <small>{{ 'scene.beforeChallengeStart' | transloco }}</small
+          ><code>HEAD → {{ r.before ?? '∅' }}</code
           ><span>{{ r.old?.message }}</span>
           <div class="parent-pills">
             @for (parent of r.old?.parents ?? []; track parent) {
@@ -177,7 +195,8 @@
           ←<span>{{ r.operation }}</span>
         </div>
         <article [class.operation-changed]="r.changed">
-          <small>NOW / الآن</small><code>HEAD → {{ r.after ?? '∅' }}</code
+          <small>{{ 'scene.nowCurrentState' | transloco }}</small
+          ><code>HEAD → {{ r.after ?? '∅' }}</code
           ><span>{{ r.current?.message }}</span>
           <div class="parent-pills">
             @for (parent of r.current?.parents ?? []; track parent) {
@@ -189,7 +208,7 @@
       <div class="recovery-files">
         @for (card of r.cards; track card.label) {
           <article>
-            <h3>{{ card.label }}</h3>
+            <h3>{{ card.label | transloco }}</h3>
             <small dir="ltr">{{ r.file }}</small>
             <div class="recovery-diff" dir="ltr">
               @for (line of card.removed; track $index) {
@@ -205,34 +224,43 @@
         }
       </div>
       <div class="operation-facts">
-        <span>{{ r.staged }} ملفات مجهّزة</span><span>{{ r.unstaged }} ملفات مختلفة عن التجهيز</span
-        ><span>{{ git.merging ? 'دمج جارٍ' : 'لا دمج جارٍ' }}</span>
+        <span>{{ 'scene.stagedFiles' | transloco: { p0: r.staged } }}</span
+        ><span>{{ 'scene.filesDifferFromStaging' | transloco: { p0: r.unstaged } }}</span
+        ><span>{{
+          git.merging
+            ? ('scene.mergeInProgress' | transloco)
+            : ('scene.noMergeInProgress' | transloco)
+        }}</span>
       </div>
       <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
     </section>
   }
   @case ('stash') {
     @let s = stash();
-    <section class="stash-scene" aria-label="درج المسودات المحلية والملفات المستعادة">
+    <section
+      class="stash-scene"
+      [attr.aria-label]="'scene.localDraftDrawerAndRestoredFiles' | transloco"
+    >
       <div class="stash-route">
-        <span>ملفات غير مكتملة</span><code>stash push →</code><b>درج محلي</b
-        ><code>← apply / pop</code><span>العودة للشغل</span>
+        <span>{{ 'scene.unfinishedFiles' | transloco }}</span
+        ><code>stash push →</code><b>{{ 'scene.localDrawer' | transloco }}</b
+        ><code>← apply / pop</code><span>{{ 'scene.backToWork' | transloco }}</span>
       </div>
       <div class="stash-workbench">
         <article class="stash-working">
-          <small>WORKING TREE</small>
-          <h3>أمامك على الجهاز</h3>
+          <small>{{ 'common.workingTree' | transloco }}</small>
+          <h3>{{ 'scene.onYourMachine' | transloco }}</h3>
           <code>HEAD → {{ store.tip() }} / {{ git.head }}</code>
           <pre dir="ltr">{{ git.working[s.file] }}</pre>
           <div class="stash-index">
-            <small>INDEX · النسخة المجهّزة</small>
+            <small>{{ 'scene.indexStagedVersion' | transloco }}</small>
             <pre dir="ltr">{{ git.index[s.file] }}</pre>
           </div>
         </article>
         <div class="stash-drawer">
           <header>
-            <h3>درج المسودات</h3>
-            <span>{{ git.stashes.length }} محفوظة</span>
+            <h3>{{ 'scene.draftDrawer' | transloco }}</h3>
+            <span>{{ 'scene.saved' | transloco: { p0: git.stashes.length } }}</span>
           </header>
           @for (entry of git.stashes; track entry.id; let i = $index) {
             <details [open]="i === 0" class="stash-entry">
@@ -244,38 +272,37 @@
                 <code>{{ entry.id }} · base {{ entry.base }}</code
                 ><code>on {{ entry.branch }}</code>
               </div>
-              <p>المحتوى محفوظ مستقلًا عن ملفات الفرع الحالي</p>
+              <p>{{ 'scene.contentIsSavedIndependentlyOfTheCurrent' | transloco }}</p>
               <pre dir="ltr">{{ entry.working[s.file] }}</pre>
               <details>
-                <summary>افحص حالة التجهيز المحفوظة</summary>
+                <summary>{{ 'scene.inspectTheSavedStagedState' | transloco }}</summary>
                 <pre dir="ltr">{{ entry.index[s.file] }}</pre>
               </details>
             </details>
           } @empty {
             <div class="empty-drawer">
-              <span>▱</span><b>الدرج فارغ</b>
-              <p>push يضع مسودة هنا. apply يبقيها؛ pop يحذفها بعد النجاح.</p>
+              <span>▱</span><b>{{ 'scene.theDrawerIsEmpty' | transloco }}</b>
+              <p>{{ 'scene.pushStoresADraftHereApplyKeeps' | transloco }}</p>
             </div>
           }
         </div>
       </div>
       <div class="stash-result" [class.has-conflict]="git.stashConflicts.length > 0" role="status">
         @if (git.stashConflicts.length) {
-          <b>تعارض استرجاع · النسخة بقيت محفوظة</b>
+          <b>{{ 'scene.restoreConflictTheCopyRemainsSaved' | transloco }}</b>
           <p>
-            الـindex يعرض نسخة الفرع، وملف العمل يعرض القرارين. احسم المحتوى ثم add. لا يوجد merge
-            جارٍ لإلغائه بـmerge --abort.
+            {{ 'scene.theIndexShowsTheBranchVersionThe' | transloco }}
           </p>
         } @else {
           <b>{{
             s.unstaged
-              ? 'تعديلات موجودة في ملف العمل'
+              ? ('scene.editsInTheWorkingFile' | transloco)
               : s.staged
-                ? 'تعديلات مجهّزة للحفظ'
-                : 'ملفات نظيفة وجاهزة لتبديل الفرع'
+                ? ('scene.editsStagedForCommit' | transloco)
+                : ('scene.cleanFilesReadyToSwitchBranches' | transloco)
           }}</b>
           <p>
-            الـstash محلي، لا يصل عبر push، ولا يحرّك HEAD. بدون --index تعود التعديلات غير مجهّزة.
+            {{ 'scene.stashesAreLocalAreNotSentBy' | transloco }}
           </p>
         }
       </div>
@@ -286,20 +313,20 @@
       <div class="finish-stats">
         <div>
           <strong>{{ commits().length }}</strong
-          ><span>snapshots محفوظة</span>
+          ><span>{{ 'scene.savedSnapshots' | transloco }}</span>
         </div>
         <div>
           <strong>{{ branches().length }}</strong
-          ><span>فروع في نفس المستودع</span>
+          ><span>{{ 'scene.branchesInTheSameRepository' | transloco }}</span>
         </div>
         <div>
           <strong>{{ store.session().commandHistory.length }}</strong
-          ><span>أمر جرّبته</span>
+          ><span>{{ 'scene.commandsYouTried' | transloco }}</span>
         </div>
       </div>
       <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
       <div class="finish-result">
-        <span>✓ تغييراتك مجتمعة ومحفوظة على الجهازين</span>
+        <span>{{ 'scene.yourChangesAreCombinedAndSavedOn' | transloco }}</span>
         <pre dir="ltr">{{ store.head()['event.txt'] + '\n\n' + store.head()['program.txt'] }}</pre>
       </div>
     </section>
@@ -307,7 +334,7 @@
   @default {
     <section class="branch-experiment">
       <div class="branch-pointers">
-        <b>أسماء الفروع مؤشّرات تتحرك</b>
+        <b>{{ 'scene.branchNamesAreMovingPointers' | transloco }}</b>
         @for (branch of branches(); track branch.name) {
           <code [class.active]="git.head === branch.name"
             >{{ git.head === branch.name ? 'HEAD → ' : '' }}{{ branch.name }} →
@@ -317,7 +344,7 @@
       </div>
       <app-learning-graph [git]="git" (inspect)="dialog.open({ kind: 'commit', id: $event })" />
       <div class="branch-preview">
-        <small>ملفات الفرع الحالي · {{ git.head }}</small>
+        <small>{{ 'scene.currentBranchFiles' | transloco: { p0: git.head } }}</small>
         <pre dir="ltr">{{ git.working['event.txt'] }}</pre>
         <pre dir="ltr">{{ git.working['program.txt'] }}</pre>
       </div>

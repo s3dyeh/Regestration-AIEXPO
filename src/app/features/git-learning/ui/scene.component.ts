@@ -1,3 +1,4 @@
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { GitLearningStore } from '../state/git-learning.store';
 import { WorkshopDialogService } from '../state/workshop-dialog.service';
@@ -5,7 +6,7 @@ import { changed, headTree, tip } from '../domain/engine';
 import { LearningCommitGraphComponent } from './commit-graph.component';
 @Component({
   selector: 'app-learning-scene',
-  imports: [LearningCommitGraphComponent],
+  imports: [TranslocoPipe, LearningCommitGraphComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './scene.component.html',
 })
@@ -22,45 +23,52 @@ export class LearningSceneComponent {
       head = this.store.head();
     return [
       {
-        label: 'ملفات العمل',
-        en: 'WORKING TREE',
+        label: 'scene.workingFiles',
+        en: 'common.workingTree',
         value: Object.hasOwn(git.working, file) ? git.working[file] : undefined,
         className: 'working',
         status: changed(git.index, git.working).includes(file)
-          ? 'تعديل غير مجهّز'
-          : 'يطابق الـindex',
+          ? 'scene.unstagedChange'
+          : 'scene.matchesTheIndex',
       },
       {
-        label: 'جاهز للحفظ',
-        en: 'STAGING / INDEX',
+        label: 'scene.readyToCommit',
+        en: 'common.stagingIndex',
         value: Object.hasOwn(git.index, file) ? git.index[file] : undefined,
         className: 'staged',
-        status: changed(head, git.index).includes(file) ? 'محتوى ينتظر commit' : 'يطابق آخر commit',
+        status: changed(head, git.index).includes(file)
+          ? 'scene.contentWaitingForACommit'
+          : 'scene.matchesTheLastCommit',
       },
       {
-        label: 'آخر حالة محفوظة',
-        en: 'HEAD SNAPSHOT',
+        label: 'scene.lastSavedState',
+        en: 'common.headSnapshot',
         value: Object.hasOwn(head, file) ? head[file] : undefined,
         className: 'saved',
-        status: tip(git) || 'لا commits',
+        status: tip(git) || 'scene.noCommits',
       },
     ];
   });
-  protected readonly conflict = computed(() =>
+  protected readonly conflict = computed<{ branch: string; text: string | null }[]>(() =>
     ['main', 'time'].map((branch) => ({
       branch,
       text:
         this.store.git().commits[this.store.git().branches[branch] ?? '']?.tree['event.txt'] ??
-        'لم يُنشأ بعد',
+        null,
     })),
   );
-  protected readonly remote = computed(() => {
+  protected readonly remote = computed<{
+    id: string | null | undefined;
+    program: string | null;
+    event: string | null;
+    commits: string[];
+  }>(() => {
     const git = this.store.git(),
       id = git.remote?.branches['main'];
     return {
       id,
-      program: git.remote?.commits[id ?? '']?.tree['program.txt'] ?? '(empty repository)',
-      event: git.remote?.commits[id ?? '']?.tree['event.txt'] ?? '(not received)',
+      program: git.remote?.commits[id ?? '']?.tree['program.txt'] ?? null,
+      event: git.remote?.commits[id ?? '']?.tree['event.txt'] ?? null,
       commits: Object.keys(git.remote?.commits ?? {}),
     };
   });
@@ -74,9 +82,9 @@ export class LearningSceneComponent {
     const abort = id === 'abort',
       file = abort || id === 'revert' ? 'event.txt' : 'program.txt';
     const cards = [
-      { label: 'ملف العمل', value: git.working[file], before: checkpointGit.working[file] },
-      { label: 'النسخة المجهّزة', value: git.index[file], before: checkpointGit.index[file] },
-      { label: 'نسخة HEAD المحفوظة', value: current?.tree[file], before: old?.tree[file] },
+      { label: 'scene.workingFile', value: git.working[file], before: checkpointGit.working[file] },
+      { label: 'scene.stagedVersion', value: git.index[file], before: checkpointGit.index[file] },
+      { label: 'scene.savedHeadVersion', value: current?.tree[file], before: old?.tree[file] },
     ].map((card) => {
       const old = (card.before ?? '').split('\n'),
         current = (card.value ?? '').split('\n');
@@ -95,14 +103,14 @@ export class LearningSceneComponent {
       cards,
       changed: after !== before || (abort && !git.merging),
       title: abort
-        ? 'إلغاء العملية، لا التاريخ'
+        ? 'scene.cancelTheOperationNotHistory'
         : id === 'revert'
-          ? 'عكس منشور · تاريخ يتقدّم'
+          ? 'scene.reversePublishedWorkHistoryMovesForward'
           : id === 'soft-reset'
-            ? 'تحريك الفرع فقط'
+            ? 'scene.moveOnlyTheBranch'
             : id === 'amend'
-              ? 'استبدال آخر commit محلي'
-              : 'تاريخك المحلي تحت التجربة',
+              ? 'scene.replaceTheLastLocalCommit'
+              : 'scene.experimentWithLocalHistory',
       operation: abort
         ? 'abort'
         : id === 'revert'

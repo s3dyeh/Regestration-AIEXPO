@@ -15,42 +15,49 @@ export interface Challenge {
   scene:
     'collision' | 'snapshot' | 'graph' | 'conflict' | 'remote' | 'finish' | 'recovery' | 'stash';
   mode?: 'solo' | 'team';
-  edit?: { file: string; find?: string; value: string; label: string }[];
+  edit?: {
+    file: string;
+    find?: string;
+    value: string;
+    label: string;
+    params?: { value: string };
+  }[];
 }
 const venue = (find: string, value: string) => ({
   file: 'event.txt',
   find,
   value,
-  label: `غيّر المكان إلى ${value}`,
+  label: 'edit.venue',
+  params: { value },
 });
 const time = (find: string, value: string) => ({
   file: 'event.txt',
   find,
   value,
-  label: `غيّر الوقت إلى ${value}`,
+  label: 'edit.time',
+  params: { value },
 });
 export const challenges: Challenge[] = [
   {
     id: 'problem',
-    title: 'تعديلان. ملف واحد. ماذا سيضيع؟',
-    instruction: 'استبدل الملف بإحدى النسختين، ثم أنشئ مستودعًا يحفظ التغييرات.',
+    title: 'challenges.twoEditsOneFileWhatGetsLost',
+    instruction: 'challenges.replaceTheFileWithEitherVersionThen',
     scene: 'collision',
     commands: ['git init', 'git status'],
-    hint: 'استبدال ملف كامل قد يمسح تعديلًا آخر. git init يبدأ قاعدة التاريخ، ولا يحفظ نسخة بعد.',
+    hint: 'challenges.replacingAnEntireFileCanEraseAnother',
   },
   {
     id: 'first',
-    title: 'أنشئ أول نقطة آمنة',
-    instruction: 'جهّز الملفين، ثم احفظ أول snapshot. شاهد المحتوى ينتقل بين المراحل.',
+    title: 'challenges.createYourFirstSafeCheckpoint',
+    instruction: 'challenges.stageBothFilesThenSaveYourFirst',
     scene: 'snapshot',
     commands: ['git status', 'git add .', 'git diff --staged', 'git commit -m "First snapshot"'],
-    hint: 'add يجهّز المحتوى. commit يحفظ المحتوى المجهّز فقط. استخدم git add . لتجهيز الملفين.',
+    hint: 'challenges.addStagesContentCommitSavesOnlyStaged',
   },
   {
     id: 'staging',
-    title: 'هل الحفظ يأخذ آخر تعديل؟',
-    instruction:
-      'غيّر Room A إلى Auditorium واحفظ الملف وجهّزه. بعدها غيّر Auditorium إلى Library واحفظ الملف دون add. توقّع ثم نفّذ commit.',
+    title: 'challenges.doesACommitIncludeTheLatestEdit',
+    instruction: 'challenges.changeRoomAToAuditoriumSaveThe',
     scene: 'snapshot',
     commands: [
       'git add event.txt',
@@ -58,13 +65,13 @@ export const challenges: Challenge[] = [
       'git diff --staged',
       'git commit -m "Staged venue"',
     ],
-    hint: 'الترتيب مهم: Auditorium ← حفظ الملف ← add ← Library ← حفظ الملف ← commit. إن اختلط الترتيب، أعد هذا التحدّي.',
+    hint: 'challenges.orderMattersAuditoriumSaveFileAddLibrary',
     edit: [venue('Room A', 'Auditorium'), venue('Auditorium', 'Library')],
   },
   {
     id: 'save',
-    title: 'احفظ التعديل المتبقي',
-    instruction: 'Library موجودة في ملفات العمل فقط. قارن الفرق ثم جهّزها واحفظها.',
+    title: 'challenges.saveTheRemainingEdit',
+    instruction: 'challenges.libraryExistsOnlyInTheWorkingFiles',
     scene: 'snapshot',
     commands: [
       'git diff',
@@ -72,12 +79,12 @@ export const challenges: Challenge[] = [
       'git commit -m "Save library"',
       'git log --oneline --graph',
     ],
-    hint: 'نحتاج add جديدًا للمحتوى الجديد. التاريخ السابق سيبقى كما هو.',
+    hint: 'challenges.newContentNeedsAnotherAddThePrevious',
   },
   {
     id: 'branch',
-    title: 'افتح مسارًا لتجربة تغيير',
-    instruction: 'أنشئ فرع venue وانتقل إليه. غيّر Library إلى Auditorium، ثم جهّز التغيير واحفظه.',
+    title: 'challenges.branchOutToTryAChange',
+    instruction: 'challenges.createAndSwitchToTheVenueBranch',
     scene: 'graph',
     commands: [
       'git switch -c venue',
@@ -85,84 +92,80 @@ export const challenges: Challenge[] = [
       'git add .',
       'git commit -m "Venue experiment"',
     ],
-    hint: 'ابدأ بـ switch -c قبل التعديل. راقب HEAD وvenue يتحركان بينما main يبقى في مكانه.',
+    hint: 'challenges.startWithSwitchCBeforeEditingWatch',
     edit: [venue('Library', 'Auditorium')],
   },
   {
     id: 'merge',
-    title: 'اجمع تعديلين دون أن تفقد أحدهما',
-    instruction: 'ارجع إلى main. أضف 13:00 Workshop إلى program.txt واحفظ commit، ثم ادمج venue.',
+    title: 'challenges.combineTwoEditsWithoutLosingEither',
+    instruction: 'challenges.returnToMainAdd1300Workshop',
     scene: 'graph',
     commands: ['git switch main', 'git add .', 'git commit -m "Add workshop"', 'git merge venue'],
-    hint: 'على main ستعود Library. بعد حفظ البرنامج ودمج venue ستجتمع Auditorium وWorkshop في commit بأبوين.',
+    hint: 'challenges.libraryReturnsOnMainAfterCommittingThe',
     edit: [
       {
         file: 'program.txt',
         value: '10:00 Welcome\n11:00 Git booth\n13:00 Workshop',
-        label: 'أضف Workshop إلى البرنامج',
+        label: 'challenges.addWorkshopToTheProgram',
       },
     ],
   },
   {
     id: 'time-branch',
-    title: 'جرّب موعدًا مختلفًا',
-    instruction: 'أنشئ فرع time، غيّر الوقت من 10:00 إلى 12:00، ثم جهّزه واحفظ commit.',
+    title: 'challenges.tryADifferentTime',
+    instruction: 'challenges.createTheTimeBranchChange1000',
     scene: 'graph',
     commands: ['git switch -c time', 'git add .', 'git commit -m "Time at noon"'],
-    hint: 'هذا التعديل مستقل عن main. سنغيّر نفس السطر هناك في الخطوة التالية.',
+    hint: 'challenges.thisEditIsIndependentOfMainNext',
     edit: [time('10:00', '12:00')],
   },
   {
     id: 'collision',
-    title: 'غيّر نفس السطر في المسار الآخر',
-    instruction:
-      'ارجع إلى main، غيّر 10:00 إلى 14:00 واحفظ commit. جرّب دمج time. هل يختار Git بدلًا منك؟',
+    title: 'challenges.changeTheSameLineOnTheOther',
+    instruction: 'challenges.returnToMainChange1000To',
     scene: 'conflict',
     commands: ['git switch main', 'git add .', 'git commit -m "Time at two"', 'git merge time'],
-    hint: 'بعد حفظ الموعدين على فرعين مختلفين، merge يعرض التعارض ويحفظ النسختين.',
+    hint: 'challenges.afterCommittingBothTimesOnSeparateBranches',
     edit: [time('10:00', '14:00')],
   },
   ...mergeRecoveryChallenges,
   {
     id: 'resolve',
-    title: 'أنت تقرّر. Git يحفظ القرار.',
-    instruction:
-      'احذف علامات التعارض من event.txt واختر Time: 13:00. احفظ الملف ثم add وcommit لإتمام الدمج.',
+    title: 'challenges.youDecideGitRecordsTheDecision',
+    instruction: 'challenges.removeTheConflictMarkersFromEventTxt',
     scene: 'conflict',
     commands: ['git status', 'git add event.txt', 'git commit -m "Agree on time"'],
-    hint: 'احتفظ بسطر المكان وسطر الفعالية، وأبقِ سطر وقت واحدًا. احذف <<<<<<< و======= و>>>>>>>.',
+    hint: 'challenges.keepTheVenueAndEventLinesWith',
   },
   {
     id: 'push',
-    title: 'هل وصل تاريخك إلى الجهاز الآخر؟',
-    instruction: 'وصلنا مستودعًا بعيدًا فارغًا داخل المحاكاة. افحص الوجهة ثم ارفع تاريخ main إليه.',
+    title: 'challenges.hasYourHistoryReachedTheOtherMachine',
+    instruction: 'challenges.anEmptyRemoteRepositoryIsConnectedInside',
     scene: 'remote',
     commands: ['git remote -v', 'git push'],
-    hint: 'commit محلي. push ينقل التاريخ ومحتواه إلى origin؛ لا يوجد اتصال إنترنت حقيقي.',
+    hint: 'challenges.commitIsLocalPushTransfersHistoryAnd',
   },
   {
     id: 'fetch',
-    title: 'اجلب التغيير… دون لمس ملفاتك',
-    instruction:
-      'المستودع البعيد أضاف 15:00 Testing. استخدم fetch وحده. راقب origin/main يسبق main.',
+    title: 'challenges.fetchTheChangeWithoutTouchingYourFiles',
+    instruction: 'challenges.theRemoteAdded1500TestingUse',
     scene: 'remote',
     commands: ['git fetch', 'git status'],
-    hint: 'fetch يحدّث معرفتك بالبعيد. لا تنفّذ pull بعد؛ المطلوب إبقاء ملفك دون Testing.',
+    hint: 'challenges.fetchUpdatesYourKnowledgeOfTheRemote',
   },
   {
     id: 'pull',
-    title: 'حرّك فرعك إلى التاريخ الجديد',
-    instruction: 'التاريخ موجود محليًا الآن. حدّث main والملفات دون إنشاء merge commit.',
+    title: 'challenges.moveYourBranchToTheNewHistory',
+    instruction: 'challenges.theHistoryIsNowLocalUpdateMain',
     scene: 'remote',
     commands: ['git pull --ff-only', 'git log --oneline --graph'],
-    hint: 'pull --ff-only ينجح عندما يمكن تحريك الفرع إلى الأمام دون دمج تاريخين متفرعين.',
+    hint: 'challenges.pullFfOnlySucceedsWhenTheBranch',
   },
   ...recoveryChallenges,
   {
     id: 'finish',
-    title: 'هذا تاريخ صنعته بأوامرك.',
-    instruction:
-      'من ملف قابل للاستبدال إلى snapshots وفروع ودمج وتاريخ مشترك. جاهزون للمجموعة التالية؟',
+    title: 'challenges.youBuiltThisHistoryWithYourCommands',
+    instruction: 'challenges.fromAnEasilyOverwrittenFileToSnapshots',
     scene: 'finish',
     commands: [],
     hint: '',
@@ -182,54 +185,54 @@ export function requirements(s: BoothSession): { label: string; done: boolean }[
   switch (challenges[s.step].id) {
     case 'problem':
       return [
-        goal('جرّب استبدال إحدى النسختين', s.introChoice),
-        goal('أنشئ المستودع المحلي', g.initialized),
+        goal('challenges.tryReplacingTheFileWithEitherVersion', s.introChoice),
+        goal('challenges.createTheLocalRepository', g.initialized),
       ];
     case 'first':
       return [
-        goal('الملفان داخل أول commit', tree['event.txt'] && tree['program.txt']),
-        goal('ملفات العمل محفوظة بالكامل', clean(g)),
+        goal('challenges.bothFilesAreInTheFirstCommit', tree['event.txt'] && tree['program.txt']),
+        goal('challenges.workingFilesAreFullyCommitted', clean(g)),
       ];
     case 'staging':
       return [
-        goal('توقّع محتوى الـcommit من نسخة الـindex', s.prediction === 'Auditorium'),
-        goal('الـcommit يحفظ Auditorium', newCommit && saved.includes('Auditorium')),
-        goal('ملف العمل يحتفظ بـLibrary', working.includes('Library')),
+        goal('challenges.predictTheCommitContentFromTheIndex', s.prediction === 'Auditorium'),
+        goal('challenges.theCommitContainsAuditorium', newCommit && saved.includes('Auditorium')),
+        goal('challenges.theWorkingFileKeepsLibrary', working.includes('Library')),
       ];
     case 'save':
       return [
-        goal('قارن التعديل غير المجهّز', did('git diff')),
+        goal('challenges.compareTheUnstagedChange', did('git diff')),
         goal(
-          'Library محفوظة ولا تعديلات متبقية',
+          'challenges.libraryIsCommittedWithNoRemainingChanges',
           newCommit && saved.includes('Library') && clean(g),
         ),
       ];
     case 'branch':
       return [
         goal(
-          'HEAD على venue، وmain بقي مكانه',
+          'challenges.headIsOnVenueWhileMainStays',
           g.head === 'venue' && g.branches['main'] === s.checkpointGit.branches['main'],
         ),
         goal(
-          'احفظ Auditorium على الفرع الجديد',
+          'challenges.commitAuditoriumOnTheNewBranch',
           saved.includes('Auditorium') && newCommit && clean(g),
         ),
       ];
     case 'merge':
       return [
         goal(
-          'ادمج المسارين على main بأبوين',
+          'challenges.mergeBothPathsOnMainWithTwo',
           g.head === 'main' && g.commits[tip(g) ?? '']?.parents.length === 2,
         ),
         goal(
-          'احفظ تغيير المكان والبرنامج معًا',
+          'challenges.commitBothTheVenueAndProgramChanges',
           saved.includes('Auditorium') && tree['program.txt']?.includes('Workshop') && clean(g),
         ),
       ];
     case 'time-branch':
       return [
         goal(
-          'احفظ 12:00 على time، دون تحريك main',
+          'challenges.commit1200OnTimeWithoutMoving',
           g.head === 'time' &&
             saved.includes('Time: 12:00') &&
             g.branches['main'] === s.checkpointGit.branches['main'] &&
@@ -238,44 +241,47 @@ export function requirements(s: BoothSession): { label: string; done: boolean }[
       ];
     case 'collision':
       return [
-        goal('main يحفظ 14:00', g.head === 'main' && saved.includes('Time: 14:00')),
+        goal('challenges.mainContains1400', g.head === 'main' && saved.includes('Time: 14:00')),
         goal(
-          'الدمج يكشف تعارضًا في event.txt',
+          'challenges.theMergeRevealsAConflictInEvent',
           g.merging?.branch === 'time' && g.merging.unresolved.includes('event.txt'),
         ),
       ];
     case 'resolve':
       return [
         goal(
-          'احفظ قرار 13:00 دون علامات تعارض',
+          'challenges.commitThe1300DecisionWithoutConflict',
           saved.includes('Time: 13:00') &&
             saved.includes('Venue: Auditorium') &&
             saved.includes('Event: Campus Code Day') &&
             !/^(<<<<<<<|=======|>>>>>>>)/m.test(saved),
         ),
         goal(
-          'أنهِ الدمج بـcommit له أبوان',
+          'challenges.finishTheMergeWithATwoParent',
           !g.merging && newCommit && g.commits[tip(g) ?? '']?.parents.length === 2 && clean(g),
         ),
       ];
     case 'push':
       return [
-        goal('افحص عنوان origin', did('git remote -v')),
-        goal('main البعيد يطابق main المحلي', tip(g) && g.remote?.branches['main'] === tip(g)),
+        goal('challenges.inspectTheOriginUrl', did('git remote -v')),
+        goal(
+          'challenges.remoteMainMatchesLocalMain',
+          tip(g) && g.remote?.branches['main'] === tip(g),
+        ),
       ];
     case 'fetch':
       return [
-        goal('origin/main يعرف التغيير الجديد', g.tracking['main'] === 'r001'),
+        goal('challenges.originMainKnowsAboutTheNewChange', g.tracking['main'] === 'r001'),
         goal(
-          'main وملفاتك لم يتغيّرا',
+          'challenges.mainAndYourFilesAreUnchanged',
           tip(g) === tip(s.checkpointGit) && !g.working['program.txt']?.includes('Testing'),
         ),
       ];
     case 'pull':
       return [
-        goal('main وصل إلى r001 دون merge commit', tip(g) === 'r001'),
+        goal('challenges.mainReachesR001WithoutAMergeCommit', tip(g) === 'r001'),
         goal(
-          'Testing وصلت إلى ملف البرنامج',
+          'challenges.testingReachesTheProgramFile',
           g.working['program.txt']?.includes('Testing') && clean(g),
         ),
       ];

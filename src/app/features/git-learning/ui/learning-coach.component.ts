@@ -1,33 +1,48 @@
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ChangeDetectionStrategy, Component, inject, linkedSignal, output } from '@angular/core';
 import { GitLearningStore } from '../state/git-learning.store';
 
 @Component({
   selector: 'app-learning-coach',
+  imports: [TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="learning-coach" aria-label="مساعد التعلّم">
+    <section class="learning-coach" [attr.aria-label]="'learning_coach.learningCoach' | transloco">
       <div class="coach-progress">
         <span
-          >تقدّم المسار <strong>{{ store.progress().percent }}%</strong></span
+          >{{ 'learning_coach.courseProgress' | transloco
+          }}<strong>{{ store.progress().percent }}%</strong></span
         >
         <progress
-          aria-label="التجارب المكتملة"
+          [attr.aria-label]="'learning_coach.completedExperiments' | transloco"
           [value]="store.progress().completed"
           [max]="store.progress().total"
         ></progress>
-        <small>{{ store.progress().completed }} من {{ store.progress().total }} تجربة مكتملة</small>
+        <small>{{
+          'learning_coach.ofExperimentsCompleted'
+            | transloco: { p0: store.progress().completed, p1: store.progress().total }
+        }}</small>
       </div>
       @if (!store.final()) {
         <div class="coach-next">
-          <small>{{ store.complete() ? 'جاهز للمتابعة' : 'الهدف التالي' }}</small>
-          <p>{{ store.nextGoal() ?? 'أكملت نتائج هذه التجربة. انتقل إلى التحدّي التالي.' }}</p>
+          <small>{{
+            store.complete()
+              ? ('learning_coach.readyToContinue' | transloco)
+              : ('learning_coach.nextGoal' | transloco)
+          }}</small>
+          <p>
+            {{
+              store.nextGoal() ?? 'learning_coach.youCompletedThisExperimentSGoalsContinue'
+                | transloco
+            }}
+          </p>
           <div class="coach-actions">
             <button type="button" (click)="navigate.emit('command-input')">
-              اذهب إلى الطرفية ↓
+              {{ 'learning_coach.goToTerminal' | transloco }}
             </button>
             @if (store.showEditor()) {
               <button type="button" (click)="navigate.emit('file-content')">
-                اذهب إلى المحرر ↓
+                {{ 'learning_coach.goToEditor' | transloco }}
               </button>
             }
             <button
@@ -36,37 +51,44 @@ import { GitLearningStore } from '../state/git-learning.store';
               aria-controls="challenge-hint"
               (click)="hintOpen.update(toggle)"
             >
-              {{ hintOpen() ? 'إخفاء التلميح' : 'أحتاج تلميحًا' }}
+              {{
+                hintOpen()
+                  ? ('learning_coach.hideHint' | transloco)
+                  : ('learning_coach.iNeedAHint' | transloco)
+              }}
             </button>
           </div>
           @if (hintOpen()) {
             <div id="challenge-hint" class="coach-hint">
-              <strong>فكّر قبل التنفيذ</strong>
-              <p>{{ store.challenge().hint }}</p>
-              <small>التلميح يشرح فقط؛ زر «حل» ينفّذ خطوة واحدة.</small>
+              <strong>{{ 'learning_coach.thinkBeforeRunning' | transloco }}</strong>
+              <p>{{ store.challenge().hint | transloco }}</p>
+              <small>{{ 'learning_coach.hintsOnlyExplainSolvePerformsOneStep' | transloco }}</small>
             </div>
           }
         </div>
       }
-      <dl class="repository-summary" aria-label="حالة المستودع">
+      <dl
+        class="repository-summary"
+        [attr.aria-label]="'learning_coach.repositoryState' | transloco"
+      >
         <div>
-          <dt>الفرع الحالي</dt>
+          <dt>{{ 'learning_coach.currentBranch' | transloco }}</dt>
           <dd dir="ltr">{{ store.repositorySummary().branch }}</dd>
         </div>
         <div>
-          <dt>مسودات غير محفوظة</dt>
+          <dt>{{ 'learning_coach.unsavedDrafts' | transloco }}</dt>
           <dd data-summary="drafts">{{ store.repositorySummary().drafts }}</dd>
         </div>
         <div>
-          <dt>ملفات غير مجهّزة</dt>
+          <dt>{{ 'learning_coach.unstagedFiles' | transloco }}</dt>
           <dd data-summary="unstaged">{{ store.repositorySummary().unstaged }}</dd>
         </div>
         <div>
-          <dt>ملفات مجهّزة</dt>
+          <dt>{{ 'learning_coach.stagedFiles' | transloco }}</dt>
           <dd data-summary="staged">{{ store.repositorySummary().staged }}</dd>
         </div>
         <div>
-          <dt>كائنات commit</dt>
+          <dt>{{ 'learning_coach.commitObjects' | transloco }}</dt>
           <dd data-summary="commits">{{ store.repositorySummary().commits }}</dd>
         </div>
       </dl>
