@@ -1,4 +1,9 @@
-import { profileBadgeUrl, selectedProfileBadges, technologyImageUrl } from './profile-badges';
+import {
+  profileBadgeUrl,
+  selectedProfileBadges,
+  technologyImageUrl,
+  linkedInLogoUrl,
+} from './profile-badges';
 import { generatedBanner, themeFor, badgeTopic } from './profile-presentation';
 
 export interface ProfileProject {
@@ -126,7 +131,7 @@ export function profileReadme(draft: ProfileDraft): string {
             ? section.links
                 .map(
                   (link) =>
-                    `[${link.label}](<${link.url.replace(/</g, '%3C').replace(/>/g, '%3E')}>)`,
+                    `[${link.label === 'LinkedIn' ? `![LinkedIn](${linkedInLogoUrl})` : link.label}](<${link.url.replace(/</g, '%3C').replace(/>/g, '%3E')}>)`,
                 )
                 .join(' · ')
             : section.kind === 'projects'

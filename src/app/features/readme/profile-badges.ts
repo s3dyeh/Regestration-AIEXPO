@@ -52,6 +52,7 @@ export const badgeMajors = [
 ] as const;
 
 export const badgeCatalog = [...new Set(badgeMajors.flatMap((major) => [...major.tools]))];
+export const linkedInLogoUrl = 'https://skillicons.dev/icons?i=linkedin&theme=light';
 const skillIcons: Record<string, string> = {
   Git: 'git',
   Python: 'py',

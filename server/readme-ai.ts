@@ -50,8 +50,12 @@ export async function handleReadmeAi(request: Request, deps: Dependencies): Prom
     const value = JSON.parse(text);
     if (value?.mode === 'generate') {
       const generation = generationRequestSchema.safeParse(value);
-      if (!generation.success) return reply(400, { message: 'Enter your name, a valid GitHub username and your major.' });
-      if (deps.permitted && !deps.permitted()) return reply(429, { message: 'AI request limit reached. Wait ten minutes before trying again.' });
+      if (!generation.success)
+        return reply(400, { message: 'Enter your name, a valid GitHub username and your major.' });
+      if (deps.permitted && !deps.permitted())
+        return reply(429, {
+          message: 'AI request limit reached. Wait ten minutes before trying again.',
+        });
       return generateReadme(generation.data, deps);
     }
     parsed = aiRequestSchema.safeParse(value);

@@ -236,3 +236,24 @@ summary:focus-visible {
     transform: none;
   }
 }
+
+.simple-builder {
+  max-width: 660px;
+  margin: 24px auto;
+  padding: 28px;
+  background: white;
+  border: 1px solid #d6dfd3;
+  border-radius: 12px;
+}
+.simple-builder h2 {
+  font-size: 28px;
+  letter-spacing: -0.03em;
+}
+.connect-profile {
+  max-width: 660px;
+  margin: 24px auto;
+}
+.customization {
+  margin-block: 24px;
+  border-block: 1px solid #d6dfd3;
+}

@@ -5,10 +5,11 @@
   <header class="intro">
     <p class="eyebrow">YOUR PROFILE, IN YOUR WORDS</p>
     <h1>Start readme now !</h1>
-    <p>Your name, username and major are all you need. Generate a complete first draft, then make it yours.</p>
-    <span
-      >Your draft saves on this device. Review AI suggestions before publishing.</span
-    >
+    <p>
+      Your name, username and major are all you need. Generate a complete first draft, then make it
+      yours.
+    </p>
+    <span>Your draft saves on this device. Review AI suggestions before publishing.</span>
   </header>
   <details class="inspiration">
     <summary>See a finished profile for inspiration</summary>
@@ -25,33 +26,48 @@
   <section class="simple-builder" aria-label="Generate your README">
     <p class="eyebrow">THREE DETAILS. ONE COMPLETE DRAFT.</p>
     <h2>Let your GitHub tell your story.</h2>
-    <p>AI reads your public profile and recent projects, writes your introduction, and suggests technology logos from your repositories.</p>
-      <label for="profile-name">Display name *</label
-      ><input
-        id="profile-name"
-        maxlength="100"
-        placeholder="What should people call you?"
-        [value]="draft().name"
-        (input)="update('name', $event)"
-      />
-      <label for="profile-username">GitHub username *</label
-      ><input
-        id="profile-username"
-        autocomplete="off"
-        maxlength="39"
-        placeholder="your-username"
-        [value]="draft().username"
-        (input)="update('username', $event)"
-      />
-      <label for="badge-major">Major or career focus</label>
-      <select id="badge-major" [value]="major()" (change)="changeMajor($event)">
-        @for (item of majors; track item.id) {
-          <option [value]="item.id">{{ item.name }}</option>
-        }
-      </select>
-    <app-readme-generator [name]="draft().name" [username]="draft().username" [focus]="focusName()" (started)="generationStarted()" (generated)="applyGeneration($event)" />
-    @if (generationNote()) { <p class="hint" role="status">{{ generationNote() }}</p> }
-    @if (canUndoGeneration()) { <button type="button" class="secondary" (click)="undoGeneration()">Undo generated draft</button> }
+    <p>
+      AI reads your public profile and recent projects, writes your introduction, and suggests
+      technology logos from your repositories.
+    </p>
+    <label for="profile-name">Display name *</label
+    ><input
+      id="profile-name"
+      maxlength="100"
+      placeholder="What should people call you?"
+      [value]="draft().name"
+      (input)="update('name', $event)"
+    />
+    <label for="profile-username">GitHub username *</label
+    ><input
+      id="profile-username"
+      autocomplete="off"
+      maxlength="39"
+      placeholder="your-username"
+      [value]="draft().username"
+      (input)="update('username', $event)"
+    />
+    <label for="badge-major">Major or career focus</label>
+    <select id="badge-major" [value]="major()" (change)="changeMajor($event)">
+      @for (item of majors; track item.id) {
+        <option [value]="item.id">{{ item.name }}</option>
+      }
+    </select>
+    <app-readme-generator
+      [name]="draft().name"
+      [username]="draft().username"
+      [focus]="focusName()"
+      (started)="generationStarted()"
+      (generated)="applyGeneration($event)"
+    />
+    @if (generationNote()) {
+      <p class="hint" role="status">{{ generationNote() }}</p>
+    }
+    @if (canUndoGeneration()) {
+      <button type="button" class="secondary" (click)="undoGeneration()">
+        Undo generated draft
+      </button>
+    }
     <p class="hint">{{ saved() }}</p>
   </section>
   @if (draft().about || draft().headline) {
@@ -69,177 +85,178 @@
       <small>Your LinkedIn URL appears as a clickable LinkedIn logo in your README.</small>
     </section>
   }
-  <details class="customization"><summary>Customize appearance, badges and sections</summary>
-  <section class="builder-tools" aria-label="Builder setup">
-    <div>
-      <p class="eyebrow">BUILD A PROFILE WITH PURPOSE</p>
-      <h2>Make it your own</h2>
-      <div class="theme-picker" role="group" aria-label="Profile theme">
-        @for (item of themes; track item.id) {
-          <button
-            type="button"
-            [attr.aria-pressed]="draft().theme === item.id"
-            (click)="chooseTheme(item.id)"
-            [style.--swatch]="'#' + item.background"
-            [style.--ink]="'#' + item.accent"
-          >
-            <span class="theme-swatch" aria-hidden="true">Aa <span>────</span></span>
-            <strong>{{ item.name }}</strong
-            ><small>{{ item.description }}</small>
-          </button>
-        }
-      </div>
-      <label for="readme-layout">README layout</label>
-      <select id="readme-layout" [value]="draft().layout" (change)="update('layout', $event)">
-        <option value="classic">Classic · introduction and skills first</option>
-        <option value="portfolio">Portfolio · projects first, with navigation</option>
-      </select>
-      <div class="export">
-        <button type="button" class="secondary" (click)="starter()">Start from my focus</button>
-        <button type="button" class="secondary" (click)="jump('writing-assistant')">
-          Review with AI
-        </button>
-        <button type="button" class="secondary" (click)="backup()">Download draft backup</button>
-      </div>
-      <small
-        >Starter text fills empty fields using your selected major. Personalize it before
-        publishing.</small
-      >
-      <details>
-        <summary>Save or restore your workspace</summary>
-        <label for="restore-draft">Restore draft backup (replaces current draft)</label>
-        <input
-          id="restore-draft"
-          type="file"
-          accept=".json,application/json"
-          (change)="restore($event)"
-        />
-      </details>
-      <p class="hint" role="status">{{ saved() }}</p>
-    </div>
-    <div>
-      <h2>Content checklist · {{ completedChecks() }}/{{ checklist().length }}</h2>
-      <p class="hint">Suggestions for a useful profile, not a score of your ability.</p>
-      <ul class="checklist">
-        @for (item of checklist(); track item.field + item.label) {
-          <li>
-            <button type="button" (click)="jump(item.field)">
-              <span [class.done]="item.done">{{ item.done ? '✓' : '○' }}</span> {{ item.label }}
-            </button>
-          </li>
-        }
-      </ul>
-      <details>
-        <summary>Choose sections to include</summary>
-        <div class="badge-options" role="group" aria-label="Included sections">
-          @for (item of sectionOptions; track item.id) {
+  <details class="customization">
+    <summary>Customize appearance, badges and sections</summary>
+    <section class="builder-tools" aria-label="Builder setup">
+      <div>
+        <p class="eyebrow">BUILD A PROFILE WITH PURPOSE</p>
+        <h2>Make it your own</h2>
+        <div class="theme-picker" role="group" aria-label="Profile theme">
+          @for (item of themes; track item.id) {
             <button
               type="button"
-              [attr.aria-pressed]="!draft().hidden.includes(item.id)"
-              (click)="toggleSection(item.id)"
+              [attr.aria-pressed]="draft().theme === item.id"
+              (click)="chooseTheme(item.id)"
+              [style.--swatch]="'#' + item.background"
+              [style.--ink]="'#' + item.accent"
             >
-              {{ item.title }}
+              <span class="theme-swatch" aria-hidden="true">Aa <span>────</span></span>
+              <strong>{{ item.name }}</strong
+              ><small>{{ item.description }}</small>
             </button>
           }
         </div>
-        <small>Hidden sections keep your text. Empty sections are omitted automatically.</small>
-      </details>
-    </div>
-  </section>
-  <section class="badge-studio" aria-label="Badge studio">
-    <div>
-      <p class="eyebrow">YOUR TOOLBOX, WITH PERSONALITY</p>
-      <h2>Pick your badges. Make them yours.</h2>
-      <p>Tap the tools you use. Each badge links to its GitHub topic in your exported README.</p>
-    </div>
-    <div class="badge-toolbar">
-      <label for="badge-format">Badge appearance</label>
-      <select
-        id="badge-format"
-        [value]="draft().badgeFormat"
-        (change)="update('badgeFormat', $event)"
-      >
-        <option value="logos">Framework logos</option>
-        <option value="labels">Text badges</option>
-      </select>
-      @if (draft().badgeFormat === 'labels') {
-        <label for="badge-style">Badge style</label>
-        <select
-          id="badge-style"
-          [value]="draft().badgeStyle"
-          (change)="update('badgeStyle', $event)"
-        >
-          <option value="for-the-badge">Statement</option>
-          <option value="flat">Minimal</option>
-          <option value="flat-square">Square</option>
-          <option value="plastic">Glossy</option>
+        <label for="readme-layout">README layout</label>
+        <select id="readme-layout" [value]="draft().layout" (change)="update('layout', $event)">
+          <option value="classic">Classic · introduction and skills first</option>
+          <option value="portfolio">Portfolio · projects first, with navigation</option>
         </select>
-      }
-      <button type="button" class="secondary" (click)="addFocusBadges()">
-        Add focus badge pack
-      </button>
-      <small>Adds the suggested tools below. Remove any you do not use.</small>
-    </div>
-    <fieldset class="badge-picker">
-      <legend>Badges for your major</legend>
-      <p>
-        Choose your major or focus, then select tools you use. These are technology labels, not
-        certifications. Changing focus keeps your selections.
-      </p>
-      <label for="badge-search">Search all technology badges</label>
-      <input
-        id="badge-search"
-        type="search"
-        [value]="badgeSearch()"
-        (input)="searchBadges($event)"
-        placeholder="Find a tool across all majors"
-      />
-      <div class="badge-options" role="group" aria-label="Suggested technology badges">
-        @for (name of suggestedBadges(); track name) {
-          <button
-            type="button"
-            [attr.aria-pressed]="badges().includes(name)"
-            (click)="toggleBadge(name)"
-          >
-            <span>{{ badges().includes(name) ? '✓ ' : '+ ' }}{{ name }}</span>
-            <img
-              [src]="frameworkLogo(name)"
-              alt=""
-              width="48"
-              height="48"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-            />
+        <div class="export">
+          <button type="button" class="secondary" (click)="starter()">Start from my focus</button>
+          <button type="button" class="secondary" (click)="jump('writing-assistant')">
+            Review with AI
           </button>
-        } @empty {
-          <p>No matching badges. You can still list this tool in Tools and technologies.</p>
-        }
+          <button type="button" class="secondary" (click)="backup()">Download draft backup</button>
+        </div>
+        <small
+          >Starter text fills empty fields using your selected major. Personalize it before
+          publishing.</small
+        >
+        <details>
+          <summary>Save or restore your workspace</summary>
+          <label for="restore-draft">Restore draft backup (replaces current draft)</label>
+          <input
+            id="restore-draft"
+            type="file"
+            accept=".json,application/json"
+            (change)="restore($event)"
+          />
+        </details>
+        <p class="hint" role="status">{{ saved() }}</p>
       </div>
-      <p class="hint" role="status">{{ badges().length }} badges selected</p>
-      @if (badges().length) {
-        <div class="badge-options" role="group" aria-label="Selected technology badges">
-          @for (name of badges(); track name) {
+      <div>
+        <h2>Content checklist · {{ completedChecks() }}/{{ checklist().length }}</h2>
+        <p class="hint">Suggestions for a useful profile, not a score of your ability.</p>
+        <ul class="checklist">
+          @for (item of checklist(); track item.field + item.label) {
+            <li>
+              <button type="button" (click)="jump(item.field)">
+                <span [class.done]="item.done">{{ item.done ? '✓' : '○' }}</span> {{ item.label }}
+              </button>
+            </li>
+          }
+        </ul>
+        <details>
+          <summary>Choose sections to include</summary>
+          <div class="badge-options" role="group" aria-label="Included sections">
+            @for (item of sectionOptions; track item.id) {
+              <button
+                type="button"
+                [attr.aria-pressed]="!draft().hidden.includes(item.id)"
+                (click)="toggleSection(item.id)"
+              >
+                {{ item.title }}
+              </button>
+            }
+          </div>
+          <small>Hidden sections keep your text. Empty sections are omitted automatically.</small>
+        </details>
+      </div>
+    </section>
+    <section class="badge-studio" aria-label="Badge studio">
+      <div>
+        <p class="eyebrow">YOUR TOOLBOX, WITH PERSONALITY</p>
+        <h2>Pick your badges. Make them yours.</h2>
+        <p>Tap the tools you use. Each badge links to its GitHub topic in your exported README.</p>
+      </div>
+      <div class="badge-toolbar">
+        <label for="badge-format">Badge appearance</label>
+        <select
+          id="badge-format"
+          [value]="draft().badgeFormat"
+          (change)="update('badgeFormat', $event)"
+        >
+          <option value="logos">Framework logos</option>
+          <option value="labels">Text badges</option>
+        </select>
+        @if (draft().badgeFormat === 'labels') {
+          <label for="badge-style">Badge style</label>
+          <select
+            id="badge-style"
+            [value]="draft().badgeStyle"
+            (change)="update('badgeStyle', $event)"
+          >
+            <option value="for-the-badge">Statement</option>
+            <option value="flat">Minimal</option>
+            <option value="flat-square">Square</option>
+            <option value="plastic">Glossy</option>
+          </select>
+        }
+        <button type="button" class="secondary" (click)="addFocusBadges()">
+          Add focus badge pack
+        </button>
+        <small>Adds the suggested tools below. Remove any you do not use.</small>
+      </div>
+      <fieldset class="badge-picker">
+        <legend>Badges for your major</legend>
+        <p>
+          Choose your major or focus, then select tools you use. These are technology labels, not
+          certifications. Changing focus keeps your selections.
+        </p>
+        <label for="badge-search">Search all technology badges</label>
+        <input
+          id="badge-search"
+          type="search"
+          [value]="badgeSearch()"
+          (input)="searchBadges($event)"
+          placeholder="Find a tool across all majors"
+        />
+        <div class="badge-options" role="group" aria-label="Suggested technology badges">
+          @for (name of suggestedBadges(); track name) {
             <button
               type="button"
-              [attr.aria-label]="'Remove ' + name + ' badge'"
+              [attr.aria-pressed]="badges().includes(name)"
               (click)="toggleBadge(name)"
             >
-              {{ name }} ×
+              <span>{{ badges().includes(name) ? '✓ ' : '+ ' }}{{ name }}</span>
+              <img
+                [src]="frameworkLogo(name)"
+                alt=""
+                width="48"
+                height="48"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+              />
             </button>
+          } @empty {
+            <p>No matching badges. You can still list this tool in Tools and technologies.</p>
           }
         </div>
-        <button type="button" class="subtle" (click)="clearBadges()">Clear badges</button>
-      }
-      <small
-        >Text badge images load from
-        <a href="https://shields.io/badges/static-badge" target="_blank" rel="noopener noreferrer"
-          >Shields.io</a
+        <p class="hint" role="status">{{ badges().length }} badges selected</p>
+        @if (badges().length) {
+          <div class="badge-options" role="group" aria-label="Selected technology badges">
+            @for (name of badges(); track name) {
+              <button
+                type="button"
+                [attr.aria-label]="'Remove ' + name + ' badge'"
+                (click)="toggleBadge(name)"
+              >
+                {{ name }} ×
+              </button>
+            }
+          </div>
+          <button type="button" class="subtle" (click)="clearBadges()">Clear badges</button>
+        }
+        <small
+          >Text badge images load from
+          <a href="https://shields.io/badges/static-badge" target="_blank" rel="noopener noreferrer"
+            >Shields.io</a
+          >
+          in the preview and on GitHub. Framework logos load from Skill Icons, Devicon (jsDelivr)
+          and Simple Icons.</small
         >
-        in the preview and on GitHub. Framework logos load from Skill Icons, Devicon (jsDelivr) and
-        Simple Icons.</small
-      >
-    </fieldset>
-  </section>
+      </fieldset>
+    </section>
   </details>
   <div class="workspace">
     <details class="editor" aria-label="Profile details">
