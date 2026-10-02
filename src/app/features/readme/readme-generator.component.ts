@@ -68,6 +68,7 @@ export class ReadmeGeneratorComponent {
   readonly name = input.required<string>();
   readonly username = input.required<string>();
   readonly focus = input.required<string>();
+  readonly includeProjects = input(true);
   readonly started = output<void>();
   readonly generated = output<GeneratedProfile>();
   protected readonly busy = signal(false);
@@ -80,6 +81,7 @@ export class ReadmeGeneratorComponent {
         name: this.name(),
         username: this.username(),
         focus: this.focus(),
+        includeProjects: this.includeProjects(),
       }).success,
   );
   protected generate(): void {
@@ -95,6 +97,7 @@ export class ReadmeGeneratorComponent {
         name: this.name().trim(),
         username: this.username().trim(),
         focus: this.focus(),
+        includeProjects: this.includeProjects(),
       }),
       selector: (response) =>
         response.text().then((body) => {

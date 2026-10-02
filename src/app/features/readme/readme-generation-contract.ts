@@ -9,6 +9,7 @@ export const generationRequestSchema = z
       .regex(/^[a-z\d](?:[a-z\d-]{0,37}[a-z\d])?$/i)
       .refine((value) => !value.includes('--')),
     focus: z.string().trim().min(1).max(100),
+    includeProjects: z.boolean().default(true),
   })
   .strict();
 export const generatedContentSchema = z
