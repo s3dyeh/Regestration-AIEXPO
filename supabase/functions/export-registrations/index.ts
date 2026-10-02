@@ -1,22 +1,13 @@
+import { corsFor } from '../_shared/cors.ts';
 import { createClient } from '@supabase/supabase-js';
 import { registrationWorkbook, XLSX_TYPE } from './workbook.ts';
 import type { ExportPage } from './workbook.ts';
 
 export async function handleExport(request: Request): Promise<Response> {
-  const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
-    .split(',')
-    .map((value) => value.trim());
-  const origin = request.headers.get('origin') ?? '';
-  const headers = {
-    'Access-Control-Allow-Origin': allowedOrigins.includes(origin) && origin ? origin : 'null',
-    'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Expose-Headers': 'Content-Disposition',
-    'Cache-Control': 'no-store',
-    Vary: 'Origin',
-  };
+  const { allowed, headers: corsHeaders } = corsFor(request);
+  const headers = { ...corsHeaders, 'Access-Control-Expose-Headers': 'Content-Disposition' };
   const fail = (status: number, message: string) => Response.json({ message }, { status, headers });
-  if (!origin || !allowedOrigins.includes(origin)) return fail(403, 'Origin not allowed.');
+  if (!allowed) return fail(403, 'Origin not allowed.');
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
   if (request.method !== 'POST') return fail(405, 'Use POST to export.');
   const authorization = request.headers.get('authorization') ?? '';

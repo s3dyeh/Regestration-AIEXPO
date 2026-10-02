@@ -11,6 +11,8 @@ if (config.error) throw new Error('Cannot read TypeScript configuration');
 const { options } = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
 for (const file of [
   'api/readme-ai.ts',
+  'api/readme-banner.ts',
+  'src/app/features/readme/profile-banner.ts',
   'server/readme-ai.ts',
   'server/gemini.ts',
   'server/readme-generate.ts',
@@ -32,8 +34,9 @@ const probe = `
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import handler from './api/readme-ai.js';
+import banner from './api/readme-banner.js';
 delete process.env.GEMINI_API_KEY;
-const server = createServer((req, res) => { Promise.resolve(handler(req, res)).catch(() => { res.writeHead(500); res.end('Uncaught handler error'); }); });
+const server = createServer((req, res) => { Promise.resolve(req.url?.startsWith('/api/readme-banner') ? banner(req, res) : handler(req, res)).catch(() => { res.writeHead(500); res.end('Uncaught handler error'); }); });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 try {
   const host = '127.0.0.1:' + server.address().port;
@@ -44,6 +47,10 @@ try {
   const post = await fetch('http://' + host, { method: 'POST', headers, body: '{}' });
   assert.equal(post.status, 503);
   assert.match((await post.json()).message, /GEMINI_API_KEY/);
+  const img = await fetch('http://' + host + '/api/readme-banner?text=Sam');
+  assert.equal(img.status, 200);
+  assert.equal(img.headers.get('content-type'), 'image/svg+xml; charset=utf-8');
+  assert.match(await img.text(), /Sam/);
   console.log('Compiled function starts in Node and returns JSON for GET and POST.');
 } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 `;

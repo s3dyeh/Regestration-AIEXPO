@@ -1,3 +1,4 @@
+import { profileBannerSvg } from '../src/app/features/readme/profile-banner';
 import { geminiText } from './gemini';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -244,4 +245,19 @@ test('Gemini extracts only completed answer parts and ignores thought text', () 
     }),
     '{"ok":true}',
   );
+});
+
+test('banner SVG escapes profile text and rejects injected attributes and colors', () => {
+  const svg = profileBannerSvg(
+    '<script>alert(1)</script>',
+    'A & B',
+    'red" onload="bad()',
+    '77dfba',
+  );
+  assert.ok(svg.includes('&lt;script&gt;'));
+  assert.ok(svg.includes('A &amp; B'));
+  assert.ok(svg.includes('fill="#102f28"'));
+  assert.equal(svg.includes('<script>'), false);
+  assert.equal(svg.includes('onload='), false);
+  assert.equal(svg.includes('https://'), false);
 });

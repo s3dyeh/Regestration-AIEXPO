@@ -8,7 +8,7 @@ import {
   effect,
 } from '@angular/core';
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
-import { badgeTopic, generatedBanner, themeFor } from './profile-presentation';
+import { badgeTopic, generatedBannerPreview, themeFor } from './profile-presentation';
 import { RouterLink } from '@angular/router';
 import { ReadmeGeneratorComponent } from './readme-generator.component';
 import type { GeneratedProfile } from './readme-generator.component';
@@ -177,7 +177,7 @@ export class ReadmeComponent {
     this.draft.update((draft) => ({ ...draft, badges: [] }));
   }
   protected readonly banner = computed(
-    () => safeProfileUrl(this.draft().banner) ?? generatedBanner(this.draft()),
+    () => safeProfileUrl(this.draft().banner) ?? generatedBannerPreview(this.draft()),
   );
   protected readonly bannerFailed = linkedSignal(() => {
     this.banner();

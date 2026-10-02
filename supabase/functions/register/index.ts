@@ -1,26 +1,14 @@
+import { corsFor } from '../_shared/cors.ts';
 import { createClient } from '@supabase/supabase-js';
 import { submissionSchema, welcomeSchema } from '../_shared/registration.ts';
 
 export async function handleAttendance(request: Request): Promise<Response> {
-  const allowedOrigins = (Deno.env.get('ALLOWED_ORIGINS') ?? '')
-    .split(',')
-    .map((value) => value.trim())
-    .filter(Boolean);
+  const { allowed, headers: corsHeaders } = corsFor(request);
   const rateSecret = Deno.env.get('RATE_LIMIT_SALT');
-
-  const origin = request.headers.get('origin') ?? '';
-  const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : 'null',
-    'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    Vary: 'Origin',
-    'Cache-Control': 'no-store',
-  };
+  const headers = { ...corsHeaders, 'Content-Type': 'application/json' };
   const reply = (status: number, message: unknown) =>
     new Response(JSON.stringify(message), { status, headers });
-  if (!allowedOrigins.includes(origin))
-    return reply(403, { message: 'This origin is not allowed.' });
+  if (!allowed) return reply(403, { message: 'This origin is not allowed.' });
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
   if (request.method !== 'POST') return reply(405, { message: 'Use POST to check in.' });
   if (!rateSecret) return reply(503, { message: 'Attendance is not configured yet.' });

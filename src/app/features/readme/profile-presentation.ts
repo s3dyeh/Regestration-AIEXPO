@@ -1,3 +1,4 @@
+import { profileBannerSvg } from './profile-banner';
 import type { ProfileDraft } from './profile-readme';
 
 export const profileThemes = [
@@ -45,7 +46,7 @@ export function generatedBanner(draft: ProfileDraft): string | null {
     descSize: '17',
     descAlignY: '58',
   });
-  return `https://capsule-render.vercel.app/api?${query}`;
+  return `https://aiexpo.s3dyeh.com/api/readme-banner?${query}`;
 }
 export function badgeTopic(name: string): string {
   const topics: Record<string, string> = {
@@ -55,4 +56,20 @@ export function badgeTopic(name: string): string {
     'GitHub Actions': 'github-actions',
   };
   return `https://github.com/topics/${topics[name] ?? name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+}
+
+export function generatedBannerPreview(draft: ProfileDraft): string | null {
+  if (!draft.autoBanner) return null;
+  const theme = themeFor(draft.theme);
+  return (
+    'data:image/svg+xml;charset=utf-8,' +
+    encodeURIComponent(
+      profileBannerSvg(
+        draft.name || draft.username,
+        draft.headline,
+        theme.background,
+        theme.accent,
+      ),
+    )
+  );
 }

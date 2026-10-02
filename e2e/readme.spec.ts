@@ -44,6 +44,8 @@ test('two-step wizard generates, edits and exports a complete profile with logos
   await identity(page);
   await build(page);
   await expect(page.locator('.preview')).toContainText('learning-app');
+  await expect(page.locator('.profile-banner')).toHaveJSProperty('naturalWidth', 1200);
+  await expect(page.locator('.profile-banner')).toHaveAttribute('src', /^data:image\/svg\+xml/);
   expect(sent).toEqual({
     mode: 'generate',
     name: 'Sam',

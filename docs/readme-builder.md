@@ -15,7 +15,7 @@ The result offers preview, Markdown, copy and download. **Edit my README** revea
 
 Drafts autosave under `careerlens.readme.v1` in browser localStorage; reloading a completed draft opens its output. Clearing site storage removes it. Existing drafts remain compatible. Preview and export share a section model with escaped text and safe links; user content is never inserted as HTML.
 
-Technology logos use [Skill Icons](https://github.com/tandpfun/skill-icons), pinned Devicon SVGs and Simple Icons. Exported logos link to GitHub topics. Expandable output sections use GitHub-supported details markup; there is no exported JavaScript or custom CSS. Generated banners use [Capsule Render](https://github.com/kyechan99/capsule-render), which receives the display name and headline in its image URL. External image providers can be unavailable and receive image requests, never API credentials. GitHub controls final page typography.
+Technology logos use [Skill Icons](https://github.com/tandpfun/skill-icons), pinned Devicon SVGs and Simple Icons. Exported logos link to GitHub topics. Expandable output sections use GitHub-supported details markup; there is no exported JavaScript or custom CSS. Generated banners render as local SVG previews without a network request. Markdown links to the public `/api/readme-banner` SVG endpoint on `https://aiexpo.s3dyeh.com`; deploy that endpoint with the site before using new exports. The endpoint escapes text, validates colors, has no external dependencies, and contains no credentials. Name and headline appear in the image URL. Technology logo providers still receive their own image requests. GitHub controls final page typography.
 
 ## Google Gemini on Vercel
 
