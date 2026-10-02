@@ -1,3 +1,4 @@
+import { geminiText } from './gemini';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { handleReadmeAi } from './readme-ai';
@@ -48,8 +49,7 @@ const suggestion = {
 };
 const completion = (data: ReadmeAiResult) =>
   Response.json({
-    status: 'completed',
-    output: [{ content: [{ type: 'output_text', text: JSON.stringify(data) }] }],
+    candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify(data) }] } }],
   });
 const forbidden: typeof fetch = async () => {
   throw new Error('Unexpected upstream call');
@@ -97,22 +97,23 @@ test('rejects unconfigured, invalid, oversized and throttled requests before ups
   }
 });
 
-test('uses bounded structured OpenAI output and keeps secret outside model input', async () => {
+test('uses bounded structured Gemini output and keeps secret outside model input', async () => {
   let calls = 0;
   const response = await handleReadmeAi(request(), {
     key: 'test-server-secret',
     fetcher: async (url, options) => {
       calls++;
-      assert.equal(url, 'https://api.openai.com/v1/responses');
-      assert.equal(new Headers(options?.headers).get('Authorization'), 'Bearer test-server-secret');
+      assert.equal(
+        url,
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent',
+      );
+      assert.equal(new Headers(options?.headers).get('x-goog-api-key'), 'test-server-secret');
       const body = JSON.parse(String(options?.body));
-      assert.equal(body.model, 'gpt-5-nano');
-      assert.equal(body.store, false);
-      assert.equal(body.max_output_tokens, 2200);
-      assert.equal(body.text.format.strict, true);
-      assert.equal(body.text.format.schema.additionalProperties, false);
+      assert.equal(body.generationConfig.maxOutputTokens, 2200);
+      assert.equal(body.generationConfig.responseFormat.text.mimeType, 'APPLICATION_JSON');
+      assert.equal(body.generationConfig.responseFormat.text.schema.additionalProperties, false);
       assert.equal(String(options?.body).includes('test-server-secret'), false);
-      assert.deepEqual(JSON.parse(body.input), payload);
+      assert.deepEqual(JSON.parse(body.contents[0].parts[0].text), payload);
       return completion({ suggestions: [suggestion], note: 'Review every claim.' });
     },
   });
@@ -140,7 +141,7 @@ test('drops unknown projects, mismatched fields and oversized headlines', async 
 });
 
 test('sanitizes provider errors without retries and rejects invalid completions', async () => {
-  for (const status of [401, 429, 500]) {
+  for (const status of [401, 403, 404, 429, 500]) {
     let calls = 0;
     const result = await handleReadmeAi(request(), {
       key: 'test',
@@ -154,11 +155,12 @@ test('sanitizes provider errors without retries and rejects invalid completions'
     assert.equal((await result.text()).includes('private upstream details'), false);
   }
   for (const data of [
-    { status: 'incomplete' },
-    { status: 'completed', output: [] },
+    { candidates: [{ finishReason: 'MAX_TOKENS', content: { parts: [{ text: '{}' }] } }] },
+    { promptFeedback: { blockReason: 'SAFETY' } },
+    { candidates: [{ finishReason: 'SAFETY' }] },
+    { candidates: [{ finishReason: 'STOP', content: { parts: [] } }] },
     {
-      status: 'completed',
-      output: [{ content: [{ type: 'output_text', text: '{"suggestions":[]}' }] }],
+      candidates: [{ finishReason: 'STOP', content: { parts: [{ text: '{"suggestions":[]}' }] } }],
     },
   ]) {
     const result = await handleReadmeAi(request(), {
@@ -221,5 +223,25 @@ test('backup validation recovers safely and normalizes duplicate project IDs', (
   assert.deepEqual(
     draft.projects.map((p) => p.id),
     [1, 2],
+  );
+});
+
+test('Gemini extracts only completed answer parts and ignores thought text', () => {
+  assert.equal(
+    geminiText({
+      candidates: [
+        {
+          finishReason: 'STOP',
+          content: {
+            parts: [
+              { thought: true, text: 'Internal reasoning' },
+              { text: '{"ok":' },
+              { text: 'true}' },
+            ],
+          },
+        },
+      ],
+    }),
+    '{"ok":true}',
   );
 });

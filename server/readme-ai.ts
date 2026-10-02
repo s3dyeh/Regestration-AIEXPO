@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { requestGemini, geminiText } from './gemini.js';
 import { aiRequestSchema, aiResultSchema } from '../src/app/features/readme/readme-ai-contract.js';
 import { generationRequestSchema } from '../src/app/features/readme/readme-generation-contract.js';
 import { generateReadme } from './readme-generate.js';
@@ -27,7 +27,7 @@ export async function handleReadmeAi(request: Request, deps: Dependencies): Prom
   if (!deps.key)
     return reply(503, {
       message:
-        'AI writing is not configured yet. Add OPENAI_API_KEY in Vercel and redeploy. You can still finish your README manually.',
+        'AI writing is not configured yet. Add GEMINI_API_KEY in Vercel and redeploy. You can still finish your README manually.',
     });
   let parsed;
   try {
@@ -77,42 +77,23 @@ export async function handleReadmeAi(request: Request, deps: Dependencies): Prom
       message: 'AI request limit reached. Wait ten minutes before trying again.',
     });
   try {
-    const response = await (deps.fetcher ?? fetch)('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${deps.key}`, 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(25000),
-      body: JSON.stringify({
-        model: deps.model ?? 'gpt-5-nano',
-        store: false,
-        instructions,
-        input: JSON.stringify(parsed.data),
-        reasoning: { effort: 'minimal' },
-        max_output_tokens: 2200,
-        text: {
-          format: {
-            type: 'json_schema',
-            name: 'readme_suggestions',
-            strict: true,
-            schema: z.toJSONSchema(aiResultSchema, { target: 'draft-7' }),
-          },
-        },
-      }),
-    });
+    const response = await requestGemini(
+      deps,
+      instructions,
+      parsed.data,
+      aiResultSchema,
+      2200,
+      25000,
+    );
     if (!response.ok)
       return reply(response.status === 429 ? 429 : 502, {
         message:
           response.status === 429
-            ? 'OpenAI usage or quota limit reached. Try later; your draft is safe.'
+            ? 'Gemini usage or quota limit reached. Try later; your draft is safe.'
             : 'AI writing is temporarily unavailable. Check the server model and API-key configuration.',
       });
     const data = await response.json();
-    if (data.status !== 'completed')
-      return reply(502, { message: 'AI could not finish this suggestion. Try a shorter draft.' });
-    const output = (data.output ?? [])
-      .flatMap((item: { content?: { type: string; text?: string }[] }) => item.content ?? [])
-      .filter((item: { type: string }) => item.type === 'output_text')
-      .map((item: { text: string }) => item.text)
-      .join('');
+    const output = geminiText(data);
     const result = aiResultSchema.safeParse(JSON.parse(output));
     if (!result.success)
       return reply(502, {

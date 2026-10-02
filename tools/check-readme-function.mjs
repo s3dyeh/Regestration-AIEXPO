@@ -12,6 +12,7 @@ const { options } = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
 for (const file of [
   'api/readme-ai.ts',
   'server/readme-ai.ts',
+  'server/gemini.ts',
   'server/readme-generate.ts',
   'src/app/features/readme/readme-generation-contract.ts',
   'src/app/features/readme/profile-badges.ts',
@@ -31,7 +32,7 @@ const probe = `
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import handler from './api/readme-ai.js';
-delete process.env.OPENAI_API_KEY;
+delete process.env.GEMINI_API_KEY;
 const server = createServer((req, res) => { Promise.resolve(handler(req, res)).catch(() => { res.writeHead(500); res.end('Uncaught handler error'); }); });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 try {
@@ -42,7 +43,7 @@ try {
   assert.equal((await methodResponse.json()).message, 'Use POST.');
   const post = await fetch('http://' + host, { method: 'POST', headers, body: '{}' });
   assert.equal(post.status, 503);
-  assert.match((await post.json()).message, /OPENAI_API_KEY/);
+  assert.match((await post.json()).message, /GEMINI_API_KEY/);
   console.log('Compiled function starts in Node and returns JSON for GET and POST.');
 } finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
 `;

@@ -41,7 +41,7 @@ export function suggestionValue(draft: ProfileDraft, suggestion: ReadmeSuggestio
         <option value="concise">Short and direct</option>
       </select>
       <p class="note">
-        Clicking below sends your profile prose, technologies and project descriptions to OpenAI
+        Clicking below sends your profile prose, technologies and project descriptions to Google Gemini
         through this site's server. Links, banner images and GitHub tokens are not sent. Review
         every claim before using it.
       </p>

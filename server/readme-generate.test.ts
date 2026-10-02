@@ -44,25 +44,25 @@ const content = {
 };
 const completion = () =>
   Response.json({
-    status: 'completed',
-    output: [{ content: [{ type: 'output_text', text: JSON.stringify(content) }] }],
+    candidates: [{ finishReason: 'STOP', content: { parts: [{ text: JSON.stringify(content) }] } }],
   });
 
 test('generation uses GitHub evidence, excludes profile/fork/private repos, filters invented badges/projects', async () => {
   const urls: string[] = [];
   const result = await handleReadmeAi(request(), {
-    key: 'openai-secret',
+    key: 'gemini-secret',
     githubToken: 'github-secret',
     fetcher: async (url, init) => {
       const path = String(url);
       urls.push(path);
-      if (path.includes('api.openai.com')) {
+      if (path.includes('generativelanguage.googleapis.com')) {
         const body = JSON.parse(String(init?.body));
-        const input = JSON.parse(body.input);
+        assert.equal(body.generationConfig.maxOutputTokens, 3800);
+        const input = JSON.parse(body.contents[0].parts[0].text);
         assert.deepEqual(input.observedTools.sort(), ['Angular', 'TypeScript']);
         assert.equal(input.repositories.length, 1);
         assert.equal(String(init?.body).includes('github-secret'), false);
-        assert.equal(new Headers(init?.headers).get('Authorization'), 'Bearer openai-secret');
+        assert.equal(new Headers(init?.headers).get('x-goog-api-key'), 'gemini-secret');
         return completion();
       }
       assert.equal(new Headers(init?.headers).get('Authorization'), 'Bearer github-secret');
@@ -114,7 +114,7 @@ test('empty accounts get a modest draft with no invented projects or badges', as
   const result = await handleReadmeAi(request(), {
     key: 'test',
     fetcher: async (url) => {
-      if (String(url).includes('api.openai.com')) return completion();
+      if (String(url).includes('generativelanguage.googleapis.com')) return completion();
       return Response.json(String(url).endsWith('/users/sam') ? profile : []);
     },
   });
@@ -131,7 +131,7 @@ test('supplementary rate limits stop GitHub reads and disclose partial evidence'
     key: 'test',
     fetcher: async (url) => {
       const path = String(url);
-      if (path.includes('api.openai.com')) return completion();
+      if (path.includes('generativelanguage.googleapis.com')) return completion();
       calls++;
       if (path.endsWith('/users/sam')) return Response.json(profile);
       if (path.includes('/repos?')) return Response.json([repository]);
@@ -148,12 +148,13 @@ test('project opt-out is enforced while README evidence still informs the person
     key: 'test',
     fetcher: async (url, init) => {
       const path = String(url);
-      if (path.includes('api.openai.com')) {
+      if (path.includes('generativelanguage.googleapis.com')) {
         const body = JSON.parse(String(init?.body));
-        const input = JSON.parse(body.input);
+        assert.equal(body.generationConfig.maxOutputTokens, 3800);
+        const input = JSON.parse(body.contents[0].parts[0].text);
         assert.equal(input.includeProjects, false);
         assert.equal(input.repositories[0].readme, readme);
-        assert.match(body.instructions, /emojis/);
+        assert.match(body.systemInstruction.parts[0].text, /emojis/);
         return completion();
       }
       if (path.endsWith('/users/sam')) return Response.json(profile);

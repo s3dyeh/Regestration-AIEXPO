@@ -67,8 +67,8 @@ export default async function handler(
       body,
     }),
     {
-      key: process.env['OPENAI_API_KEY'],
-      model: process.env['OPENAI_README_MODEL'],
+      key: process.env['GEMINI_API_KEY'],
+      model: process.env['GEMINI_README_MODEL'],
       githubToken: process.env['GITHUB_README_TOKEN'],
       permitted: () =>
         permit(

@@ -23,7 +23,7 @@ export type GeneratedProfile = z.infer<typeof generationResponseSchema>;
     </button>
     <p>
       Your name, major and public GitHub profile, repository languages and README excerpts are sent
-      to OpenAI. AI fills the editor; you can change everything afterward.
+      to Google Gemini. AI fills the editor; you can change everything afterward.
     </p>
     <p>
       Building again replaces the written draft. You can undo generation before making further
